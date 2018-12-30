@@ -5,8 +5,8 @@ class LibraryInterface(metaclass=abc.ABCMeta):
     """
     A class for interacting with the PyRecipe database.
     """
-    @abc.abstractmethod
     @staticmethod
+    @abc.abstractmethod
     def find_by_name(name: str) -> Recipe:
         """
         Library.find_recipe_by_name('Vietnamese Pork')
@@ -16,8 +16,8 @@ class LibraryInterface(metaclass=abc.ABCMeta):
         """
         raise NotImplementedError
 
-    @abc.abstractmethod
     @staticmethod
+    @abc.abstractmethod
     def find_by_field(tags: list = None, ingredients: list = None) -> list:
         """
         Library.find_by_field(tags=['mexican', 'hot'], ingredients=['pepper'])
@@ -28,8 +28,8 @@ class LibraryInterface(metaclass=abc.ABCMeta):
         """
         raise NotImplementedError
 
-    @abc.abstractmethod
     @staticmethod
+    @abc.abstractmethod
     def delete(recipe: Recipe) -> dict:
         """
         Library.delete(recipe)
@@ -39,8 +39,8 @@ class LibraryInterface(metaclass=abc.ABCMeta):
         """
         raise NotImplementedError
 
-    @abc.abstractmethod
     @staticmethod
+    @abc.abstractmethod
     def add(recipe: Recipe) -> dict:
         """
         Library.add(recipe)
@@ -54,8 +54,8 @@ class TagsInterface(metaclass=abc.ABCMeta):
     """
     A class for interacting with tags in the PyRecipe database.
     """
-    @abc.abstractmethod
     @staticmethod
+    @abc.abstractmethod
     def list() -> list:
         """
         Tags.list()
@@ -64,8 +64,8 @@ class TagsInterface(metaclass=abc.ABCMeta):
         """
         raise NotImplementedError
 
-    @abc.abstractmethod
     @staticmethod
+    @abc.abstractmethod
     def add(tag) -> bool:
         """
         Tags.add(['hot', 'spicy'])
@@ -79,8 +79,8 @@ class IngredientsInterface(metaclass=abc.ABCMeta):
     """
     A class for interacting with ingredients in the PyRecipe database.
     """
-    @abc.abstractmethod
     @staticmethod
+    @abc.abstractmethod
     def list() -> list:
         """
         Ingredients.list()
@@ -89,8 +89,8 @@ class IngredientsInterface(metaclass=abc.ABCMeta):
         """
         raise NotImplementedError
 
-    @abc.abstractmethod
     @staticmethod
+    @abc.abstractmethod
     def add(ingredients: list) -> bool:
         """
         Ingredients.add(['red pepper', 'green pepper'])
