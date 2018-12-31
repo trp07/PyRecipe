@@ -1,6 +1,11 @@
 import abc
 
 
+##############################################################################
+# Interfaces
+##############################################################################
+
+
 class RecipeInterface(metaclass=abc.ABCMeta):
     """
     A class for interacting with a Recipe instance
@@ -33,3 +38,12 @@ class RecipeInterface(metaclass=abc.ABCMeta):
         :return: Boolean, representing success or failure
         """
         raise NotImplementedError
+
+
+##############################################################################
+# Implementations
+##############################################################################
+
+
+class Recipe(RecipeInterface):
+    pass

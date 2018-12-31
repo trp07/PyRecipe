@@ -1,10 +1,17 @@
 import abc
 from recipe import Recipe
 
+
+##############################################################################
+# Interfaces
+##############################################################################
+
+
 class LibraryInterface(metaclass=abc.ABCMeta):
     """
     A class for interacting with the PyRecipe database.
     """
+
     @staticmethod
     @abc.abstractmethod
     def find_by_name(name: str) -> Recipe:
@@ -50,10 +57,12 @@ class LibraryInterface(metaclass=abc.ABCMeta):
         """
         raise NotImplementedError
 
+
 class TagsInterface(metaclass=abc.ABCMeta):
     """
     A class for interacting with tags in the PyRecipe database.
     """
+
     @staticmethod
     @abc.abstractmethod
     def list() -> list:
@@ -75,10 +84,12 @@ class TagsInterface(metaclass=abc.ABCMeta):
         """
         raise NotImplementedError
 
+
 class IngredientsInterface(metaclass=abc.ABCMeta):
     """
     A class for interacting with ingredients in the PyRecipe database.
     """
+
     @staticmethod
     @abc.abstractmethod
     def list() -> list:
@@ -99,3 +110,20 @@ class IngredientsInterface(metaclass=abc.ABCMeta):
         :return: Boolean based on success.
         """
         raise NotImplementedError
+
+
+##############################################################################
+# Implementations
+##############################################################################
+
+
+class Library(LibraryInterface):
+    pass
+
+
+class Tags(TagsInterface):
+    pass
+
+
+class Ingredients(IngredientsInterface):
+    pass

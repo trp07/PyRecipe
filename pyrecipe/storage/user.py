@@ -9,7 +9,7 @@ import uuid
 
 import mongoengine
 
-from recipe import Recipe
+from .recipe import Recipe
 
 
 class User(mongoengine.Document):

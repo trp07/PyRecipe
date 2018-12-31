@@ -26,7 +26,7 @@ class Recipe(mongoengine.Document):
     :param tags: (list) descriptive tags for a recipe.
         i.e. ['bbq', 'vegetarian']
     :param pictures: (list) local filepath for a picture uploaded.
-    :param rating: (int) user rating of recipe [1-5].
+    :param rating: (int) user rating of recipe with 0.5 increments [0.0-5.0]
     :param favorite: (bool) user selected as a favorite.
     :param deleted: (bool) user selected recipe for deletion.
     :param last_updated: (datetime) defaults to UTC time of when recipe is created/modified.
@@ -38,7 +38,7 @@ class Recipe(mongoengine.Document):
     tags = mongoengine.ListField(required=False)
     directions = mongoengine.MapField(field=mongoengine.StringField(), required=True)
     pictures = mongoengine.ListField(field=mongoengine.StringField(), required=False)
-    rating = mongoengine.IntField(required=False, min_val=1, max_val=5)
+    rating = mongoengine.FloatField(required=False, min_val=0.0, max_val=5.0)
     favorite = mongoengine.BooleanField(required=False)
     deleted = mongoengine.BooleanField(default=False)
     last_updated = mongoengine.DateTimeField(default=datetime.datetime.utcnow)
