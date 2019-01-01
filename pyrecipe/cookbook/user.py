@@ -66,15 +66,14 @@ class UserMongo(UserInterface):
     ATTRIBUTES:
     :attr name: (str) the user's name.
     :attr email: (str) the user's email address.
-    :attr created: (datetime) date the user was created.
+    :attr created_date: (datetime) date the user was created.
+    :attr last_modified_date: (datetime) date the user was last modified.
     :attr recipes: (list(Recipe)) list of recipe's owned by user.
     :attr view: (str) default recipe view [list, grid].
     :attr page_size: (str) max number of recipes to display before paginating.
     :attr email_distros: (dict) email distros for emailing recipes to.
         i.e. {"family": "email1, email2, email3"}
     :attr _id: (str) user id in the database.
-
-    METHODS:
     """
 
     def __init__(self, name=None, email=None):
@@ -83,6 +82,14 @@ class UserMongo(UserInterface):
             print("Found user: {}, {}".format(self._user.name, self._user.email))
 
         self._id = str(self._user.id)
+        self.name = self._user.name or name
+        self.email = self._user.email or name
+        self.created_date = self._user.created_date
+        self.last_modified_date = self._user.last_modified_date
+        self.recipes = self._user.recipes
+        self.view = self._user.view
+        self.page_size = self._user.page_size
+        self.email_distros = self._user.email_distros
 
     def update_user_data(self, data: dict) -> int:
         """
@@ -101,6 +108,7 @@ class UserMongo(UserInterface):
                 setattr(self._user, key, val)
                 count += 1
         self._user.save()
+        self._update_last_mod_date()
         self._user = self._refresh_user()
         return count
 
@@ -116,8 +124,8 @@ class UserMongo(UserInterface):
         result = self._user.update(add_to_set__recipes=recipe.id)
         if result:
             self._refresh_user()
-            return result
-        return 0
+        self._update_last_mod_date()
+        return result
 
     def _refresh_user(self) -> db.User:
         """
@@ -128,3 +136,15 @@ class UserMongo(UserInterface):
         :returns: (db.User) refreshed user document after updating the DB.
         """
         return db.User.objects().filter(id=self._id).first()
+
+
+    def _update_last_mod_date(self) -> int:
+        """
+        Updates the user's "last_updated_date" attribute in the DB.
+
+        user._update_last_mod_date()
+
+        :returns: (int) 1 for success, 0 if unsuccessful
+        """
+        result = self._user.update(last_modified_date=datetime.datetime.utcnow())
+        return result
