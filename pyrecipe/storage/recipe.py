@@ -40,7 +40,7 @@ class Recipe(mongoengine.Document):
     directions = mongoengine.MapField(field=mongoengine.StringField(), required=True)
     pictures = mongoengine.ListField(field=mongoengine.StringField(), required=False)
     rating = mongoengine.FloatField(required=False, min_val=0.0, max_val=5.0)
-    favorite = mongoengine.BooleanField(required=False)
+    favorite = mongoengine.BooleanField(default=False)
     deleted = mongoengine.BooleanField(default=False)
     created_date = mongoengine.DateTimeField(default=datetime.datetime.utcnow)
     last_modified_date = mongoengine.DateTimeField(default=datetime.datetime.utcnow)

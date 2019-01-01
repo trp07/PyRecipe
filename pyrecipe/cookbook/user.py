@@ -12,7 +12,8 @@ import abc
 import datetime
 
 import pyrecipe.storage as db
-from pyrecipe.cookbook import Recipe
+from .recipe import Recipe
+from pyrecipe.errors import UserNotFoundError
 
 
 ##############################################################################
@@ -35,7 +36,6 @@ class UserInterface(metaclass=abc.ABCMeta):
         :returns: (int) total number of successfully changed fields.
             i.e. 2 for the above example
         """
-        raise NotImplementedError
 
     @abc.abstractmethod
     def add_recipe(self, recipe: Recipe) -> int:
@@ -47,7 +47,6 @@ class UserInterface(metaclass=abc.ABCMeta):
         :param recipe: (Recipe) an instance of a cookbook.Recipe class.
         :returns: (int) 1 for success, 0 if unsuccessful.
         """
-        raise NotImplementedError
 
 
 ##############################################################################
@@ -77,19 +76,51 @@ class UserMongo(UserInterface):
     """
 
     def __init__(self, name=None, email=None):
+        """
+        TODO: make so user can be searched by name OR email
+        """
         self._user = db.User.objects().filter(name=name).first()
         if self._user:
             print("Found user: {}, {}".format(self._user.name, self._user.email))
+        else:
+            raise UserNotFoundError(name)
 
-        self._id = str(self._user.id)
-        self.name = self._user.name or name
-        self.email = self._user.email or name
-        self.created_date = self._user.created_date
-        self.last_modified_date = self._user.last_modified_date
-        self.recipes = self._user.recipes
-        self.view = self._user.view
-        self.page_size = self._user.page_size
-        self.email_distros = self._user.email_distros
+    @property
+    def _id(self):
+        return str(self._user.id)
+
+    @property
+    def name(self):
+        return self._user.name
+
+    @property
+    def email(self):
+        return self._user.email
+
+    @property
+    def created_date(self):
+        return self._user.created_date
+
+    @property
+    def last_modified_date(self):
+        return self._user.last_modified_date
+
+    @property
+    def recipes(self):
+        return self._user.recipes
+
+    @property
+    def view(self):
+        return self._user.view
+
+    @property
+    def page_size(self):
+        return self._user.page_size
+
+    @property
+    def email_distros(self):
+        return self._user.email_distros
+
 
     def update_user_data(self, data: dict) -> int:
         """
@@ -123,8 +154,8 @@ class UserMongo(UserInterface):
         """
         result = self._user.update(add_to_set__recipes=recipe.id)
         if result:
-            self._refresh_user()
-        self._update_last_mod_date()
+            self._user = self._refresh_user()
+            self._update_last_mod_date()
         return result
 
     def _refresh_user(self) -> db.User:

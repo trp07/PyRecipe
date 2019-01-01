@@ -1,5 +1,5 @@
 import abc
-from recipe import Recipe
+from .recipe import Recipe
 
 
 ##############################################################################
