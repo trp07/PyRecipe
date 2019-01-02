@@ -121,7 +121,6 @@ class UserMongo(UserInterface):
     def email_distros(self):
         return self._user.email_distros
 
-
     def update_user_data(self, data: dict) -> int:
         """
         Update user: name, email, view, page_size, email_distros
@@ -154,8 +153,8 @@ class UserMongo(UserInterface):
         """
         result = self._user.update(add_to_set__recipes=recipe.id)
         if result:
-            self._user = self._refresh_user()
             self._update_last_mod_date()
+            self._user = self._refresh_user()
         return result
 
     def _refresh_user(self) -> db.User:
@@ -167,7 +166,6 @@ class UserMongo(UserInterface):
         :returns: (db.User) refreshed user document after updating the DB.
         """
         return db.User.objects().filter(id=self._id).first()
-
 
     def _update_last_mod_date(self) -> int:
         """
