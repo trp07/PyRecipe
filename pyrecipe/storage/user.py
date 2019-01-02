@@ -9,7 +9,7 @@ import uuid
 
 import mongoengine
 
-from recipe import Recipe
+from .recipe import Recipe
 
 
 class User(mongoengine.Document):
@@ -24,7 +24,8 @@ class User(mongoengine.Document):
     :param name: (str) name of the user, defaults to a UUID4 unless specified.
     :param email: (str) email address of the user.
     :param auth: (hash) hash of password (NOT IMPLEMENTED).
-    :param created: (datetime) defaults to UTC time of when user is created.
+    :param created_date: (datetime) defaults to UTC time of when user is created.
+    :param last_modified_date: (datetime) UTC time of when user is last modified.
     :param recipes: (list(Recipe)) add a reference to a Recipe.
     :param view: (str) default recipe view [list, grid].
     :param page_size: (int) max number of recipes to display before paginating.
@@ -35,7 +36,8 @@ class User(mongoengine.Document):
     name = mongoengine.StringField(default=lambda: str(uuid.uuid4()))
     email = mongoengine.StringField(required=False)
     auth = mongoengine.StringField(default="Not Implemented")
-    created = mongoengine.DateTimeField(default=datetime.datetime.utcnow)
+    created_date = mongoengine.DateTimeField(default=datetime.datetime.utcnow)
+    last_modified_date = mongoengine.DateTimeField(default=datetime.datetime.utcnow)
     recipes = mongoengine.ListField(field=mongoengine.ReferenceField(Recipe))
     view = mongoengine.StringField(default="list")
     page_size = mongoengine.IntField(default=100, min_val=10)
