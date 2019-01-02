@@ -17,7 +17,7 @@ $ git clone https://github.com/trp07/PyRecipe.git
 5.  Install the project in **development** mode.
 ```shell
 $ cd PyRecipe
-$ poetry install --develop
+$ poetry install
 ```
 6.  Run Tests
 ```shell
