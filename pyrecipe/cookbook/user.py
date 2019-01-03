@@ -52,7 +52,7 @@ class UserInterface(metaclass=abc.ABCMeta):
 
     @classmethod
     @abc.abstractmethod
-    def create_user(cls, name: str, email: str) -> 'User':
+    def create_user(cls, name: str, email: str) -> "User":
         """
         Create a new User and insert into DB.
 
@@ -67,7 +67,7 @@ class UserInterface(metaclass=abc.ABCMeta):
 
     @classmethod
     @abc.abstractmethod
-    def login_user(cls, name: str, email: str) -> 'User':
+    def login_user(cls, name: str, email: str) -> "User":
         """
         Logs in and returns the user.
 
@@ -82,7 +82,7 @@ class UserInterface(metaclass=abc.ABCMeta):
 
     @staticmethod
     @abc.abstractmethod
-    def list_users() -> List['User']:
+    def list_users() -> List["User"]:
         """
         Returns a list of all Users.
 
@@ -90,7 +90,6 @@ class UserInterface(metaclass=abc.ABCMeta):
 
         :returns: list(User)
         """
-
 
 
 ##############################################################################
@@ -123,7 +122,7 @@ class UserMongo(UserInterface):
         self._user = user
 
     @classmethod
-    def create_user(cls, name:str=None, email:str=None) -> 'User':
+    def create_user(cls, name: str = None, email: str = None) -> "User":
         # see UserInterface docstring.
         if db.User.objects().filter(email=email).count():
             raise UserCreationError(email=email)
@@ -133,9 +132,8 @@ class UserMongo(UserInterface):
         _user.save()
         return cls(_user)
 
-
     @classmethod
-    def login_user(cls, name: str, email: str) -> 'User':
+    def login_user(cls, name: str, email: str) -> "User":
         # see UserInterface docstring.
         _user = db.User.objects().filter(name=name, email=email).first()
         if not _user:
@@ -143,7 +141,7 @@ class UserMongo(UserInterface):
         return cls(_user)
 
     @staticmethod
-    def list_users() -> List['User']:
+    def list_users() -> List["User"]:
         # see UserInterface docstring.
         users = db.User.objects()
         return list(users)
