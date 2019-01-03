@@ -10,10 +10,12 @@ Implementations:
 
 import abc
 import datetime
+from typing import List
 
 import pyrecipe.storage as db
 from .recipe import Recipe
 from pyrecipe.errors import UserNotFoundError
+from pyrecipe.errors import UserCreationError
 
 
 ##############################################################################
@@ -48,6 +50,48 @@ class UserInterface(metaclass=abc.ABCMeta):
         :returns: (int) 1 for success, 0 if unsuccessful.
         """
 
+    @classmethod
+    @abc.abstractmethod
+    def create_user(cls, name: str, email: str) -> 'User':
+        """
+        Create a new User and insert into DB.
+
+        User.create_user(name, email)
+
+        :param name: (str) name of the user.
+        :param email: (str) email address of the user.
+        :returns: (User) the new user.
+        :raises: UserCreationError if a user with the same email address
+            already exists.
+        """
+
+    @classmethod
+    @abc.abstractmethod
+    def login_user(cls, name: str, email: str) -> 'User':
+        """
+        Logs in and returns the user.
+
+        User.login_user()
+
+        :param name: (str) the user's name.
+        :param email: (str) the user's email address.
+        :returns: (User) the user.
+        :raises: UserNotFoundError if user with name and email doesn't
+            exist.
+        """
+
+    @staticmethod
+    @abc.abstractmethod
+    def list_users() -> List['User']:
+        """
+        Returns a list of all Users.
+
+        User.list_users()
+
+        :returns: list(User)
+        """
+
+
 
 ##############################################################################
 # Implementations
@@ -75,15 +119,34 @@ class UserMongo(UserInterface):
     :attr _id: (str) user id in the database.
     """
 
-    def __init__(self, name=None, email=None):
-        """
-        TODO: make so user can be searched by name OR email
-        """
-        self._user = db.User.objects().filter(name=name).first()
-        if self._user:
-            print("Found user: {}, {}".format(self._user.name, self._user.email))
-        else:
+    def __init__(self, user=None):
+        self._user = user
+
+    @classmethod
+    def create_user(cls, name:str=None, email:str=None) -> 'User':
+        # see UserInterface docstring.
+        if db.User.objects().filter(email=email).count():
+            raise UserCreationError(email=email)
+        _user = db.User()
+        _user.name = name
+        _user.email = email
+        _user.save()
+        return cls(_user)
+
+
+    @classmethod
+    def login_user(cls, name: str, email: str) -> 'User':
+        # see UserInterface docstring.
+        _user = db.User.objects().filter(name=name, email=email).first()
+        if not _user:
             raise UserNotFoundError(name)
+        return cls(_user)
+
+    @staticmethod
+    def list_users() -> List['User']:
+        # see UserInterface docstring.
+        users = db.User.objects()
+        return list(users)
 
     @property
     def _id(self):
@@ -122,16 +185,7 @@ class UserMongo(UserInterface):
         return self._user.email_distros
 
     def update_user_data(self, data: dict) -> int:
-        """
-        Update user: name, email, view, page_size, email_distros
-
-        user.update_user_data(data)
-
-        :param data: (dict) data fields to change.
-            i.e. {"name": "Bob", "email": "newAddress@here.com"}
-        :returns: (int) total number of successfully changed fields.
-            i.e. 2 for the above example
-        """
+        # see UserInterface docstring.
         count = 0
         for key, val in data.items():
             if key in ("name", "email", "view", "page_size", "email_distros"):
@@ -143,14 +197,7 @@ class UserMongo(UserInterface):
         return count
 
     def add_recipe(self, recipe: Recipe) -> int:
-        """
-        Adds a recipe reference to the user's recipes.
-
-        user.add_recipe(recipe)
-
-        :param recipe: (Recipe) an instance of a cookbook.Recipe class.
-        :returns: (int) 1 for success, 0 if unsuccessful.
-        """
+        # see UserInterface docstring.
         result = self._user.update(add_to_set__recipes=recipe.id)
         if result:
             self._update_last_mod_date()

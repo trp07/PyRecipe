@@ -8,3 +8,14 @@ class UserNotFoundError(Exception):
         self.error = "User <{}> was not found in the Database.".format(name)
         super().__init__(UserNotFoundError, self.error)
 
+
+class UserCreationError(ValueError):
+    """
+    Cannot create user because:
+    1.  Email address already in use
+    """
+    def __init__(self, **kwargs):
+        for key, val in kwargs.items():
+            if key == 'email':
+                self.error = "Email address <{}> used by another user.".format(val)
+        super().__init__(UserCreationError, self.error)
