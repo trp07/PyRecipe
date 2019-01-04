@@ -118,11 +118,17 @@ class UserMongo(UserInterface):
     :attr _id: (str) user id in the database.
     """
 
-    def __init__(self, user=None):
-        self._user = user
+    def __init__(self, db_user=None):
+        """
+        Instantiate with a User class, typically done via the login_user or
+        create_user class methods.
+
+        :param db_user: (db.User) a user record from the DB.
+        """
+        self._user = db_user
 
     @classmethod
-    def create_user(cls, name: str = None, email: str = None) -> "User":
+    def create_user(cls, name:str=None, email:str=None) -> "User":
         # see UserInterface docstring.
         if db.User.objects().filter(email=email).count():
             raise UserCreationError(email=email)
@@ -133,7 +139,7 @@ class UserMongo(UserInterface):
         return cls(_user)
 
     @classmethod
-    def login_user(cls, name: str, email: str) -> "User":
+    def login_user(cls, name:str, email:str) -> "User":
         # see UserInterface docstring.
         _user = db.User.objects().filter(name=name, email=email).first()
         if not _user:
@@ -182,7 +188,7 @@ class UserMongo(UserInterface):
     def email_distros(self):
         return self._user.email_distros
 
-    def update_user_data(self, data: dict) -> int:
+    def update_user_data(self, data:dict) -> int:
         # see UserInterface docstring.
         count = 0
         for key, val in data.items():
@@ -194,7 +200,7 @@ class UserMongo(UserInterface):
         self._user = self._refresh_user()
         return count
 
-    def add_recipe(self, recipe: Recipe) -> int:
+    def add_recipe(self, recipe:Recipe) -> int:
         # see UserInterface docstring.
         result = self._user.update(add_to_set__recipes=recipe.id)
         if result:
