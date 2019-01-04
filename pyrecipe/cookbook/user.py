@@ -120,7 +120,7 @@ class UserMongo(UserInterface):
 
     def __init__(self, db_user=None):
         """
-        Instantiate with a User class, typically done via the login_user or
+        Instantiate a User class, typically done via the login_user or
         create_user class methods.
 
         :param db_user: (db.User) a user record from the DB.
