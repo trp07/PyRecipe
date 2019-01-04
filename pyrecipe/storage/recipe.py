@@ -26,6 +26,8 @@ class Recipe(mongoengine.Document):
     :param tags: (list) descriptive tags for a recipe.
         i.e. ['bbq', 'vegetarian']
     :param pictures: (list) local filepath for a picture uploaded.
+    :param notes: (list) list of notes about the recipe.
+        i.e. "Substitute butter for ghee if you don't have ghee."
     :param rating: (int) user rating of recipe with 0.5 increments [0.0-5.0]
     :param favorite: (bool) user selected as a favorite.
     :param deleted: (bool) user selected recipe for deletion.
@@ -39,6 +41,7 @@ class Recipe(mongoengine.Document):
     tags = mongoengine.ListField(required=False)
     directions = mongoengine.MapField(field=mongoengine.StringField(), required=True)
     pictures = mongoengine.ListField(field=mongoengine.StringField(), required=False)
+    notes = mongoengine.ListField(field=mongoengine.StringField(), required=False)
     rating = mongoengine.FloatField(required=False, min_val=0.0, max_val=5.0)
     favorite = mongoengine.BooleanField(default=False)
     deleted = mongoengine.BooleanField(default=False)
