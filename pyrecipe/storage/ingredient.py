@@ -17,6 +17,7 @@ class Ingredient(mongoengine.EmbeddedDocument):
     :param quantity: (str) the amount of the ingredient.
     :param unit: (str) the unit of measurement.
     """
+
     name = mongoengine.StringField(required=True)
     quantity = mongoengine.StringField(required=True)
     unit = mongoengine.StringField(required=True)

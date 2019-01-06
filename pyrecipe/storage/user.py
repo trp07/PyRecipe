@@ -45,11 +45,4 @@ class User(mongoengine.Document):
         field=mongoengine.StringField(), required=False
     )
 
-    meta = {
-        "db_alias": "core",
-        "collection": "users",
-        "indexes": [
-            "name",
-            "email",
-        ]
-    }
+    meta = {"db_alias": "core", "collection": "users", "indexes": ["name", "email"]}

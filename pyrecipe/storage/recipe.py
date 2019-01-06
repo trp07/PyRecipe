@@ -60,5 +60,5 @@ class Recipe(mongoengine.Document):
             "favorite",
             "deleted",
             "ingredients.name",
-        ]
+        ],
     }
