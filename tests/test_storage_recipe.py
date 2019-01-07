@@ -10,9 +10,19 @@ import pytest
 import mongoengine
 
 from pyrecipe.storage.recipe import Recipe
+from pyrecipe.storage.recipe import Ingredient
 
 
-def test_recipe_creation_defaults(mongodb):
+@pytest.fixture(scope='function')
+def get_ingredients():
+    ingredient = Ingredient()
+    ingredient.name = 'test ingredient'
+    ingredient.quantity = '1'
+    ingredient.unit = 'tsp'
+    return ingredient
+
+
+def test_recipe_creation_defaults(get_ingredients, mongodb):
     """
     GIVEN a mongodb instance
     WHEN a Recipe is added with only required values set, just using default values
@@ -22,13 +32,13 @@ def test_recipe_creation_defaults(mongodb):
     db = mongodb
     r = Recipe()
     r.name = 'Yummy'
-    r.ingredients = {'salt': '1 tsp'}
+    r.ingredients = [get_ingredients]
     r.num_ingredients = 1
     r.directions = {'1': 'cook'}
     r.save()
 
     assert r.name == 'Yummy'
-    assert r.ingredients == {'salt': '1 tsp'}
+    assert isinstance(r.ingredients[0], Ingredient)
     assert r.num_ingredients == 1
     assert r.tags == []
     assert r.directions == {'1': 'cook'}
@@ -41,10 +51,10 @@ def test_recipe_creation_defaults(mongodb):
 
 
 @pytest.mark.parametrize('name, ingredients, num_ingredients, directions',[
-    (None, {'salt': '1 tsp'}, 1, {'1': 'cook'}),
+    (None, get_ingredients, 1, {'1': 'cook'}),
     ('Yummy', None, 1, {'1': 'cook'}),
-    ('Yummy', {'salt': '1 tsp'}, None, {'1': 'cook'}),
-    ('Yummy', {'salt': '1 tsp'}, 1, None),
+    ('Yummy', get_ingredients, None, {'1': 'cook'}),
+    ('Yummy', get_ingredients, 1, None),
 ])
 def test_recipe_creation_raisesExc(name, ingredients, num_ingredients, directions, mongodb):
     """
