@@ -102,8 +102,7 @@ class UserMongo(UserInterface):
     Each Instance will hold a user's data from the database.
 
     PARAMS:
-    :param name: (str) lookup user by name, OR
-    :param email: (str) lookup user by email address.
+    :param db_user: (db.User) an instance from the DB's user collection.
 
     ATTRIBUTES:
     :attr name: (str) the user's name.
@@ -139,11 +138,11 @@ class UserMongo(UserInterface):
         return cls(_user)
 
     @classmethod
-    def login_user(cls, name:str, email:str) -> "User":
+    def login_user(cls, email:str) -> "User":
         # see UserInterface docstring.
-        _user = db.User.objects().filter(name=name, email=email).first()
+        _user = db.User.objects().filter(email=email).first()
         if not _user:
-            raise UserNotFoundError(name)
+            raise UserNotFoundError(email)
         return cls(_user)
 
     @staticmethod

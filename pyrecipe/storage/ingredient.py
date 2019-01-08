@@ -15,11 +15,13 @@ class Ingredient(mongoengine.EmbeddedDocument):
     REQUIRED params:
     :param name: (str) the name of the ingredient.
     :param quantity: (str) the amount of the ingredient.
+
+    NOT-REQUIRED param:
     :param unit: (str) the unit of measurement.
     """
 
     name = mongoengine.StringField(required=True)
     quantity = mongoengine.StringField(required=True)
-    unit = mongoengine.StringField(required=True)
+    unit = mongoengine.StringField(required=False)
 
     meta = {"db_alias": "core", "collection": "ingredients"}

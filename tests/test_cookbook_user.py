@@ -67,7 +67,7 @@ def test_login_user(get_user, mocker):
     db_mock = mocker.patch.object(db, 'User')
     db_mock.objects.return_value.filter.return_value.first.return_value = get_user
 
-    user = User.login_user(name='test', email='fake')
+    user = User.login_user(email='fake')
     assert isinstance(user, User)
 
 def test_login_user_raisesExc(mocker):
@@ -80,7 +80,7 @@ def test_login_user_raisesExc(mocker):
     db_mock.objects.return_value.filter.return_value.first.return_value = None
 
     with pytest.raises(UserNotFoundError):
-        user = User.login_user(name='test', email='fake')
+        user = User.login_user(email='fake')
 
 def test_list_users(mocker):
     """
