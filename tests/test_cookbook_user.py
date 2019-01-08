@@ -28,6 +28,7 @@ def test_user_init(get_user):
     assert isinstance(user.created_date, datetime.datetime)
     assert isinstance(user.last_modified_date, datetime.datetime)
     assert user.recipes == []
+    assert user.shared_recipes == []
     assert user.view == 'list'
     assert user.page_size == 100
     assert user.email_distros == {}

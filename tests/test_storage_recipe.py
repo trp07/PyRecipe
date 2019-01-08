@@ -35,11 +35,15 @@ def test_recipe_creation_defaults(get_ingredients, mongodb):
     r.ingredients = [get_ingredients]
     r.num_ingredients = 1
     r.directions = {'1': 'cook'}
+    r.prep_time = 100
+    r.cook_time = 120
     r.save()
 
     assert r.name == 'Yummy'
     assert isinstance(r.ingredients[0], Ingredient)
     assert r.num_ingredients == 1
+    assert r.prep_time == 100
+    assert r.cook_time == 120
     assert r.tags == []
     assert r.directions == {'1': 'cook'}
     assert r.pictures == []

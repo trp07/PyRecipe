@@ -1,5 +1,5 @@
 """
-Cookbook interface to Database
+cookbook.user interface to Database
 
 Interfaces:
 * UserInterface -- Interface to be implemented by User* classes.
@@ -104,12 +104,13 @@ class UserMongo(UserInterface):
     PARAMS:
     :param db_user: (db.User) an instance from the DB's user collection.
 
-    ATTRIBUTES:
+    ATTRIBUTES/PROPERTIES:
     :attr name: (str) the user's name.
     :attr email: (str) the user's email address.
     :attr created_date: (datetime) date the user was created.
     :attr last_modified_date: (datetime) date the user was last modified.
-    :attr recipes: (list(Recipe)) list of recipe's owned by user.
+    :attr recipe: (list(Recipe)) list of recipe's owned by user.
+    :attr shared_recipe: (list(Recipe)) list of recipe's shared with user.
     :attr view: (str) default recipe view [list, grid].
     :attr page_size: (str) max number of recipes to display before paginating.
     :attr email_distros: (dict) email distros for emailing recipes to.
@@ -173,7 +174,11 @@ class UserMongo(UserInterface):
 
     @property
     def recipes(self):
-        return self._user.recipes
+        return self._user.recipe_ids
+
+    @property
+    def shared_recipes(self):
+        return self._user.shared_recipe_ids
 
     @property
     def view(self):

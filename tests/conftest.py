@@ -38,7 +38,8 @@ class Fake_User:
         self.email = email
         self.created_date = created_date
         self.last_modified_date = last_modified_date
-        self.recipes = recipes
+        self.recipe_ids = recipes
+        self.shared_recipe_ids = []
         self.view = view
         self.page_size = page_size
         self.email_distros = email_distros

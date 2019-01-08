@@ -27,7 +27,8 @@ def test_user_creation_defaults(mongodb):
     assert user.auth == 'Not Implemented'
     assert isinstance(user.created_date, datetime.datetime)
     assert isinstance(user.last_modified_date, datetime.datetime)
-    assert user.recipes == []
+    assert user.recipe_ids == []
+    assert user.shared_recipe_ids == []
     assert user.view == 'list'
     assert user.page_size == 100
     assert user.email_distros == dict()
