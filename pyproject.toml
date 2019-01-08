@@ -8,6 +8,7 @@ license = "GPL-3.0+"
 [tool.poetry.dependencies]
 python = "^3.6"
 mongoengine = "^0.16.3"
+flask = "^1.0"
 
 [tool.poetry.dev-dependencies]
 pytest-cov = "^2.6"
