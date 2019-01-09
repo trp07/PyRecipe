@@ -34,7 +34,7 @@ def test_recipe_creation_defaults(get_ingredients, mongodb):
     r.name = 'Yummy'
     r.ingredients = [get_ingredients]
     r.num_ingredients = 1
-    r.directions = {'1': 'cook'}
+    r.directions = ['cook']
     r.prep_time = 100
     r.cook_time = 120
     r.save()
@@ -45,7 +45,7 @@ def test_recipe_creation_defaults(get_ingredients, mongodb):
     assert r.prep_time == 100
     assert r.cook_time == 120
     assert r.tags == []
-    assert r.directions == {'1': 'cook'}
+    assert r.directions == ['cook']
     assert r.pictures == []
     assert r.rating is None
     assert r.favorite == False
@@ -55,9 +55,9 @@ def test_recipe_creation_defaults(get_ingredients, mongodb):
 
 
 @pytest.mark.parametrize('name, ingredients, num_ingredients, directions',[
-    (None, get_ingredients, 1, {'1': 'cook'}),
-    ('Yummy', None, 1, {'1': 'cook'}),
-    ('Yummy', get_ingredients, None, {'1': 'cook'}),
+    (None, get_ingredients, 1, ['cook']),
+    ('Yummy', None, 1, ['cook']),
+    ('Yummy', get_ingredients, None, ['cook']),
     ('Yummy', get_ingredients, 1, None),
 ])
 def test_recipe_creation_raisesExc(name, ingredients, num_ingredients, directions, mongodb):

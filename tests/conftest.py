@@ -53,8 +53,70 @@ class Fake_User:
         else:
             return 0
 
+class Fake_Ingredient:
+    """Fake storage.Ingredient for testing."""
+    def __init__(self, name='Test_Ingr', quantity='1', unit='tsp'):
+        self.name = name
+        self.quantity = quantity
+        self.unit = unit
+
+
+class Fake_Recipe:
+    """Fake storage.Recipe for testing."""
+    def __init__(self):
+        self._id = 123
+        self.name = "Test_Rec"
+        self.ingredients = [Fake_Ingredient(name='Ingr1'), Fake_Ingredient(name='Igr2')]
+        self.num_ingredients = 2
+        self.directions = ['cook']
+        self.prep_time = 100.0
+        self.cook_time = 110.0
+        self.tags = ['tag1', 'tag2']
+        self.pictures = ['filepath1']
+        self.notes = ['test note']
+        self.rating = 4.5
+        self.favorite = True
+        self.deleted = False
+        self.created_date = datetime.datetime.utcnow()
+        self.last_modified_date = datetime.datetime.utcnow()
+
+    def save(self):
+            pass
+
+    def update(self, add_to_set__tags=None, pull__tags=None, last_modified_date=None, deleted=None):
+        if add_to_set__tags == 'good':
+            self.tags.append('good')
+            return 1
+        elif pull__tags == 'good':
+            try:
+                self.tags.remove('good')
+            except ValueError:
+                pass
+            return 1
+        elif isinstance(last_modified_date, datetime.datetime):
+            return 1
+        elif deleted == True:
+            self.deleted = True
+            return 1
+        elif deleted == False:
+            self.deleted = False
+            return 1
+        else:
+            return 0
+
 
 @pytest.fixture(scope='function')
 def get_user():
     """Return an instance of Fake_User for testing."""
     return Fake_User()
+
+
+@pytest.fixture(scope='function')
+def get_recipe():
+    """Return an instance of Fake_Recipe for testing."""
+    return Fake_Recipe()
+
+@pytest.fixture(scope='function')
+def get_ingredient():
+    """Return an instance of Fake_Recipe for testing."""
+    return Fake_Ingredient()

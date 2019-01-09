@@ -20,8 +20,8 @@ class Recipe(mongoengine.Document):
     :param ingredients: (list(Ingredient)) list of ingredients, an embedded document.
     :param num_ingredients: (int) total number of discrete ingredients.
         i.e. len(ingredients)
-    :param directions: (dict) key=step number (str), value=direction (str).
-        i.e. {'1': 'bring water to a boil'}
+    :param directions: (list) ordered list of cooking directions.
+        i.e. ['boil water', 'add rice', 'reduce heat']
 
     NOT-REQUIRED params:
     :param prep_time: (float) time to prep recipe in minutes.
@@ -31,7 +31,7 @@ class Recipe(mongoengine.Document):
     :param pictures: (list) local filepath for a picture uploaded.
     :param notes: (list) list of notes about the recipe.
         i.e. "Substitute butter for ghee if you don't have ghee."
-    :param rating: (int) user rating of recipe with 0.5 increments [0.0-5.0]
+    :param rating: (float) user rating of recipe with 0.5 increments [0.0-5.0]
     :param favorite: (bool) user selected as a favorite.
     :param deleted: (bool) user selected recipe for deletion.
     :param created_date: (datetime) defaults to UTC time of when recipe is created.
@@ -40,7 +40,7 @@ class Recipe(mongoengine.Document):
 
     name = mongoengine.StringField(required=True)
     num_ingredients = mongoengine.IntField(required=True, min_val=1)
-    directions = mongoengine.MapField(field=mongoengine.StringField(), required=True)
+    directions = mongoengine.ListField(field=mongoengine.StringField(), required=True)
 
     prep_time = mongoengine.FloatField(required=False, min_val=0.0)
     cook_time = mongoengine.FloatField(required=False, min_val=0.0)
