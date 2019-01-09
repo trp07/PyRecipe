@@ -25,7 +25,7 @@ class RecipeInterface(metaclass=abc.ABCMeta):
 
     @classmethod
     @abc.abstractmethod
-    def create_recipe(cls, name:str, ingredients:list, directions:list) -> 'Recipe':
+    def create_recipe(cls, name: str, ingredients: list, directions: list) -> "Recipe":
         """
         Create a new Recipe and insert it into the DB.
 
@@ -40,7 +40,7 @@ class RecipeInterface(metaclass=abc.ABCMeta):
 
     @classmethod
     @abc.abstractmethod
-    def fetch_recipe(cls, name:str) -> 'Recipe':
+    def fetch_recipe(cls, name: str) -> "Recipe":
         """
         Fetch a recipe by name.
 
@@ -51,7 +51,7 @@ class RecipeInterface(metaclass=abc.ABCMeta):
         """
 
     @abc.abstractmethod
-    def copy_recipe(self, recipe:'Recipe') -> 'Recipe':
+    def copy_recipe(self, recipe: "Recipe") -> "Recipe":
         """
         Given a Recipe instance, produce a copy of it with a modified name
 
@@ -61,7 +61,7 @@ class RecipeInterface(metaclass=abc.ABCMeta):
         """
 
     @abc.abstractmethod
-    def update_recipe_data(self, data:dict) -> int:
+    def update_recipe_data(self, data: dict) -> int:
         """
         Update a Recipe instance's given attribute.
 
@@ -69,7 +69,6 @@ class RecipeInterface(metaclass=abc.ABCMeta):
             i.e. {'name': 'lasagna'}
         :returns: (int) number of successfully changed attributes
         """
-
 
     @abc.abstractmethod
     def delete_recipe(self) -> int:
@@ -88,7 +87,7 @@ class RecipeInterface(metaclass=abc.ABCMeta):
         """
 
     @abc.abstractmethod
-    def add_tag(self, tag:str) -> int:
+    def add_tag(self, tag: str) -> int:
         """
         Given a recipe instance, add a new tag
 
@@ -96,12 +95,13 @@ class RecipeInterface(metaclass=abc.ABCMeta):
         """
 
     @abc.abstractmethod
-    def delete_tag(self, tag:str) -> int:
+    def delete_tag(self, tag: str) -> int:
         """
         Given a recipe instance, delete a new tag
 
         :returns: (int) 1 for success, 0 for failure
         """
+
 
 ##############################################################################
 # Implementations
@@ -141,7 +141,7 @@ class RecipeMongo(RecipeInterface):
         self._recipe = db_recipe
 
     @classmethod
-    def create_recipe(cls, name:str, ingredients:list, directions:dict) -> 'Recipe':
+    def create_recipe(cls, name: str, ingredients: list, directions: dict) -> "Recipe":
         # see RecipeInterface docstring
         _recipe = db.Recipe()
         _recipe.name = name.lower()
@@ -149,9 +149,9 @@ class RecipeMongo(RecipeInterface):
         _recipe.ingredients = []
         for ingredient in ingredients:
             i = db.Ingredient()
-            i.name = ingredient['name'].lower()
-            i.quantity = ingredient['quantity'].lower()
-            i.unit = ingredient['unit'].lower()
+            i.name = ingredient["name"].lower()
+            i.quantity = ingredient["quantity"].lower()
+            i.unit = ingredient["unit"].lower()
             _recipe.ingredients.append(i)
 
         _recipe.directions = directions
@@ -160,7 +160,7 @@ class RecipeMongo(RecipeInterface):
         return cls(_recipe)
 
     @classmethod
-    def fetch_recipe(cls, name:str) -> 'Recipe':
+    def fetch_recipe(cls, name: str) -> "Recipe":
         # see RecipeInterface docstring
         _recipe = db.Recipe.objects().filter(name=name).first()
         if not _recipe:
@@ -168,7 +168,7 @@ class RecipeMongo(RecipeInterface):
         return cls(_recipe)
 
     @classmethod
-    def copy_recipe(cls, recipe:'Recipe') -> 'Recipe':
+    def copy_recipe(cls, recipe: "Recipe") -> "Recipe":
         # see RecipeInterface docstring
         _recipe = db.Recipe()
         _recipe.name = recipe.name + "_COPY"
@@ -182,11 +182,20 @@ class RecipeMongo(RecipeInterface):
         _recipe.save()
         return cls(_recipe)
 
-    def update_recipe_data(self, data:dict) -> int:
+    def update_recipe_data(self, data: dict) -> int:
         # see RecipeInterface docstring
         count = 0
         for key, val in data.items():
-            if key in ("name", "prep_time", "cook_time", "tags", "pictures", "notes", "rating", "favorite"):
+            if key in (
+                "name",
+                "prep_time",
+                "cook_time",
+                "tags",
+                "pictures",
+                "notes",
+                "rating",
+                "favorite",
+            ):
                 setattr(self._recipe, key, val)
                 count += 1
             elif key in ("ingredients"):
@@ -198,14 +207,12 @@ class RecipeMongo(RecipeInterface):
         self._recipe = self._refresh_recipe()
         return count
 
-
     def delete_recipe(self) -> int:
         # see RecipeInterface docstring
         result = self._recipe.update(deleted=True)
         self._update_last_mod_date()
         self._recipe = self._refresh_recipe()
         return result
-
 
     def restore_recipe(self) -> int:
         # see RecipeInterface docstring
@@ -214,14 +221,14 @@ class RecipeMongo(RecipeInterface):
         self._recipe = self._refresh_recipe()
         return result
 
-    def add_tag(self, tag:str) -> int:
+    def add_tag(self, tag: str) -> int:
         # see RecipeInterface docstring
         result = self._recipe.update(add_to_set__tags=tag.lower())
         self._update_last_mod_date()
         self._recipe = self._refresh_recipe()
         return result
 
-    def delete_tag(self, tag:str) -> int:
+    def delete_tag(self, tag: str) -> int:
         # see RecipeInterface docstring
         result = self._recipe.update(pull__tags=tag.lower())
         self._update_last_mod_date()
@@ -237,7 +244,7 @@ class RecipeMongo(RecipeInterface):
         return self._recipe.name
 
     @property
-    def ingredients(self) -> List['Ingredient']:
+    def ingredients(self) -> List["Ingredient"]:
         return self._recipe.ingredients
 
     @property
@@ -257,11 +264,11 @@ class RecipeMongo(RecipeInterface):
         return self._recipe.cook_time
 
     @property
-    def tags(self) -> List['tags']:
+    def tags(self) -> List["tags"]:
         return self._recipe.tags
 
     @property
-    def pictures(self) -> List['filepaths']:
+    def pictures(self) -> List["filepaths"]:
         return self._recipe.pictures
 
     @property

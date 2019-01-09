@@ -131,7 +131,7 @@ class UserMongo(UserInterface):
         self._user = db_user
 
     @classmethod
-    def create_user(cls, name:str=None, email:str=None) -> "User":
+    def create_user(cls, name: str = None, email: str = None) -> "User":
         # see UserInterface docstring.
         if db.User.objects().filter(email=email).count():
             raise UserCreationError(email=email)
@@ -142,7 +142,7 @@ class UserMongo(UserInterface):
         return cls(_user)
 
     @classmethod
-    def login_user(cls, email:str) -> "User":
+    def login_user(cls, email: str) -> "User":
         # see UserInterface docstring.
         _user = db.User.objects().filter(email=email).first()
         if not _user:
@@ -155,7 +155,7 @@ class UserMongo(UserInterface):
         users = db.User.objects()
         return list(users)
 
-    def update_user_data(self, data:dict) -> int:
+    def update_user_data(self, data: dict) -> int:
         # see UserInterface docstring.
         count = 0
         for key, val in data.items():
@@ -167,7 +167,7 @@ class UserMongo(UserInterface):
         self._user = self._refresh_user()
         return count
 
-    def add_recipe(self, recipe:Recipe) -> int:
+    def add_recipe(self, recipe: Recipe) -> int:
         # see UserInterface docstring.
         result = self._user.update(add_to_set__recipes=recipe.id)
         if result:

@@ -39,8 +39,12 @@ class User(mongoengine.Document):
     auth = mongoengine.StringField(default="Not Implemented")
     created_date = mongoengine.DateTimeField(default=datetime.datetime.utcnow)
     last_modified_date = mongoengine.DateTimeField(default=datetime.datetime.utcnow)
-    recipe_ids = mongoengine.ListField(field=mongoengine.ReferenceField(Recipe), required=False)
-    shared_recipe_ids = mongoengine.ListField(field=mongoengine.ReferenceField(Recipe), required=False)
+    recipe_ids = mongoengine.ListField(
+        field=mongoengine.ReferenceField(Recipe), required=False
+    )
+    shared_recipe_ids = mongoengine.ListField(
+        field=mongoengine.ReferenceField(Recipe), required=False
+    )
     view = mongoengine.StringField(default="list")
     page_size = mongoengine.IntField(default=100, min_val=10)
     email_distros = mongoengine.MapField(
