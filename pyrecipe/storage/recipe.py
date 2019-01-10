@@ -20,16 +20,18 @@ class Recipe(mongoengine.Document):
     :param ingredients: (list(Ingredient)) list of ingredients, an embedded document.
     :param num_ingredients: (int) total number of discrete ingredients.
         i.e. len(ingredients)
-    :param directions: (dict) key=step number (str), value=direction (str).
-        i.e. {'1': 'bring water to a boil'}
+    :param directions: (list) ordered list of cooking directions.
+        i.e. ['boil water', 'add rice', 'reduce heat']
 
     NOT-REQUIRED params:
+    :param prep_time: (float) time to prep recipe in minutes.
+    :param cook_time: (float) time to cook recipe in minutes.
     :param tags: (list) descriptive tags for a recipe.
         i.e. ['bbq', 'vegetarian']
     :param pictures: (list) local filepath for a picture uploaded.
     :param notes: (list) list of notes about the recipe.
         i.e. "Substitute butter for ghee if you don't have ghee."
-    :param rating: (int) user rating of recipe with 0.5 increments [0.0-5.0]
+    :param rating: (float) user rating of recipe with 0.5 increments [0.0-5.0]
     :param favorite: (bool) user selected as a favorite.
     :param deleted: (bool) user selected recipe for deletion.
     :param created_date: (datetime) defaults to UTC time of when recipe is created.
@@ -38,8 +40,11 @@ class Recipe(mongoengine.Document):
 
     name = mongoengine.StringField(required=True)
     num_ingredients = mongoengine.IntField(required=True, min_val=1)
+    directions = mongoengine.ListField(field=mongoengine.StringField(), required=True)
+
+    prep_time = mongoengine.FloatField(required=False, min_val=0.0)
+    cook_time = mongoengine.FloatField(required=False, min_val=0.0)
     tags = mongoengine.ListField(required=False)
-    directions = mongoengine.MapField(field=mongoengine.StringField(), required=True)
     pictures = mongoengine.ListField(field=mongoengine.StringField(), required=False)
     notes = mongoengine.ListField(field=mongoengine.StringField(), required=False)
     rating = mongoengine.FloatField(required=False, min_val=0.0, max_val=5.0)
@@ -56,6 +61,8 @@ class Recipe(mongoengine.Document):
         "indexes": [
             "name",
             "num_ingredients",
+            "prep_time",
+            "cook_time",
             "tags",
             "favorite",
             "deleted",

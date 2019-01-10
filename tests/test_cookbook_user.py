@@ -28,13 +28,14 @@ def test_user_init(get_user):
     assert isinstance(user.created_date, datetime.datetime)
     assert isinstance(user.last_modified_date, datetime.datetime)
     assert user.recipes == []
+    assert user.shared_recipes == []
     assert user.view == 'list'
     assert user.page_size == 100
     assert user.email_distros == {}
 
 def test_create_user(get_user, mocker):
     """
-    GIVEN a need to create a user
+    GIVEN a need to create a User
     WHEN User.create_user is called with valid params
     THEN assert a User is returned
     """
@@ -67,7 +68,7 @@ def test_login_user(get_user, mocker):
     db_mock = mocker.patch.object(db, 'User')
     db_mock.objects.return_value.filter.return_value.first.return_value = get_user
 
-    user = User.login_user(name='test', email='fake')
+    user = User.login_user(email='fake')
     assert isinstance(user, User)
 
 def test_login_user_raisesExc(mocker):
@@ -80,7 +81,7 @@ def test_login_user_raisesExc(mocker):
     db_mock.objects.return_value.filter.return_value.first.return_value = None
 
     with pytest.raises(UserNotFoundError):
-        user = User.login_user(name='test', email='fake')
+        user = User.login_user(email='fake')
 
 def test_list_users(mocker):
     """
@@ -159,7 +160,7 @@ def test_refresh_user(get_user, mocker):
     """
     GIVEN a User instance
     WHEN user._refresh_user is called
-    THEN assert a user is mocked DB user document is returned
+    THEN assert a mocked DB user document is returned
     """
     db_mock = mocker.patch.object(db, 'User')
     db_mock.objects.return_value.filter.return_value.first.return_value = get_user

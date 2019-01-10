@@ -1,5 +1,5 @@
 """
-Cookbook interface to Database
+cookbook.user interface to Database
 
 Interfaces:
 * UserInterface -- Interface to be implemented by User* classes.
@@ -13,7 +13,7 @@ import datetime
 from typing import List
 
 import pyrecipe.storage as db
-from .recipe import Recipe
+from .recipe import RecipeMongo as Recipe
 from pyrecipe.errors import UserNotFoundError
 from pyrecipe.errors import UserCreationError
 
@@ -25,30 +25,6 @@ from pyrecipe.errors import UserCreationError
 
 class UserInterface(metaclass=abc.ABCMeta):
     """Class for interacting with the PyRecipe Database User Collection."""
-
-    @abc.abstractmethod
-    def update_user_data(self, data: dict) -> int:
-        """
-        Updates a user's data.
-
-        User.update_user_data(self, data)
-
-        :param data: (dict) data fields to change.
-            i.e. {"name": "Bob", "email": "newAddress@here.com"}
-        :returns: (int) total number of successfully changed fields.
-            i.e. 2 for the above example
-        """
-
-    @abc.abstractmethod
-    def add_recipe(self, recipe: Recipe) -> int:
-        """
-        Adds a recipe reference to the user's recipes.
-
-        User.add_recipe(self, recipe)
-
-        :param recipe: (Recipe) an instance of a cookbook.Recipe class.
-        :returns: (int) 1 for success, 0 if unsuccessful.
-        """
 
     @classmethod
     @abc.abstractmethod
@@ -91,6 +67,30 @@ class UserInterface(metaclass=abc.ABCMeta):
         :returns: list(User)
         """
 
+    @abc.abstractmethod
+    def update_user_data(self, data: dict) -> int:
+        """
+        Updates a user's data.
+
+        User.update_user_data(self, data)
+
+        :param data: (dict) data fields to change.
+            i.e. {"name": "Bob", "email": "newAddress@here.com"}
+        :returns: (int) total number of successfully changed fields.
+            i.e. 2 for the above example
+        """
+
+    @abc.abstractmethod
+    def add_recipe(self, recipe: Recipe) -> int:
+        """
+        Adds a recipe reference to the user's recipes.
+
+        User.add_recipe(self, recipe)
+
+        :param recipe: (Recipe) an instance of a cookbook.Recipe class.
+        :returns: (int) 1 for success, 0 if unsuccessful.
+        """
+
 
 ##############################################################################
 # Implementations
@@ -102,20 +102,23 @@ class UserMongo(UserInterface):
     Each Instance will hold a user's data from the database.
 
     PARAMS:
-    :param name: (str) lookup user by name, OR
-    :param email: (str) lookup user by email address.
+    :param db_user: (db.User) an instance from the DB's user collection.
 
-    ATTRIBUTES:
+    ATTRIBUTES/PROPERTIES:
     :attr name: (str) the user's name.
     :attr email: (str) the user's email address.
     :attr created_date: (datetime) date the user was created.
     :attr last_modified_date: (datetime) date the user was last modified.
-    :attr recipes: (list(Recipe)) list of recipe's owned by user.
+    :attr recipe: (list(Recipe)) list of recipe's owned by user.
+    :attr shared_recipe: (list(Recipe)) list of recipe's shared with user.
     :attr view: (str) default recipe view [list, grid].
     :attr page_size: (str) max number of recipes to display before paginating.
     :attr email_distros: (dict) email distros for emailing recipes to.
         i.e. {"family": "email1, email2, email3"}
     :attr _id: (str) user id in the database.
+
+    TODO:
+    modify update_user_data to use property.setters
     """
 
     def __init__(self, db_user=None):
@@ -128,7 +131,7 @@ class UserMongo(UserInterface):
         self._user = db_user
 
     @classmethod
-    def create_user(cls, name:str=None, email:str=None) -> "User":
+    def create_user(cls, name: str = None, email: str = None) -> "User":
         # see UserInterface docstring.
         if db.User.objects().filter(email=email).count():
             raise UserCreationError(email=email)
@@ -139,11 +142,11 @@ class UserMongo(UserInterface):
         return cls(_user)
 
     @classmethod
-    def login_user(cls, name:str, email:str) -> "User":
+    def login_user(cls, email: str) -> "User":
         # see UserInterface docstring.
-        _user = db.User.objects().filter(name=name, email=email).first()
+        _user = db.User.objects().filter(email=email).first()
         if not _user:
-            raise UserNotFoundError(name)
+            raise UserNotFoundError(email)
         return cls(_user)
 
     @staticmethod
@@ -151,6 +154,26 @@ class UserMongo(UserInterface):
         # see UserInterface docstring.
         users = db.User.objects()
         return list(users)
+
+    def update_user_data(self, data: dict) -> int:
+        # see UserInterface docstring.
+        count = 0
+        for key, val in data.items():
+            if key in ("name", "email", "view", "page_size", "email_distros"):
+                setattr(self._user, key, val)
+                count += 1
+        self._user.save()
+        self._update_last_mod_date()
+        self._user = self._refresh_user()
+        return count
+
+    def add_recipe(self, recipe: Recipe) -> int:
+        # see UserInterface docstring.
+        result = self._user.update(add_to_set__recipes=recipe.id)
+        if result:
+            self._update_last_mod_date()
+            self._user = self._refresh_user()
+        return result
 
     @property
     def _id(self):
@@ -174,7 +197,11 @@ class UserMongo(UserInterface):
 
     @property
     def recipes(self):
-        return self._user.recipes
+        return self._user.recipe_ids
+
+    @property
+    def shared_recipes(self):
+        return self._user.shared_recipe_ids
 
     @property
     def view(self):
@@ -187,26 +214,6 @@ class UserMongo(UserInterface):
     @property
     def email_distros(self):
         return self._user.email_distros
-
-    def update_user_data(self, data:dict) -> int:
-        # see UserInterface docstring.
-        count = 0
-        for key, val in data.items():
-            if key in ("name", "email", "view", "page_size", "email_distros"):
-                setattr(self._user, key, val)
-                count += 1
-        self._user.save()
-        self._update_last_mod_date()
-        self._user = self._refresh_user()
-        return count
-
-    def add_recipe(self, recipe:Recipe) -> int:
-        # see UserInterface docstring.
-        result = self._user.update(add_to_set__recipes=recipe.id)
-        if result:
-            self._update_last_mod_date()
-            self._user = self._refresh_user()
-        return result
 
     def _refresh_user(self) -> db.User:
         """
