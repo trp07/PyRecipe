@@ -22,7 +22,6 @@ def mongodb(request):
     db.close()
 
 
-
 ##############################################################################
 # test_cookbook_*.py fixtures
 ##############################################################################
@@ -64,13 +63,14 @@ class Fake_Ingredient:
 class Fake_Recipe:
     """Fake storage.Recipe for testing."""
     def __init__(self):
-        self._id = 123
+        self.id = "123"
         self.name = "Test_Rec"
         self.ingredients = [Fake_Ingredient(name='Ingr1'), Fake_Ingredient(name='Igr2')]
         self.num_ingredients = 2
         self.directions = ['cook']
         self.prep_time = 100.0
         self.cook_time = 110.0
+        self.servings = 6
         self.tags = ['tag1', 'tag2']
         self.pictures = ['filepath1']
         self.notes = ['test note']

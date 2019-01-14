@@ -116,13 +116,15 @@ class RecipeMongo(RecipeInterface):
     :param db_recipe: (db.User) an instance from the DB's recipe collection.
 
     ATTRIBUTES/PROPERTIES:
+    :attr _id: (str) DB _id of the recipe document.
     :attr name: (str) name of the recipe.
     :attr ingredients: (list) list of ingredients.
     :attr num_ingredients: (int) total number of discrete ingredients.
     :attr directions: (list) ordered list of cooking instructions.
     :attr prep_time: (float) total # minutes to prep recipe.
     :attr cook_time: (float) total # minutes to cook recipe.
-    :attr tags: (list) list of tags given
+    :attr servings: (int) number of servings in the recipe.
+    :attr tags: (list) list of tags given.
     :attr pictures: (list) list of filepaths for pictures in recipe.
     :attr notes: (list) list of strings for recipe notes.
     :attr rating: (int) rating of recipe, if given, [0.0 - 5.0] in .5 increments.
@@ -237,7 +239,7 @@ class RecipeMongo(RecipeInterface):
 
     @property
     def _id(self) -> str:
-        return self._recipe._id
+        return str(self._recipe.id)
 
     @property
     def name(self) -> str:
@@ -258,6 +260,10 @@ class RecipeMongo(RecipeInterface):
     @property
     def prep_time(self) -> float:
         return self._recipe.prep_time
+
+    @property
+    def servings(self) -> int:
+        return self._recipe.servings
 
     @property
     def cook_time(self) -> float:

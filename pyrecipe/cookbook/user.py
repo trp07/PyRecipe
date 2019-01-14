@@ -105,6 +105,7 @@ class UserMongo(UserInterface):
     :param db_user: (db.User) an instance from the DB's user collection.
 
     ATTRIBUTES/PROPERTIES:
+    :attr _id: (str) DB _id of the user document.
     :attr name: (str) the user's name.
     :attr email: (str) the user's email address.
     :attr created_date: (datetime) date the user was created.
