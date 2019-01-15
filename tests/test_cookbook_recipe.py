@@ -21,13 +21,14 @@ def test_recipe_init(get_recipe):
     THEN assert it is correctly created
     """
     recipe = Recipe(get_recipe)
-    assert recipe._id == 123
+    assert recipe._id == "123"
     assert recipe.name == "Test_Rec"
     assert isinstance(recipe.ingredients, collections.abc.MutableSequence)
     assert recipe.num_ingredients == 2
     assert recipe.directions == ['cook']
     assert recipe.prep_time == 100.0
     assert recipe.cook_time == 110.0
+    assert recipe.servings == 6
     assert recipe.tags == ['tag1', 'tag2']
     assert recipe.pictures == ['filepath1']
     assert recipe.notes == ['test note']
@@ -108,6 +109,9 @@ def test_copy_recipe(get_recipe, mocker):
     assert recipe.name == 'unique name_COPY'
     assert recipe.ingredients == rec_to_copy.ingredients
     assert recipe.directions == rec_to_copy.directions
+    assert recipe.prep_time == rec_to_copy.prep_time
+    assert recipe.cook_time == rec_to_copy.cook_time
+    assert recipe.servings == rec_to_copy.servings
     assert recipe.tags == rec_to_copy.tags
     assert recipe.pictures == rec_to_copy.pictures
     assert recipe.notes == rec_to_copy.notes

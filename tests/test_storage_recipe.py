@@ -37,6 +37,7 @@ def test_recipe_creation_defaults(get_ingredients, mongodb):
     r.directions = ['cook']
     r.prep_time = 100
     r.cook_time = 120
+    r.servings = 6
     r.save()
 
     assert r.name == 'Yummy'
@@ -44,6 +45,7 @@ def test_recipe_creation_defaults(get_ingredients, mongodb):
     assert r.num_ingredients == 1
     assert r.prep_time == 100
     assert r.cook_time == 120
+    assert r.servings == 6
     assert r.tags == []
     assert r.directions == ['cook']
     assert r.pictures == []
