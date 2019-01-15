@@ -1,7 +1,7 @@
 # Testing Database
 ## mongodb
 - The [mongodb/](https://github.com/trp07/PyRecipe/tree/master/tests/testing_db/mongodb) directory contains **user** and **recipe** collections for testing.
-- Use the [mongorestore cli](https://docs.mongodb.com/manual/reference/program/mongorestore/#examples) that comes with installing m mongodb to load the database information.
+- Use the [mongorestore cli](https://docs.mongodb.com/manual/reference/program/mongorestore/#examples) that comes with installing mongodb to load the database information.
 
 ### Test DB Entries
 - The test database will include three **users**, each with three distinct **recipes**.
