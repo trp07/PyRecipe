@@ -3,6 +3,7 @@ This module is designed to allow exporting and importing of user recipes.
 
 ## Functions
 - **export_to_pdf**: Export a given list of user recipes to a pdf document.
+    - **returns**: tuple(number of recipes exported, file path of pdf document)
 - **import_from_pdf**: (NOT YET IMPLEMENTED) Import a set of recipes from a pdf document to a user's account.
 
 ## Usage
@@ -22,5 +23,5 @@ This module is designed to allow exporting and importing of user recipes.
 >>> recipes = recipes = [Recipe(recipe) for recipe in user.recipes]
 
 >>> export_to_pdf(recipes[0:2])
-# file written: PyRecipe_YYY-MM-DD_HH:MM.pdf
+(2, '/file/path/of/exported/file.pdf')
 ```
