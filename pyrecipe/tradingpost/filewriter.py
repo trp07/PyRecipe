@@ -1,6 +1,7 @@
 """PDF filewriter for selected recipes to export."""
 
 import datetime
+import pathlib
 from typing import List
 
 from reportlab.platypus import SimpleDocTemplate, Paragraph, PageBreak, Spacer, Image
@@ -28,15 +29,26 @@ class FileWriter:
 
     TODO:
     * Add bookmarks
-    * figure a better directory to save the pdf file to that's consistent
-    * have create_doc return the absolute path of the file created
     """
+
+    PARENT_DIR = pathlib.Path(__file__).absolute().parent
+    EXPORT_DIR = PARENT_DIR.joinpath("exports/")
+
+    if not EXPORT_DIR.exists():
+        EXPORT_DIR.mkdir()
 
     def __init__(self, filename=None):
         self.filename = filename or (
-            "PyRecipe_"
-            + datetime.datetime.strftime(datetime.datetime.utcnow(), "%Y-%m-%d_%H:%M")
+            str(
+                pathlib.Path(FileWriter.EXPORT_DIR).joinpath(
+                    "PyRecipe_"
+                    + datetime.datetime.strftime(
+                        datetime.datetime.utcnow(), "%Y-%m-%d_%H:%M:%Sutc"
+                    )
+                )
+            )
         )
+
         self.doc = SimpleDocTemplate(self.filename, pagesize=letter)
         self.styles = getSampleStyleSheet()
 
@@ -156,13 +168,14 @@ class FileWriter:
         return Paragraph(text, style=self.styles[style])
 
 
-def export_to_pdf(recipes: List["Recipe"]) -> int:
+def export_to_pdf(recipes: List["Recipe"]) -> tuple:
     """
     Function that will delegate to the FileWriter class and build the
     pdf from the given recipes.
 
     :param recipes: (List['Recipe']) a list of one or more pyrecipe.cookbook.Recipe instances.
-    :returns: (int) the number of recipes successfully written to the file.
+    :returns: tuple(int, str) the number of recipes successfully written to the file, as well
+        as the absolute file path of the file just written.
     """
     fw = FileWriter()
-    return fw.create_doc(recipes)
+    return (fw.create_doc(recipes), fw.filename)

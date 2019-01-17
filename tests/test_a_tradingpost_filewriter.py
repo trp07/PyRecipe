@@ -55,6 +55,6 @@ def test_export_to_pdf(mocker):
     recipes = ['r1', 'r2']
     create_mock = mocker.patch.object(FileWriter, 'create_doc')
 
-    export_to_pdf(recipes)
+    result = export_to_pdf(recipes)
     assert create_mock.call_count == 1
 
