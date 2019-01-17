@@ -3,12 +3,13 @@
 import datetime
 from typing import List
 
-from reportlab.platypus import SimpleDocTemplate, Paragraph, PageBreak, Spacer
+from reportlab.platypus import SimpleDocTemplate, Paragraph, PageBreak, Spacer, Image
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
 
 from pyrecipe import __version__ as VERSION
+from pyrecipe.templates.images import PDF_LOGO_PATH
 
 
 class FileWriter:
@@ -16,7 +17,7 @@ class FileWriter:
     Class that will export a list of given recipes to a PDF for download.
     Each recipe will be separated by a pagebreak.
     Bookmarks will be added in the PDF.
-    The Header will indicate PyRecipe version.
+    The Header/Footer will indicate PyRecipe version.
 
     PARAMS:
     :param filename: (str) optional arg, defaults to "PyRecipe_" + datetime string.
@@ -24,6 +25,11 @@ class FileWriter:
     USES:
     * FileWriter().create_doc(recipes:List['Recipe']), where recipes is a list of
       one or more Recipe instances.
+
+    TODO:
+    * Add bookmarks
+    * figure a better directory to save the pdf file to that's consistent
+    * have create_doc return the absolute path of the file created
     """
 
     def __init__(self, filename=None):
@@ -41,9 +47,6 @@ class FileWriter:
 
         :param recipes: (List['Recipe']) a list of one or more pyrecipe.cookbook.Recipe instances.
         :returns: (int) the number of recipes successfully written to the file.
-
-        TODO:
-        * Add Logo in _add_header... but first, create a logo!
         """
         recipes_written = 0
         flowables = []
@@ -100,14 +103,14 @@ class FileWriter:
         """
         width, height = doc.pagesize
 
-        # TODO Add PyRecipe logo in Upper Left
+        img = Image(PDF_LOGO_PATH, width=76.2, height=20)
+        img.wrapOn(canvas, width, height)
+        img.drawOn(canvas, 0.5 * inch, 0.5 * inch)
 
-        lower_left = "<font size=8 color=#777777>PyRecipe, version: {}</font>".format(
-            VERSION
-        )
+        lower_left = "<font size=8 color=#777777>version: {}</font>".format(VERSION)
         p = Paragraph(lower_left, self.styles["Normal"])
         p.wrapOn(canvas, width, height)
-        p.drawOn(canvas, 0.5 * inch, 0.5 * inch)
+        p.drawOn(canvas, 1.75 * inch, 0.5 * inch)
 
         lower_right = "<font size=8 color=#777777>{}</font>".format(doc.page)
         p = Paragraph(lower_right, self.styles["Normal"])
