@@ -6,9 +6,9 @@ import pathlib
 import mongoengine
 import pytest
 
-from pyrecipe.tradingpost.filewriter import FileWriter
-from pyrecipe.tradingpost.filewriter import export_to_pdf
-from pyrecipe.tradingpost.filewriter import SimpleDocTemplate, getSampleStyleSheet
+from pyrecipe.tradingpost.export_doc import FileWriter
+from pyrecipe.tradingpost.export_doc import export_to_pdf
+from pyrecipe.tradingpost.export_doc import SimpleDocTemplate, getSampleStyleSheet
 from pyrecipe.cookbook import User, Recipe
 
 
