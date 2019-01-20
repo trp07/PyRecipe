@@ -43,8 +43,8 @@ class FileWriter:
                 pathlib.Path(FileWriter.EXPORT_DIR).joinpath(
                     "PyRecipe_"
                     + datetime.datetime.strftime(
-                        datetime.datetime.utcnow(), "%Y-%m-%d_%H:%M:%Sutc"
-                    )
+                        datetime.datetime.utcnow(), "%Y-%m-%d_%H:%M:%Sutc")
+                    + ".pdf"
                 )
             )
         )
