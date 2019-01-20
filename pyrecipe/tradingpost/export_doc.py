@@ -4,6 +4,7 @@ import datetime
 import pathlib
 from typing import List
 
+import pikepdf
 from reportlab.platypus import SimpleDocTemplate, Paragraph, PageBreak, Spacer, Image
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet
@@ -43,7 +44,8 @@ class FileWriter:
                 pathlib.Path(FileWriter.EXPORT_DIR).joinpath(
                     "PyRecipe_"
                     + datetime.datetime.strftime(
-                        datetime.datetime.utcnow(), "%Y-%m-%d_%H:%M:%Sutc")
+                        datetime.datetime.utcnow(), "%Y-%m-%d_%H:%M:%Sutc"
+                    )
                     + ".pdf"
                 )
             )
@@ -168,14 +170,85 @@ class FileWriter:
         return Paragraph(text, style=self.styles[style])
 
 
-def export_to_pdf(recipes: List["Recipe"]) -> tuple:
+def _write_metadata(
+    filename: str, recipes: List["Recipe"], verbose: bool = False
+) -> int:
+    """
+    Function that will write the recipe information into the PDF metadata.
+    The metadata will be used to extract information from a PDF when importing into
+    the PyRecipe system.
+
+    :param filename: (str) the filename of the pdf to write to.
+    :param recipes: (List['Recipe']) a list of one or more pyrecipe.cookbook.Recipe instances.
+    :param verbose: (bool) print verbose output.
+    :returns: (int) the number of recipes written to metadata.
+    """
+    num_meta = 0
+
+    pdf = pikepdf.open(filename)
+
+    with pdf.open_metadata() as meta:
+        meta["dc:pyrecipe_version"] = VERSION
+        meta["dc:num_recipes"] = str(len(recipes))
+
+        for r_num, recipe in enumerate(recipes, start=1):
+            r_base = "dc:r" + str(r_num) + "."
+
+            meta[r_base + "name"] = recipe.name
+            meta[r_base + "num_ingredients"] = str(recipe.num_ingredients)
+            meta[r_base + "directions"] = recipe.directions
+            meta[r_base + "prep_time"] = str(recipe.prep_time)
+            meta[r_base + "cook_time"] = str(recipe.cook_time)
+            meta[r_base + "servings"] = str(recipe.servings)
+            meta[r_base + "tags"] = recipe.tags
+            meta[r_base + "notes"] = recipe.notes
+            meta[r_base + "rating"] = str(recipe.rating)
+            meta[r_base + "favorite"] = str(recipe.favorite)
+            meta[r_base + "deleted"] = str(recipe.deleted)
+
+            if verbose:
+                print("+ Writting metadata for: <{}> {}".format(r_base, recipe.name))
+
+            for i_num, ingredient in enumerate(recipe.ingredients, start=1):
+                i_base = r_base + "i" + str(i_num) + "."
+
+                meta[i_base + "name"] = ingredient.name
+                meta[i_base + "quantity"] = ingredient.quantity
+                meta[i_base + "unit"] = ingredient.unit
+                meta[i_base + "preparation"] = ingredient.preparation
+
+                if verbose:
+                    print("   <{}> {}".format(i_base, ingredient.name))
+
+            num_meta += 1
+
+    pdf.save(pdf.filename)
+    if verbose:
+        print("+ Saved metadata to: {}".format(pdf.filename))
+
+    return num_meta
+
+
+def export_to_pdf(recipes: List["Recipe"], filename: str = None, verbose: bool = False) -> tuple:
     """
     Function that will delegate to the FileWriter class and build the
     pdf from the given recipes.
 
+    :param filename: (str) filename of file to write.  Defaults to None, which will allow the
+        FileWriter to automatically handle filename creation.
     :param recipes: (List['Recipe']) a list of one or more pyrecipe.cookbook.Recipe instances.
-    :returns: tuple(int, str) the number of recipes successfully written to the file, as well
-        as the absolute file path of the file just written.
+    :param verbose: (bool) print verbose output.
+    :returns: tuple(int, int, str) the number of recipes successfully written to the pdf, the
+        number of recipes written to metadata, and the absolute file path of the file just written.
     """
-    fw = FileWriter()
-    return (fw.create_doc(recipes), fw.filename)
+    fw = FileWriter(filename)
+
+    num_written = fw.create_doc(recipes)
+    if verbose:
+        print("+ recipes written: {}".format(num_written))
+        print("+ file created: {}".format(fw.filename))
+        print("... writing metadata...")
+
+    num_meta = _write_metadata(fw.filename, recipes, verbose)
+
+    return (num_written, num_meta, fw.filename)
