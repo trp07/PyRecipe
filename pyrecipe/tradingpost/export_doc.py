@@ -1,4 +1,22 @@
-"""PDF filewriter for selected recipes to export."""
+"""
+PDF file writer for selected recipes to export.
+
+Noteable Classes/Functions:
+1.  FileWriter - class that uses the reportlab third-party package to contruct
+    PDFs.  This will create the main PDF content.
+2.  _write_metadata - function that uses the pikepdf third-party package to
+    write the metadata into the PDF created by the FileWriter class.  The
+    metadata will be used to write in all the recipe data, so that a file
+    previously exported by PyRecipe can be imported to another instance of the
+    PyRecipe system (i.e. sharing with family/friends), writing all the shared
+    recipes into the local database.
+
+Usage:
+1.  export_to_pdf - an all-encompassing function that will both create the
+    PDF, using the FileWriter, as well as write the metadata, using the
+    _write_metadata function.  Unless specified by the user/system admin, files
+    will be writting to the source directory: pyrecipe/tradingpost/exports/
+"""
 
 import datetime
 import pathlib
@@ -202,9 +220,6 @@ def _write_metadata(
             meta[r_base + "servings"] = str(recipe.servings)
             meta[r_base + "tags"] = recipe.tags
             meta[r_base + "notes"] = recipe.notes
-            meta[r_base + "rating"] = str(recipe.rating)
-            meta[r_base + "favorite"] = str(recipe.favorite)
-            meta[r_base + "deleted"] = str(recipe.deleted)
 
             if verbose:
                 print("+ Writting metadata for: <{}> {}".format(r_base, recipe.name))
@@ -229,7 +244,9 @@ def _write_metadata(
     return num_meta
 
 
-def export_to_pdf(recipes: List["Recipe"], filename: str = None, verbose: bool = False) -> tuple:
+def export_to_pdf(
+    recipes: List["Recipe"], filename: str = None, verbose: bool = False
+) -> tuple:
     """
     Function that will delegate to the FileWriter class and build the
     pdf from the given recipes.

@@ -54,10 +54,11 @@ class Fake_User:
 
 class Fake_Ingredient:
     """Fake storage.Ingredient for testing."""
-    def __init__(self, name='Test_Ingr', quantity='1', unit='tsp'):
+    def __init__(self, name='Test_Ingr', quantity='1', unit='tsp', preparation=''):
         self.name = name
         self.quantity = quantity
         self.unit = unit
+        self.preparation = preparation
 
 
 class Fake_Recipe:

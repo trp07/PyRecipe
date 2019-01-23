@@ -1,4 +1,4 @@
-"""Tests for the pyrecipe.tradingpost.filewriter.py module."""
+"""Tests for the pyrecipe.tradingpost.export_doc.py module."""
 
 import datetime
 import pathlib
