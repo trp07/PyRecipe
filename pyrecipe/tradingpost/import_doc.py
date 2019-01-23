@@ -3,10 +3,16 @@ PDF file reader for selected recipes to import.
 
 
 Noteable Classes/Functions:
-1.
+1.  _import_recipe - fucntion that iterates through the required fields
+    in a storage.Recipe and storage.Ingredient class and assigns to those
+    attributes.  Saves the recipe into the MongoDB collection and returns
+    the recipe id.
 
 Usage:
-1.  import_from_pdf -
+1.  import_from_pdf - The main interface for this module.  Uses the
+    pikepdf third-party module to retrieve the PDF file metadata to read
+    any recipes that are encoded there.  Returns a list of Recipe.id's for
+    all recipes imported.
 """
 
 import datetime
