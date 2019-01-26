@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/trp07/PyRecipe.svg?branch=master)](https://travis-ci.org/trp07/PyRecipe)
+[![Coverage Status](https://coveralls.io/repos/github/trp07/PyRecipe/badge.svg?branch=master)](https://coveralls.io/github/trp07/PyRecipe?branch=master)
 # PyRecipe
 A Cookbook Designed with Python!
 
