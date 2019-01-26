@@ -19,7 +19,7 @@ This module is designed to allow exporting and importing of user recipes.
 
 >>> mongo_setup.global_init(db_name="pyrecipe_tester")  # set db_name="pyrecipe" for actual use
                                                         # "pyrecipe_tester" db found in sourcecode
-                                                        # "tests/testing_db/mongodb/" directory
+                                                        # "tests/testing_data/mongodb/" directory
 
 >>> user = User.login_user(email='blackknight@mail.com')
 >>> recipes = recipes = [Recipe(recipe) for recipe in user.recipes]
