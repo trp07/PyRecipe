@@ -2,8 +2,26 @@
 name = "pyrecipe"
 version = "0.0.0"
 description = "A Cookbook made with Python"
-authors = ["Your Name <you@example.com>"]
+authors = ["Tim Phillips <phillipstr@gmail.com>"]
 license = "GPL-3.0+"
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Framework :: Flask",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Database",
+    "Topic :: Database :: Front-Ends",
+    "Topic :: Education :: Testing",
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+    "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
+    "Topic :: Software Development :: User Interfaces",
+]
 
 [tool.poetry.dependencies]
 python = "^3.6"
