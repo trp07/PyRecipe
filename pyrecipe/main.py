@@ -15,6 +15,8 @@ BANNER = r"""
 
 version: {}
 
+_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^
+
 """.format(VERSION)
 
 
@@ -22,4 +24,4 @@ if __name__ == '__main__':
 
     print(BANNER, flush=True)
 
-    mongo_setup.global_init()
+    #mongo_setup.global_init()
