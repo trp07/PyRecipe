@@ -11,6 +11,14 @@ class UserNotFoundError(Exception):
         super().__init__(UserNotFoundError, self.error)
 
 
+class UserLoginError(ValueError):
+    """User Authentication Error."""
+
+    def __init__(self, message):
+        self.error = message
+        super().__init__(UserLoginError, self.error)
+
+
 class UserCreationError(ValueError):
     """
     Cannot create user because:

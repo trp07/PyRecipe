@@ -10,15 +10,15 @@ import mongoengine
 # test_storage_*.py fixtures
 ##############################################################################
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope='session')
 def mongodb(request):
     """
-    Create and yield a test MongoDB collection for each test.  Destroy the
-    collection upon test completion.
+    Initialize the mongodb pyrecipe_tester collection for required tests.
+    This will have session scope to use the same DB connection for all tests
+    that require the DB.
     """
-    db = mongoengine.connect(db='test_db', alias='core', host='mongodb://localhost')
+    db = mongoengine.connect(db='pyrecipe_tester', alias='core', host='mongodb://localhost')
     yield db
-    db.drop_database('test_db')
     db.close()
 
 
