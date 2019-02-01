@@ -5,6 +5,7 @@ ODM for MongoDB
 """
 
 import datetime
+from typing import List
 
 import mongoengine
 
@@ -73,3 +74,97 @@ class Recipe(mongoengine.Document):
             "ingredients.name",
         ],
     }
+
+    def __repr__(self):
+        """Repr of instance for quick debugging purposes."""
+        return "<Recipe: {}>".format(self.name)
+
+    @staticmethod
+    def find_recipes(search_string: str) -> List["Recipe"]:
+        """
+        Returns a match of all recipes for the search_string using a case insensitive
+        regex match in the Recipe.name field
+
+        recipes = Recipe.find_recipes()
+
+        :param search_string: (str) string to search
+        :returns: List["Recipe"] a list of all recipes that match
+        """
+        recipes = Recipe.objects().filter(name__icontains=search_string)
+        return list(recipes)
+
+    def copy_recipe(self) -> "Recipe":
+        """
+        Given a Recipe instance, produce a copy of it with a modified name
+
+        new_recipe = recipe.copy_recipe()
+
+        :param recipe: (Recipe) the Recipe instance to copy
+        :returns: a Recipe instance with a modified name
+            i.e. recipe.name = 'lasagna_COPY'
+        """
+        recipe = Recipe()
+        recipe.name = self.name + "_COPY"
+        recipe.num_ingredients = self.num_ingredients
+        recipe.ingredients = self.ingredients
+        recipe.directions = self.directions
+        recipe.prep_time = self.prep_time
+        recipe.cook_time = self.cook_time
+        recipe.servings = self.servings
+        recipe.tags = self.tags
+        recipe.pictures = self.pictures
+        recipe.notes = self.notes
+        recipe.rating = self.rating
+        recipe.save()
+        return recipe
+
+    def add_tag(self, tag: str) -> int:
+        """
+        Given a recipe instance, add a new tag
+
+        recipe.add_tag("tag")
+
+        :returns: (int) 1 for success, 0 for failure
+        """
+        result = self.update(add_to_set__tags=tag.lower())
+        self.reload()
+        return result
+
+    def delete_tag(self, tag: str) -> int:
+        """
+        Given a recipe instance, delete a new tag
+
+        recipe.delete_tag("tag")
+
+        :returns: (int) 1 for success, 0 for failure
+        """
+        result = self.update(pull__tags=tag.lower())
+        self.reload()
+        return result
+
+
+    def _update_last_mod_date(self) -> int:
+        """
+        Updates the recipe's "last_updated_date" attribute in the DB.
+
+        recipe._update_last_mod_date()
+
+        :returns: (int) 1 for success, 0 if unsuccessful
+        """
+        result = self.update(last_modified_date=datetime.datetime.utcnow())
+        self.reload()
+        return result
+
+    def save(self) -> int:
+        """
+        Save the recipe's current state in the DB.  First refreshes the last
+        modified date if it's already a DB record, before delegating to the
+        built-in/inherited save() method.
+
+        recipe.save()
+
+        :returns: (int) 1 for success, 0 if unsuccessful
+        """
+        if self.id:
+            self._update_last_mod_date()
+        return super().save()

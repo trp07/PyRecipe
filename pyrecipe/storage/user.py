@@ -57,14 +57,12 @@ class User(mongoengine.Document):
 
     meta = {"db_alias": "core", "collection": "users", "indexes": ["name", "email"]}
 
-
     def __repr__(self):
         """Repr of instance for quick debugging purposes."""
         return "<User: {}:{}>".format(self.username, self.email)
 
-
     @staticmethod
-    def login(email:str, password_hash:str) -> "User":
+    def login(email: str, password_hash: str) -> "User":
         """
         Logs in and returns the user.
 
@@ -79,9 +77,8 @@ class User(mongoengine.Document):
         if not user:
             raise UserNotFoundError(email)
         if password_hash != user.password_hash:
-            raise UserLoginError('incorrect password')
+            raise UserLoginError("incorrect password")
         return user
-
 
     @staticmethod
     def list_users() -> List["User"]:
@@ -93,7 +90,6 @@ class User(mongoengine.Document):
         :returns: list(User)
         """
         return list(User.objects())
-
 
     def add_recipe(self, recipe: Recipe) -> int:
         """
@@ -107,8 +103,8 @@ class User(mongoengine.Document):
         result = self.update(add_to_set__recipe_ids=recipe.id)
         if result:
             self._update_last_mod_date()
+        self.reload()
         return result
-
 
     def _update_last_mod_date(self) -> int:
         """
@@ -118,8 +114,9 @@ class User(mongoengine.Document):
 
         :returns: (int) 1 for success, 0 if unsuccessful
         """
-        return self.update(last_modified_date=datetime.datetime.utcnow())
-
+        result = self.update(last_modified_date=datetime.datetime.utcnow())
+        self.reload()
+        return result
 
     def save(self) -> int:
         """

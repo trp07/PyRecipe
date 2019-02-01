@@ -1,16 +1,19 @@
-"""Tests for the pyrecipe.tradingpost.export_doc.py module."""
+"""
+Tests for the pyrecipe.tradingpost.export_doc.py module.
+
+"mongodb" is a fixture defined in conftest.py
+"""
 
 import datetime
 import pathlib
 
-import mongoengine
 import pytest
 
 import pyrecipe.tradingpost.export_doc
 from pyrecipe.tradingpost.export_doc import FileWriter
 from pyrecipe.tradingpost.export_doc import export_to_pdf
 from pyrecipe.tradingpost.export_doc import SimpleDocTemplate, getSampleStyleSheet
-from pyrecipe.cookbook import User, Recipe
+from pyrecipe.storage import User, Recipe
 
 
 def test_fw_init_mocked(mocker):
@@ -40,17 +43,16 @@ def test_fw_init():
     assert isinstance(fw.styles, getSampleStyleSheet().__class__)
 
 
-def test_fw_create_doc(tmpdir):
+def test_fw_create_doc(mongodb, tmpdir):
     """
     GIVEN a db with users and recipes
     WHEN a user's selected recipes are selected for export
     THEN assert FileWriter writes a pdf file
     """
-    db = mongoengine.connect(db='pyrecipe_tester', alias='core', host='mongodb://localhost')
+    db = mongodb
 
-    user = User.login_user(email="blackknight@mail.com")
-    recipes = [Recipe(r) for r in user.recipes]
-    db.close()
+    user = User.login(email="blackknight@mail.com", password_hash="Not Implemented")
+    recipes = user.recipe_ids
 
     testdir = pathlib.Path(tmpdir).absolute()
     testfile = testdir.joinpath('pyrecipe_test1.pdf')
@@ -78,17 +80,16 @@ def test_export_to_pdf_mocked(mocker):
     assert meta_mock.call_count == 1
 
 
-def test_export_to_pdf(tmpdir):
+def test_export_to_pdf(mongodb, tmpdir):
     """
     GIVEN a call to export_to_pdf
     WHEN supplied with the correct params
     THEN assert the file is written and the correct return values returned
     """
-    db = mongoengine.connect(db='pyrecipe_tester', alias='core', host='mongodb://localhost')
+    db = mongodb
 
-    user = User.login_user(email="blackknight@mail.com")
-    recipes = [Recipe(r) for r in user.recipes]
-    db.close()
+    user = User.login(email="blackknight@mail.com", password_hash="Not Implemented")
+    recipes = user.recipe_ids
 
     testdir = pathlib.Path(tmpdir).absolute()
     testfile = testdir.joinpath('pyrecipe_test1.pdf')

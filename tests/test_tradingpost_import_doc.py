@@ -1,7 +1,9 @@
 """
 Tests for the pyrecipe.tradingpost.import_doc.py module.
 
-"get_recipe" is a fixture defined in conftest.py
+Fixtures found in conftest.py
+1. recipe_setup
+2. get_ingredients
 """
 
 import pathlib
@@ -12,6 +14,7 @@ import pikepdf
 import pyrecipe.tradingpost.import_doc
 from pyrecipe.tradingpost.import_doc import import_from_pdf
 from pyrecipe.tradingpost.import_doc import _import_recipe
+from pyrecipe.storage import Recipe
 
 
 
@@ -73,21 +76,28 @@ def test_import_from_pdf_verbose(mocker, capsys):
     assert imp_rec_mock.call_count == 3
 
 
-def test_import_recipes_verbose(get_recipe, mocker, capsys):
+def test_import_recipes_verbose(recipe_setup, get_ingredients, mocker, capsys):
     """
     GIVEN a recipe in a pdf metadata
     WHEN import_recipe is called with verbose=True
     THEN assert the assert the correct sequence is called, the correct output
         prints, and the functions returns the correct value
     """
+    recipe = recipe_setup
+    recipe.name = 'test'
+    recipe.ingredients = [get_ingredients]
+    recipe.num_ingredients = 1
+    recipe.directions = ['do a test!']
+    recipe.save()
+
     rec_mock = mocker.patch.object(pyrecipe.tradingpost.import_doc, "Recipe")
-    rec_mock.return_value = get_recipe
+    rec_mock.return_value = recipe
 
     metadata = pikepdf.open(TESTFILE).open_metadata()
     result = _import_recipe(metadata, 1, verbose=True)
     out, err = capsys.readouterr()
 
-    assert result == "123"
+    assert result == recipe.id
     assert "+ Adding Recipe 1: hearty spam breakfast skillet" in out
     assert "<i: spam classic>" in out
     assert "<i: bell pepper>" in out

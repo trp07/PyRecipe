@@ -103,7 +103,7 @@ class FileWriter:
 
             flowables.append(self._add_section("Directions", "Heading2"))
             for direction in recipe.directions:
-                flowables.append(self._add_sequence(recipe._id, direction))
+                flowables.append(self._add_sequence(recipe.id, direction))
                 flowables.append(Spacer(0, 5))
 
             if recipe.notes:

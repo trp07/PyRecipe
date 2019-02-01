@@ -1,7 +1,9 @@
 """
 Tests for the pyrecipe.storage.user.py module.
 
-"mongodb" is a fixture defined in conftest.py
+Fixtures found in conftest.py
+1. mongodb
+2. user_setup
 """
 
 import datetime
@@ -9,20 +11,9 @@ import datetime
 import pytest
 
 from pyrecipe.storage.user import User
+from pyrecipe.storage import Recipe
 from pyrecipe.errors import UserNotFoundError
 from pyrecipe.errors import UserLoginError
-
-
-@pytest.fixture()
-def user_setup(mongodb):
-    """
-    Fixture to get the DB up and return a user.  Delete
-    the user upon test completion.
-    """
-    db = mongodb
-    user = User()
-    yield user
-    user.delete()
 
 
 def test_user_creation_defaults(user_setup):
@@ -130,7 +121,7 @@ def test_user_list_users(mongodb):
     assert len(users) == 3
 
 
-def test_add_recipe(mongodb, mocker):
+def test_user_add_recipe(mongodb, mocker):
     """
     GIVEN a mongodb instance
     WHEN user.add_recipe is called
@@ -140,19 +131,21 @@ def test_add_recipe(mongodb, mocker):
     date_mock = mocker.patch.object(User, '_update_last_mod_date')
 
     db = mongodb
-    users = User.list_users()
+    user = User.objects().filter().first()
+    recipe = list(Recipe.objects())[-1]
 
-    num_recipes = len(users[0].recipe_ids)
+    num_recipes = len(user.recipe_ids)
 
-    result = users[0].add_recipe(users[1].recipe_ids[0])
+    result = user.add_recipe(recipe)
     assert result == 1
-    #assert len(users[0].recipe_ids) == num_recipes + 1
+    assert len(user.recipe_ids) == num_recipes + 1
     assert date_mock.call_count == 1
-    del users[0].recipe_ids[-1]
-    users[0].save()
+    user.recipe_ids.pop()
+    assert len(user.recipe_ids) == num_recipes
+    user.save()
 
 
-def test_update_last_mod_date(mongodb):
+def test_user_update_last_mod_date(mongodb):
     """
     GIVEN a mongodb instance
     WHEN user._update_last_mod_date is called
@@ -166,7 +159,7 @@ def test_update_last_mod_date(mongodb):
     assert isinstance(user.last_modified_date, datetime.datetime)
 
 
-def test_save_goodID(mongodb, mocker):
+def test_user_save_goodID(mongodb, mocker):
     """
     GIVEN a mongodb instance
     WHEN user.save() is called on an already existing record
@@ -178,7 +171,7 @@ def test_save_goodID(mongodb, mocker):
     assert date_mock.call_count == 1
 
 
-def test_save_noID(mongodb, mocker):
+def test_user_save_noID(mongodb, mocker):
     """
     GIVEN a mongodb instance
     WHEN user.save() is called on an newly created record
