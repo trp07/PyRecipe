@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Hello, {{ current_user.username }}!</h1>
+
+{% if current_user.recipes_ids %}
+    {% for recipe in current_user.recipes_ids %}
+    <div><li>{{recipe}}</li></div>
+    {% endfor %}
+{% endif %}
+
+{% endblock %}
+

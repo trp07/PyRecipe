@@ -51,7 +51,7 @@ def test_fw_create_doc(mongodb, tmpdir):
     """
     db = mongodb
 
-    user = User.login(email="blackknight@mail.com", password_hash="Not Implemented")
+    user = User.objects().filter(email='blackknight@mail.com').first()
     recipes = user.recipe_ids
 
     testdir = pathlib.Path(tmpdir).absolute()
@@ -88,7 +88,7 @@ def test_export_to_pdf(mongodb, tmpdir):
     """
     db = mongodb
 
-    user = User.login(email="blackknight@mail.com", password_hash="Not Implemented")
+    user = User.objects().filter(email='blackknight@mail.com').first()
     recipes = user.recipe_ids
 
     testdir = pathlib.Path(tmpdir).absolute()

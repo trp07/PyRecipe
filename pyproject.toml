@@ -29,6 +29,8 @@ mongoengine = "^0.16.3"
 flask = "^1.0"
 reportlab = "^3.5"
 pikepdf = "^1.0"
+flask-wtf = "^0.14.2"
+flask-login = "^0.4.1"
 
 [tool.poetry.dev-dependencies]
 pytest-cov = "^2.6"

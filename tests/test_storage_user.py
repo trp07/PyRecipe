@@ -11,31 +11,10 @@ import datetime
 import pytest
 
 from pyrecipe.storage.user import User
+from pyrecipe.storage.user import ws
 from pyrecipe.storage import Recipe
 from pyrecipe.errors import UserNotFoundError
 from pyrecipe.errors import UserLoginError
-
-
-def test_user_creation_defaults(user_setup):
-    """
-    GIVEN a mongodb instance
-    WHEN a User is added with no specified values set, just using default values
-    THEN assert a correct User is added
-    """
-    user = user_setup
-    user.save()
-
-    assert isinstance(user.name, str)
-    assert isinstance(user.username, str)
-    assert user.email is None
-    assert user.password_hash == 'Not Implemented'
-    assert isinstance(user.created_date, datetime.datetime)
-    assert isinstance(user.last_modified_date, datetime.datetime)
-    assert user.recipe_ids == []
-    assert user.shared_recipe_ids == []
-    assert user.view == 'list'
-    assert user.page_size == 100
-    assert user.email_distros == dict()
 
 
 def test_user_creation_specific(user_setup):
@@ -46,16 +25,18 @@ def test_user_creation_specific(user_setup):
     """
     user = user_setup
     user.name = 'Bob'
+    user.username = "bobby"
     user.email = 'bob@here.com'
-    user.auth = 'p@ssw0rd'
+    user.password_hash = 'p@ssw0rd'
     user.view = 'grid'
     user.page_size = '30'
     user.email_distros = {'family': 'mom@there.com'}
     user.save()
 
     assert user.name == 'Bob'
+    assert user.username == 'bobby'
     assert user.email == 'bob@here.com'
-    assert user.auth == 'p@ssw0rd'
+    assert user.password_hash == 'p@ssw0rd'
     assert user.view == 'grid'
     assert user.page_size == '30'
     assert user.email_distros == {'family': 'mom@there.com'}
@@ -68,7 +49,7 @@ def test_user_repr(capsys, mongodb):
     THEN assert the correct output prints
     """
     db = mongodb
-    user = User.list_users()[0]
+    user = User.objects().filter().first()
     print(repr(user))
     out, err = capsys.readouterr()
     assert "<User: king_arthur:kingarthur@mail.com>" in out
@@ -81,9 +62,9 @@ def test_user_login_good(mongodb):
     THEN assert the correct user is returned
     """
     db = mongodb
-    user = User.login(email="kingarthur@mail.com", password_hash="Not Implemented")
+    user = User.login(email="brian@mail.com", password_hash="Not Implemented")
     assert isinstance(user, User)
-    assert user.name == "King Arthur"
+    assert user.name == "Brian"
 
 
 def test_user_login_raises_UserNotFoundError(mongodb):
@@ -179,6 +160,49 @@ def test_user_save_noID(mongodb, mocker):
     """
     date_mock = mocker.patch.object(User, '_update_last_mod_date')
     user = User()
+    user.name = 'test user'
+    user.username = 'test_user'
+    user.email = 'testuser@mail.com'
+    user.password_hash = 'fakePassword'
     user.save()
     assert date_mock.call_count == 0
     user.delete()
+
+
+def test_user_set_password(mongodb):
+    """
+    GIVEN a mongodb instance
+    WHEN user.set_password() is called
+    THEN assert the password hash is saved in the DB instance.
+    """
+    user = User.objects().filter(name='Black Knight').first()
+    user.password_hash = 'fakehash'
+
+    result = user.set_password('p@ssw0rd')
+    assert user.password_hash == result
+    assert user.password_hash.startswith('pbkdf2:sha256:')
+
+def test_user_check_password(mongodb, mocker):
+    """
+    GIVEN a mongodb instance
+    WHEN user.check_password() is called
+    THEN assert a bool is returned
+    """
+    hash_mock = mocker.patch.object(ws, 'check_password_hash')
+    hash_mock.return_value = True
+
+    user = User.objects().filter(name='Black Knight').first()
+    result = user.check_password('p@ssw0rd')
+    assert result == True
+
+def test_user_load_user(mongodb):
+    """
+    GIVEN a mongodb instance
+    WHEN User.load_user() is called with a known valid user_id
+    THEN assert the correct user is returned
+    """
+    user = User.objects().filter(name='Black Knight').first()
+    user_id = str(user.id)
+
+    new_user = User.load_user(user_id)
+    assert new_user.name == 'Black Knight'
