@@ -62,7 +62,7 @@ def test_user_login_good(mongodb):
     THEN assert the correct user is returned
     """
     db = mongodb
-    user = User.login(email="brian@mail.com", password_hash="Not Implemented")
+    user = User.login(email="brian@mail.com", password_hash="fakePasswordHash")
     assert isinstance(user, User)
     assert user.name == "Brian"
 
@@ -75,7 +75,7 @@ def test_user_login_raises_UserNotFoundError(mongodb):
     """
     db = mongodb
     with pytest.raises(UserNotFoundError):
-        user = User.login(email="nobody@mail.com", password_hash="Not Implemented")
+        user = User.login(email="nobody@mail.com", password_hash="fakePasswordHash")
 
 
 
