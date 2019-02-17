@@ -13,7 +13,7 @@ import werkzeug.security as ws
 
 from pyrecipe.errors import UserNotFoundError, UserLoginError
 from .recipe import Recipe
-import pyrecipe.app as app
+from pyrecipe import app
 
 
 class User(mongoengine.Document, flask_login.UserMixin):
