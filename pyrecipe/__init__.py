@@ -5,3 +5,4 @@ from . import configure
 from . import errors
 from . import storage
 from . import tradingpost
+from . import main

@@ -19,10 +19,8 @@ version: {}
 _^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^
 """.format(VERSION)
 
-
-if __name__ == '__main__':
-
+def main():
+    """Run the app."""
     print(BANNER, flush=True)
-
     mongo_setup.global_init(db_name=app.config.get("MONGODB_URI"), verbose=True)
     app.run()
