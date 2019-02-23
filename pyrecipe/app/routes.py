@@ -1,5 +1,15 @@
-"""Routes for the Flask App."""
+"""
+Routes for the Flask App.
 
+* index -- main page
+* login -- user logins
+* logout -- user logouts
+* register -- user registration
+* user -- user profile page
+* recipe -- view a specific recipe
+"""
+
+import flask
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
@@ -13,7 +23,12 @@ from pyrecipe.storage import User, Recipe
 @app.route("/index")
 @login_required
 def index(method=["GET"]):
-    return render_template("index.html", title="Home Page")
+    """
+    Routing required for the main page or index.html page.
+    Login is required.
+    """
+    recipes = list(Recipe.objects().filter())
+    return render_template("index.html", title="Home Page", recipes=recipes)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -69,13 +84,34 @@ def register():
     return render_template("register.html", title="Register", form=form)
 
 
-@app.route("/list")
-def list_recipes(method=["GET"]):
-    user = User.login_user(email="blackknight@mail.com")
-    recipes = [Recipe(recipe) for recipe in user.recipes]
+@app.route("/user/<username>")
+@login_required
+def user(username:str):
+    """
+    Routing required for user profile pages.
 
-    result = ""
-    for recipe in recipes:
-        result += "<li>{}</li>".format(recipe.name)
+    :param username: (str) the username of the user.
 
-    return result
+    :returns: user profile informatin or 404 if user is not found.
+    """
+    user = User.objects().filter(username=username).first()
+    if not user:
+        flask.abort(404)
+    recipes = [recipe for recipe in user.recipe_ids]
+    return render_template('user.html', user=user, recipes=recipes)
+
+
+@app.route("/user/recipe/<recipe_id>")
+@login_required
+def recipe(recipe_id:str):
+    """
+    Routing required to view a recipe's details.
+
+    :param recipe_id: (str) the DB id of the recipe.
+
+    :returns: recipe or 404 if recipe is not found.
+    """
+    recipe = Recipe.objects().filter(id=recipe_id).first()
+    if not recipe:
+        flask.abort(404)
+    return render_template('recipe.html', recipe=recipe)

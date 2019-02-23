@@ -1,12 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-<h1>Hello, {{ current_user.username }}!</h1>
-
-{% for recipe in recipes %}
+    <h1>User: {{ user.username }}</h1>
+    <hr>
+    {% for recipe in recipes %}
         {% include "_list_recipes.html" %}
-{% endfor %}
-
+    {% endfor %}
 {% endblock %}
-

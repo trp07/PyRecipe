@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h1>{{ recipe.name }}</h1>
+    <h2>Prep Time: {{ recipe.prep_time }} |  Cook Time: {{ recipe.cook_time }} </h2>
+    <h2>Servings: {{ recipe.servings }}</h2>
+
+    <h2>Ingredients:</h2>
+    {% for ingredient in recipe.ingredients %}
+        <li>{{ ingredient.name }} -- {{ ingredient.quantity }} {{ ingredient.unit }}</li>
+    {% endfor %}
+
+    <h2>Directions:</h2>
+    {% for item in recipe.directions %}
+        <ol>{{ loop.index }}.  {{ item }}</ol>
+    {% endfor %}
+
+{% endblock %}
