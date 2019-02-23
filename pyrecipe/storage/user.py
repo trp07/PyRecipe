@@ -62,7 +62,11 @@ class User(mongoengine.Document, flask_login.UserMixin):
         field=mongoengine.StringField(), required=False
     )
 
-    meta = {"db_alias": "core", "collection": "users", "indexes": ["name", "email", "username"]}
+    meta = {
+        "db_alias": "core",
+        "collection": "users",
+        "indexes": ["name", "email", "username", "recipe_ids"],
+    }
 
     def __repr__(self):
         """Repr of instance for quick debugging purposes."""
