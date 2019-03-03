@@ -80,17 +80,31 @@ class Recipe(mongoengine.Document):
         return "<Recipe: {}>".format(self.name)
 
     @staticmethod
-    def find_recipes(search_string: str) -> List["Recipe"]:
+    def find_recipes_by_name(search_string: str) -> List["Recipe"]:
         """
         Returns a match of all recipes for the search_string using a case insensitive
         regex match in the Recipe.name field
 
-        recipes = Recipe.find_recipes()
+        recipes = Recipe.find_recipes_by_name()
 
         :param search_string: (str) string to search
         :returns: List["Recipe"] a list of all recipes that match
         """
         recipes = Recipe.objects().filter(name__icontains=search_string)
+        return list(recipes)
+
+    @staticmethod
+    def find_recipes_by_tag(tags: List[str]) -> List["Recipe"]:
+        """
+        Returns a match of all recipes for with the given tag.
+
+        recipes = Recipe.find_recipes_by_tag()
+
+        :param tags: List[str] list of strings (tags) to search
+        :returns: List["Recipe"] a list of all recipes that match
+        """
+        tags = [tag.lower() for tag in tags]
+        recipes = Recipe.objects().filter(tags__in=tags)
         return list(recipes)
 
     def copy_recipe(self) -> "Recipe":

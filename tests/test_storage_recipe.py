@@ -62,20 +62,33 @@ def test_recipe_repr(capsys, mongodb):
     assert "<Recipe: spam musubi>" in out
 
 
-def test_recipe_find_recipes(mongodb):
+def test_recipe_find_recipes_by_name(mongodb):
     """
     GIVEN a mongodb instance
-    WHEN a search query is initiated with Recipe.find_recipes()
+    WHEN a search query is initiated with Recipe.find_recipes_by_name()
     THEN assert the correct number of recipes are returned
     """
     db = mongodb
-    search1 = Recipe.find_recipes(search_string="spam")
-    search2 = Recipe.find_recipes(search_string="SPAM")
-    search3 = Recipe.find_recipes(search_string="egg")
-
+    search1 = Recipe.find_recipes_by_name(search_string="spam")
+    search2 = Recipe.find_recipes_by_name(search_string="SPAM")
+    search3 = Recipe.find_recipes_by_name(search_string="egg")
     assert len(search1) == 9
     assert len(search2) == 9
     assert len(search3) == 1
+
+def test_recipe_find_recipes_by_tag(mongodb):
+    """
+    GIVEN a mongodb instance
+    WHEN a search query is initiated with Recipe.find_recipes_by_tag()
+    THEN assert the correct number of recipes are returned
+    """
+    db = mongodb
+    search1 = Recipe.find_recipes_by_tag(tags=["spam"])
+    search2 = Recipe.find_recipes_by_tag(tags=["Side Dish"])
+    search3 = Recipe.find_recipes_by_tag(tags=["BREAKFAST"])
+    assert len(search1) == 2
+    assert len(search2) == 1
+    assert len(search3) == 2
 
 
 def test_recipe_copy_recipe(mongodb):
