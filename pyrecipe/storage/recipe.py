@@ -104,7 +104,7 @@ class Recipe(mongoengine.Document):
         :returns: List["Recipe"] a list of all recipes that match
         """
         tags = [tag.lower() for tag in tags]
-        recipes = Recipe.objects().filter(tags__in=tags)
+        recipes = Recipe.objects().filter(tags__all=tags)
         return list(recipes)
 
     def copy_recipe(self) -> "Recipe":

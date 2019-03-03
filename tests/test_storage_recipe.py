@@ -86,10 +86,11 @@ def test_recipe_find_recipes_by_tag(mongodb):
     search1 = Recipe.find_recipes_by_tag(tags=["spam"])
     search2 = Recipe.find_recipes_by_tag(tags=["Side Dish"])
     search3 = Recipe.find_recipes_by_tag(tags=["BREAKFAST"])
+    search4 = Recipe.find_recipes_by_tag(tags=["spicy", "party food"])
     assert len(search1) == 2
     assert len(search2) == 1
     assert len(search3) == 2
-
+    assert len(search4) == 1
 
 def test_recipe_copy_recipe(mongodb):
     """
