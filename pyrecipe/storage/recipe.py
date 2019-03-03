@@ -107,6 +107,17 @@ class Recipe(mongoengine.Document):
         recipes = Recipe.objects().filter(tags__all=tags)
         return list(recipes)
 
+    @staticmethod
+    def get_tags() -> List["tags"]:
+        """
+        Returns a of all distinct tags in the recipe collection.
+
+        recipes = Recipe.get_tags()
+
+        :returns: List["tags"] a list of all distinct tags in the collection.
+        """
+        return list(Recipe.objects().distinct("tags"))
+
     def copy_recipe(self) -> "Recipe":
         """
         Given a Recipe instance, produce a copy of it with a modified name

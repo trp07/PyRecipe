@@ -92,6 +92,16 @@ def test_recipe_find_recipes_by_tag(mongodb):
     assert len(search3) == 2
     assert len(search4) == 1
 
+def test_recipe_get_tags(mongodb):
+    """
+    GIVEN a mongodb instance
+    WHEN a Recipe.get_tags() is called
+    THEN assert the correct list of tags is returned
+    """
+    db = mongodb
+    tags = Recipe.get_tags()
+    assert len(tags) == 25
+
 def test_recipe_copy_recipe(mongodb):
     """
     GIVEN a mongodb instance
