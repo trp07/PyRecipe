@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <h1>{{ recipe.name }}</h1>
+    <h1>{{ recipe.name.title() }}</h1>
     <h2>Prep Time: {{ recipe.prep_time }} |  Cook Time: {{ recipe.cook_time }} </h2>
     <h2>Servings: {{ recipe.servings }}</h2>
 

@@ -7,7 +7,11 @@ Routes for the Flask App.
 * register -- user registration
 * user -- user profile page
 * recipe -- view a specific recipe
+* tag -- view recipes with selected tag(s)
 """
+
+from collections.abc import MutableSequence
+from typing import List
 
 import flask
 from flask import render_template, flash, redirect, url_for, request
@@ -28,7 +32,8 @@ def index(method=["GET"]):
     Login is required.
     """
     recipes = list(Recipe.objects().filter())
-    return render_template("index.html", title="Home Page", recipes=recipes)
+    tags = Recipe.get_tags()
+    return render_template("index.html", title="Home Page", recipes=recipes, tags=tags)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -101,7 +106,7 @@ def user(username:str):
     return render_template('user.html', user=user, recipes=recipes)
 
 
-@app.route("/user/recipe/<recipe_id>")
+@app.route("/recipe/<recipe_id>")
 @login_required
 def recipe(recipe_id:str):
     """
@@ -114,4 +119,19 @@ def recipe(recipe_id:str):
     recipe = Recipe.objects().filter(id=recipe_id).first()
     if not recipe:
         flask.abort(404)
-    return render_template('recipe.html', recipe=recipe)
+    return render_template("recipe.html", recipe=recipe)
+
+@app.route("/tag/<tags>")
+@login_required
+def tag(tags: List[str]):
+    """
+    Routing required to view recipes with a given tag.
+
+    :param recipe_id: (str) the DB id of the recipe.
+
+    :returns: recipe or 404 if recipe is not found.
+    """
+    if not isinstance(tags, MutableSequence):
+        tags = [tags]
+    recipes = Recipe.find_recipes_by_tag(tags)
+    return render_template("tag.html", recipes=recipes)
