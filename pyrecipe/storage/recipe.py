@@ -90,7 +90,7 @@ class Recipe(mongoengine.Document):
         :param search_string: (str) string to search
         :returns: List["Recipe"] a list of all recipes that match
         """
-        recipes = Recipe.objects().filter(name__icontains=search_string)
+        recipes = Recipe.objects().filter(name__icontains=search_string, deleted=False)
         return list(recipes)
 
     @staticmethod
@@ -104,7 +104,7 @@ class Recipe(mongoengine.Document):
         :returns: List["Recipe"] a list of all recipes that match
         """
         tags = [tag.lower() for tag in tags]
-        recipes = Recipe.objects().filter(tags__all=tags)
+        recipes = Recipe.objects().filter(tags__all=tags, deleted=False)
         return list(recipes)
 
     @staticmethod
@@ -152,7 +152,7 @@ class Recipe(mongoengine.Document):
         :returns: (int) 1 for success, 0 for failure
         """
         result = self.update(add_to_set__tags=tag.lower())
-        self.reload()
+        self._update_last_mod_date()
         return result
 
     def delete_tag(self, tag: str) -> int:
@@ -164,9 +164,20 @@ class Recipe(mongoengine.Document):
         :returns: (int) 1 for success, 0 for failure
         """
         result = self.update(pull__tags=tag.lower())
-        self.reload()
+        self._update_last_mod_date()
         return result
 
+    def delete_recipe(self) -> int:
+        """
+        Given a recipe instance, mark it as deleted
+
+        recipe.delete_recipe("tag")
+
+        :returns: (int) 1 for success, 0 for failure
+        """
+        result = self.update(deleted=True)
+        self._update_last_mod_date()
+        return result
 
     def _update_last_mod_date(self) -> int:
         """

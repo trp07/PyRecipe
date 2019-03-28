@@ -6,6 +6,7 @@ Routes for the Flask App.
 * logout -- user logouts
 * register -- user registration
 * user -- user profile page
+* deleted -- shows recipes user deleted
 * recipe -- view a specific recipe
 * tag -- view recipes with selected tag(s)
 """
@@ -14,12 +15,20 @@ from collections.abc import MutableSequence
 from typing import List
 
 import flask
-from flask import render_template, flash, redirect, url_for, request
-from flask_login import current_user, login_user, logout_user, login_required
+from flask import render_template
+from flask import flash
+from flask import redirect
+from flask import url_for
+from flask import request
+from flask_login import current_user
+from flask_login import login_user
+from flask_login import logout_user
+from flask_login import login_required
 from werkzeug.urls import url_parse
 
 from pyrecipe.app import app
-from pyrecipe.app.forms import LoginForm, RegistrationForm
+from pyrecipe.app.forms import LoginForm
+from pyrecipe.app.forms import RegistrationForm
 from pyrecipe.storage import User, Recipe
 
 
@@ -31,7 +40,7 @@ def index(method=["GET"]):
     Routing required for the main page or index.html page.
     Login is required.
     """
-    recipes = list(Recipe.objects().filter())
+    recipes = list(Recipe.objects().filter(deleted==False))
     tags = Recipe.get_tags()
     return render_template("index.html", title="Home Page", recipes=recipes, tags=tags)
 
@@ -102,13 +111,30 @@ def user(username:str):
     user = User.objects().filter(username=username).first()
     if not user:
         flask.abort(404)
-    recipes = [recipe for recipe in user.recipe_ids]
+    recipes = [recipe for recipe in user.recipe_ids if recipe.deleted==False]
     return render_template('user.html', user=user, recipes=recipes)
 
 
-@app.route("/recipe/<recipe_id>")
+@app.route("/user/<username>/deleted")
 @login_required
-def recipe(recipe_id:str):
+def deleted(username:str):
+    """
+    Routing required for user profile pages.
+
+    :param username: (str) the username of the user.
+
+    :returns: user profile informatin or 404 if user is not found.
+    """
+    user = User.objects().filter(username=username).first()
+    if not user:
+        flask.abort(404)
+    recipes = [recipe for recipe in user.recipe_ids if recipe.deleted==True]
+    return render_template('user.html', user=user, recipes=recipes)
+
+
+@app.route("/recipe/view/<recipe_id>")
+@login_required
+def recipe_view(recipe_id:str):
     """
     Routing required to view a recipe's details.
 
@@ -120,6 +146,18 @@ def recipe(recipe_id:str):
     if not recipe:
         flask.abort(404)
     return render_template("recipe.html", recipe=recipe)
+
+@app.route("/recipe/add", methods=["GET", "POST"])
+@login_required
+def recipe_add():
+    pass
+
+
+@app.route("/recipe/edit/<recipe_id>", methods=["GET", "POST"])
+@login_required
+def recipe_edit():
+    pass
+
 
 @app.route("/tag/<tags>")
 @login_required
@@ -135,3 +173,5 @@ def tag(tags: List[str]):
         tags = [tags]
     recipes = Recipe.find_recipes_by_tag(tags)
     return render_template("tag.html", recipes=recipes)
+
+

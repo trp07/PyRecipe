@@ -72,8 +72,8 @@ def test_recipe_find_recipes_by_name(mongodb):
     search1 = Recipe.find_recipes_by_name(search_string="spam")
     search2 = Recipe.find_recipes_by_name(search_string="SPAM")
     search3 = Recipe.find_recipes_by_name(search_string="egg")
-    assert len(search1) == 9
-    assert len(search2) == 9
+    assert len(search1) == 8
+    assert len(search2) == 8
     assert len(search3) == 1
 
 def test_recipe_find_recipes_by_tag(mongodb):
@@ -88,9 +88,9 @@ def test_recipe_find_recipes_by_tag(mongodb):
     search3 = Recipe.find_recipes_by_tag(tags=["BREAKFAST"])
     search4 = Recipe.find_recipes_by_tag(tags=["spicy", "party food"])
     assert len(search1) == 2
-    assert len(search2) == 1
+    assert len(search2) == 0
     assert len(search3) == 2
-    assert len(search4) == 1
+    assert len(search4) == 0
 
 def test_recipe_get_tags(mongodb):
     """
@@ -147,6 +147,20 @@ def test_recipe_add_delete_tag(mongodb):
     result = recipe.delete_tag("test_tag")
     assert "test_tag" not in recipe.tags
     assert result == 1
+
+def test_recipe_delete_recipe(mongodb):
+    db = mongodb
+    recipe = Recipe.objects().filter().first()
+    assert recipe.deleted == False
+
+    result = recipe.delete_recipe()
+    assert recipe.deleted == True
+    assert result == 1
+
+    recipe.update(deleted=False)
+    recipe.reload()
+    assert recipe.deleted == False
+
 
 
 def test_recipe_update_last_mod_date(mongodb):

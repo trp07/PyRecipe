@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <a href="{{ url_for('deleted', username=user.username) }}">Deleted Recipes</a>
+
     <h1>User: {{ user.username }}</h1>
     <hr>
     {% for recipe in recipes %}
