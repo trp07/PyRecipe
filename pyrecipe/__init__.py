@@ -6,3 +6,4 @@ from . import errors
 from . import storage
 from . import tradingpost
 from . import main
+from . import frontend
