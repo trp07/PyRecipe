@@ -24,3 +24,7 @@ def main():
     print(BANNER, flush=True)
     mongo_setup.global_init(db_name=app.config.get("MONGODB_URI"), verbose=True)
     app.run()
+
+
+if __name__ == '__main__':
+    main()
