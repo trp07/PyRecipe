@@ -1,3 +1,9 @@
+from .app import app
+
+from . import helpers
+from . import forms
+
+"""
 from pyrecipe.frontend import TEMPLATESDIR
 
 from . import config
@@ -19,5 +25,6 @@ login.login_view = "login"
 
 
 # import routes last after "app" is initialized.
-from . import forms
-from . import routes
+#from . import forms
+#from . import routes
+"""

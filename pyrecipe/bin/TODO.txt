@@ -1,0 +1,5 @@
+Create a CLI for...
+* maintenance/admin purposes
+* backup the database and other information/data
+
+Database migrations

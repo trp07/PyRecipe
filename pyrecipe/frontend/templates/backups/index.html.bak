@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Hello, {{ current_user.username }}!</h1>
+
+<hr>
+{% for tag in tags %}
+    {% include "_list_tags.html" %}
+{% endfor %}
+
+
+<hr>
+{% for recipe in recipes %}
+    {% include "_list_recipes.html" %}
+{% endfor %}
+
+{% endblock %}
+

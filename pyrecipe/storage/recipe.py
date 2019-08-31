@@ -10,6 +10,7 @@ from typing import List
 import mongoengine
 
 from .ingredient import Ingredient
+from .image import Image
 
 
 class Recipe(mongoengine.Document):
@@ -30,11 +31,12 @@ class Recipe(mongoengine.Document):
     :param servings: (int) number of servings in the recipe.
     :param tags: (list) descriptive tags for a recipe.
         i.e. ['bbq', 'vegetarian']
-    :param pictures: (list) local filepath for a picture uploaded.
+    :param images: (list(dict)) filepath and description for an uploaded image.
     :param notes: (list) list of notes about the recipe.
         i.e. "Substitute butter for ghee if you don't have ghee."
     :param rating: (float) user rating of recipe with 0.5 increments [0.0-5.0]
     :param favorite: (bool) user selected as a favorite.
+    :param when_made: list(dates) list of dates the recipe was made by the user.
     :param deleted: (bool) user selected recipe for deletion.
     :param created_date: (datetime) defaults to UTC time of when recipe is created.
     :param last_modified_date: (datetime) UTC time of when recipe is last modified.
@@ -48,15 +50,16 @@ class Recipe(mongoengine.Document):
     cook_time = mongoengine.FloatField(default=0, min_val=0.0)
     servings = mongoengine.IntField(default=0, min_val=1)
     tags = mongoengine.ListField(required=False)
-    pictures = mongoengine.ListField(field=mongoengine.StringField(), required=False)
     notes = mongoengine.ListField(field=mongoengine.StringField(), required=False)
     rating = mongoengine.FloatField(required=False, min_val=0.0, max_val=5.0)
     favorite = mongoengine.BooleanField(default=False)
+    when_made = mongoengine.ListField(required=False)
     deleted = mongoengine.BooleanField(default=False)
     created_date = mongoengine.DateTimeField(default=datetime.datetime.utcnow)
     last_modified_date = mongoengine.DateTimeField(default=datetime.datetime.utcnow)
 
     ingredients = mongoengine.EmbeddedDocumentListField(Ingredient, required=True)
+    images = mongoengine.EmbeddedDocumentListField(Image, required=False)
 
     meta = {
         "db_alias": "core",
@@ -72,6 +75,7 @@ class Recipe(mongoengine.Document):
             "favorite",
             "deleted",
             "ingredients.name",
+            "when_made",
         ],
     }
 
@@ -85,7 +89,7 @@ class Recipe(mongoengine.Document):
         Returns a match of all recipes for the search_string using a case insensitive
         regex match in the Recipe.name field
 
-        recipes = Recipe.find_recipes_by_name()
+        recipes = Recipe.find_recipes_by_name("spam")
 
         :param search_string: (str) string to search
         :returns: List["Recipe"] a list of all recipes that match
@@ -164,6 +168,25 @@ class Recipe(mongoengine.Document):
         :returns: (int) 1 for success, 0 for failure
         """
         result = self.update(pull__tags=tag.lower())
+        self._update_last_mod_date()
+        return result
+
+    def mark_made(self, date: datetime=datetime.datetime.utcnow()) -> int:
+        """
+        Add a date the recipe was last made.  This will be a list of
+        all dates the recipe is made.
+
+        recipe.mark_made(date)
+
+        :returns: (int) for success, 0 for failure or if trying to
+            mark_made on the same date more than once.
+        """
+        for d in self.when_made:
+            day_delta = (d.date() - date.date()).days
+            if day_delta == 0:
+                return 0
+
+        result = self.update(push__when_made=date)
         self._update_last_mod_date()
         return result
 

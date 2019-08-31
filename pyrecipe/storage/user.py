@@ -8,15 +8,13 @@ import datetime
 from typing import List
 
 import mongoengine
-import flask_login
 import werkzeug.security as ws
 
 from pyrecipe.errors import UserNotFoundError, UserLoginError
 from .recipe import Recipe
-from pyrecipe import app
 
 
-class User(mongoengine.Document, flask_login.UserMixin):
+class User(mongoengine.Document):
     """
     ODM Class that maps to the Users collection in MongoDB.  Each user will have a
     reference to a recipe that is added.
@@ -77,7 +75,7 @@ class User(mongoengine.Document, flask_login.UserMixin):
         """
         Logs in and returns the user.
 
-        user = User.login()
+        user = User.login(email, password_hash)
 
         :param email: (str) the user's email address.
         :param password_hash: (str) the hash of the supplied password.
@@ -88,7 +86,7 @@ class User(mongoengine.Document, flask_login.UserMixin):
         if not user:
             raise UserNotFoundError(email)
         if password_hash != user.password_hash:
-            raise UserLoginError("incorrect password")
+            raise UserLoginError("credentials do not match")
         return user
 
     @staticmethod
@@ -169,13 +167,3 @@ class User(mongoengine.Document, flask_login.UserMixin):
         :returns: (bool) True for a good match, False otherwise
         """
         return ws.check_password_hash(self.password_hash, password)
-
-    @app.login.user_loader
-    def load_user(ident: str) -> "User":
-        """
-        Helper method for Flask-Login to help maintain session. The decorator
-        @login is defined in the pyrecipe.app.__init__.py module.
-
-        :returns: the user who's id=ident
-        """
-        return User.objects.filter(id=ident).first()
