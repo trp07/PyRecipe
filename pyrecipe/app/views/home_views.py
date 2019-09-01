@@ -30,7 +30,7 @@ blueprint = flask.Blueprint('home', __name__, template_folder=str(TEMPLATESDIR),
 
 @blueprint.route("/")
 @blueprint.route("/index")
-@response(template_file="index.html")
+@response(template_file="home/index.html")
 def index():
     """
     Routing required for the main page or index.html page.
@@ -48,7 +48,7 @@ def index():
 
 
 @blueprint.route("/about")
-@response(template_file="about.html")
+@response(template_file="home/about.html")
 def about():
     return {
         "message": "About Page"

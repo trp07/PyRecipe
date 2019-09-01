@@ -27,6 +27,7 @@ def recipes_all():
 
 
 @blueprint.route("/recipe/view/<recipe_id>")
+@response(template_file="recipe/recipe.html")
 def recipe_view(recipe_id:str):
     """
     Routing required to view a recipe's details.
@@ -38,7 +39,7 @@ def recipe_view(recipe_id:str):
     recipe = Recipe.objects().filter(id=recipe_id).first()
     if not recipe:
         flask.abort(404)
-    return flask.render_template("recipe.html", recipe=recipe)
+    return {"recipe": recipe}
 
 @blueprint.route("/recipe/add", methods=["GET"])
 def recipe_add_get():
@@ -46,18 +47,19 @@ def recipe_add_get():
 
 @blueprint.route("/recipe/add", methods=["POST"])
 def recipe_add_post():
-    pass
+    return "Not Implemented... yet"
 
 
 @blueprint.route("/recipe/edit/<recipe_id>", methods=["GET"])
 def recipe_edit_get():
-    pass
+    return "Not Implemented... yet"
 
 @blueprint.route("/recipe/edit/<recipe_id>", methods=["POST"])
 def recipe_edit_post():
-    pass
+    return "Not Implemented... yet"
 
 @blueprint.route("/recipe/tag/<tags>")
+@response(template_file="recipe/tag.html")
 def recipes_with_tags(tags: List[str]):
     """
     Routing required to view recipes with a given tag.
@@ -69,7 +71,7 @@ def recipes_with_tags(tags: List[str]):
     if not isinstance(tags, MutableSequence):
         tags = [tags]
     recipes = Recipe.find_recipes_by_tag(tags)
-    return flask.render_template("tag.html", recipes=recipes)
+    return {"recipes": recipes}
 
 @blueprint.route("/recipe/deleted")
 def recipes_deleted(username:str):
@@ -78,5 +80,4 @@ def recipes_deleted(username:str):
 
     :returns: recipes where recipe.deleted==True.
     """
-    pass
-    #recipes = [recipe for recipe in list(Recipe.objects()) if recipe.deleted==True]
+    return "Not Implemented... yet"

@@ -15,24 +15,24 @@ blueprint = flask.Blueprint('account', __name__, template_folder=str(TEMPLATESDI
 
 @blueprint.route("/login")
 def login():
-    pass
+    return "Not Implemented... yet!"
 
 
 @blueprint.route("/logout")
 def logout():
-    pass
+    return "Not Implemented... yet!"
 
 
 @blueprint.route("/register", methods=["GET"])
 def register_get():
-    pass
+    return "Not Implemented... yet!"
 
 
 @blueprint.route("/register", methods=["POST"])
 def register_post():
-    pass
+    return "Not Implemented... yet!"
 
 
 @blueprint.route("/account")
 def account():
-    pass
+    return "Not Implemented... yet!"
