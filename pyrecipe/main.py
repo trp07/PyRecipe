@@ -17,7 +17,10 @@ BANNER = r"""
 version: {}
 
 _^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^
-""".format(VERSION)
+""".format(
+    VERSION
+)
+
 
 def main():
     """Run the app."""
@@ -26,5 +29,5 @@ def main():
     app.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

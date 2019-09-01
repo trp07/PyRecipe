@@ -20,6 +20,7 @@ class Image(mongoengine.EmbeddedDocument):
     NOT-REQUIRED param:
     N/A
     """
+
     recipe_id = mongoengine.StringField(required=True)
     filepath = mongoengine.StringField(required=True)
     description = mongoengine.StringField(required=True)

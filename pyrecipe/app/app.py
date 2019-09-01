@@ -13,7 +13,9 @@ from pyrecipe.app.views import account_views
 from pyrecipe.app.views import recipe_views
 
 
-app = flask.Flask(__name__, template_folder=str(TEMPLATESDIR), static_folder=str(STATICDIR))
+app = flask.Flask(
+    __name__, template_folder=str(TEMPLATESDIR), static_folder=str(STATICDIR)
+)
 
 app.config.from_object(config.DevConfig)
 

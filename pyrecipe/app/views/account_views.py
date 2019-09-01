@@ -10,7 +10,9 @@ from pyrecipe.app.helpers.view_modifiers import response
 from pyrecipe.storage import User
 
 
-blueprint = flask.Blueprint('account', __name__, template_folder=str(TEMPLATESDIR), static_folder=str(STATICDIR))
+blueprint = flask.Blueprint(
+    "account", __name__, template_folder=str(TEMPLATESDIR), static_folder=str(STATICDIR)
+)
 
 
 @blueprint.route("/login")

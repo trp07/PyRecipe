@@ -171,7 +171,7 @@ class Recipe(mongoengine.Document):
         self._update_last_mod_date()
         return result
 
-    def mark_made(self, date: datetime=datetime.datetime.utcnow()) -> int:
+    def mark_made(self, date: datetime = datetime.datetime.utcnow()) -> int:
         """
         Add a date the recipe was last made.  This will be a list of
         all dates the recipe is made.

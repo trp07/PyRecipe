@@ -13,7 +13,9 @@ from pyrecipe.app.helpers.view_modifiers import response
 from pyrecipe.storage import Recipe
 
 
-blueprint = flask.Blueprint('recipe', __name__, template_folder=str(TEMPLATESDIR), static_folder=str(STATICDIR))
+blueprint = flask.Blueprint(
+    "recipe", __name__, template_folder=str(TEMPLATESDIR), static_folder=str(STATICDIR)
+)
 
 
 @blueprint.route("/recipe")
@@ -28,7 +30,7 @@ def recipes_all():
 
 @blueprint.route("/recipe/view/<recipe_id>")
 @response(template_file="recipe/recipe.html")
-def recipe_view(recipe_id:str):
+def recipe_view(recipe_id: str):
     """
     Routing required to view a recipe's details.
 
@@ -41,9 +43,11 @@ def recipe_view(recipe_id:str):
         flask.abort(404)
     return {"recipe": recipe}
 
+
 @blueprint.route("/recipe/add", methods=["GET"])
 def recipe_add_get():
     pass
+
 
 @blueprint.route("/recipe/add", methods=["POST"])
 def recipe_add_post():
@@ -54,9 +58,11 @@ def recipe_add_post():
 def recipe_edit_get():
     return "Not Implemented... yet"
 
+
 @blueprint.route("/recipe/edit/<recipe_id>", methods=["POST"])
 def recipe_edit_post():
     return "Not Implemented... yet"
+
 
 @blueprint.route("/recipe/tag/<tags>")
 @response(template_file="recipe/tag.html")
@@ -73,8 +79,9 @@ def recipes_with_tags(tags: List[str]):
     recipes = Recipe.find_recipes_by_tag(tags)
     return {"recipes": recipes}
 
+
 @blueprint.route("/recipe/deleted")
-def recipes_deleted(username:str):
+def recipes_deleted(username: str):
     """
     Routing required to view recipes that have been deleted.
 

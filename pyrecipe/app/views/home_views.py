@@ -25,7 +25,9 @@ from pyrecipe.app.forms import LoginForm
 from pyrecipe.app.forms import RegistrationForm
 
 
-blueprint = flask.Blueprint('home', __name__, template_folder=str(TEMPLATESDIR), static_folder=str(STATICDIR))
+blueprint = flask.Blueprint(
+    "home", __name__, template_folder=str(TEMPLATESDIR), static_folder=str(STATICDIR)
+)
 
 
 @blueprint.route("/")
@@ -36,20 +38,18 @@ def index():
     Routing required for the main page or index.html page.
     Login is required.
     """
-    recipes = [r for r in Recipe.objects() if r.deleted==False]
+    recipes = [r for r in Recipe.objects() if r.deleted == False]
     tags = Recipe.get_tags()
     return {
         "title": "Home Page",
         "recipes": recipes,
         "tags": tags,
-        "username": "Tester"
+        "username": "Tester",
     }
-    #return render_template("index.html", title="Home Page", recipes=recipes, tags=tags, username='Tester')
+    # return render_template("index.html", title="Home Page", recipes=recipes, tags=tags, username='Tester')
 
 
 @blueprint.route("/about")
 @response(template_file="home/about.html")
 def about():
-    return {
-        "message": "About Page"
-    }
+    return {"message": "About Page"}
