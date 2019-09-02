@@ -15,26 +15,41 @@ blueprint = flask.Blueprint(
 )
 
 
-@blueprint.route("/login")
-def login():
+@blueprint.route("/account")
+def account():
     return "Not Implemented... yet!"
 
 
+@blueprint.route("/account/login", methods=["GET"])
+@blueprint.route("/login")
+@response(template_file="account/login.html")
+def login_get():
+    return "Not Implemented... yet!"
+
+
+@blueprint.route("/account/login", methods=["POST"])
+@blueprint.route("/login")
+@response(template_file="account/login.html")
+def login_post():
+    return "Not Implemented... yet!"
+
+
+@blueprint.route("/account/logout")
 @blueprint.route("/logout")
+@response(template_file="account/logout.html")
 def logout():
     return "Not Implemented... yet!"
 
 
+@blueprint.route("/account/register", methods=["GET"])
 @blueprint.route("/register", methods=["GET"])
+@response(template_file="account/register.html")
 def register_get():
-    return "Not Implemented... yet!"
+    return {}
 
 
+@blueprint.route("/account/register", methods=["POST"])
 @blueprint.route("/register", methods=["POST"])
+@response(template_file="account/register.html")
 def register_post():
-    return "Not Implemented... yet!"
-
-
-@blueprint.route("/account")
-def account():
-    return "Not Implemented... yet!"
+    return {}

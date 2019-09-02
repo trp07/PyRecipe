@@ -25,7 +25,8 @@ def recipes_all():
 
     :returns: all recipes where recipe.deleted==False.
     """
-    pass
+    recipes = [r for r in Recipe.objects() if r.deleted == False]
+    return "Not Implemented... yet"
 
 
 @blueprint.route("/recipe/view/<recipe_id>")
@@ -87,4 +88,5 @@ def recipes_deleted(username: str):
 
     :returns: recipes where recipe.deleted==True.
     """
+    recipes = [r for r in Recipe.objects() if r.deleted == True]
     return "Not Implemented... yet"
