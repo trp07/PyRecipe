@@ -13,23 +13,43 @@ blueprint = flask.Blueprint(
 )
 
 
-@blueprint.route("/account")
+@blueprint.route("/account", methods=["GET"])
 def account():
     return "Not Implemented... yet!"
 
 
 @blueprint.route("/account/login", methods=["GET"])
-@blueprint.route("/login")
+@blueprint.route("/login", methods=["GET"])
 @response(template_file="account/login.html")
 def login_get():
-    return "Not Implemented... yet!"
+    return {"msg": "Not Implemented... yet!"}
 
 
 @blueprint.route("/account/login", methods=["POST"])
-@blueprint.route("/login")
+@blueprint.route("/login", methods=["POST"])
 @response(template_file="account/login.html")
 def login_post():
-    return "Not Implemented... yet!"
+    r = flask.request
+    email = r.form.get('email', '').lower().strip()
+    password = r.form.get('password', '').strip()
+
+    if not email or not password:
+        return {
+            "email": email,
+            "password": password,
+            "error": "Some required fields are missing."
+        }
+
+    # TODO: validate the user
+    user = User.login_user(email=email, password=password)
+    if not user:
+        return {
+            "email": email,
+            "password": password,
+            "error": "The account does not exist or the password is incorrect."
+        }
+    # log in browser as a session
+    return flask.redirect(flask.url_for("account.account"))
 
 
 @blueprint.route("/account/logout")
@@ -63,8 +83,7 @@ def register_post():
             "error": "Some required fields are missing."
         }
 
-    # TODO: create the user
-    user = User.create_user(name=name, email=email, password=password)
+    user = User.login_user(email=email, password=password)
     if not user:
         return {
             "name": name,

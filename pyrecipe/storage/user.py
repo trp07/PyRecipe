@@ -108,22 +108,22 @@ class User(mongoengine.Document):
         return user
 
     @staticmethod
-    def login(email: str, password_hash: str) -> "User":
+    def login_user(email: str, password: str) -> Optional["User"]:
         """
         Logs in and returns the user.
 
-        user = User.login(email, password_hash)
+        user = User.login_user(email, password)
 
         :param email: (str) the user's email address.
-        :param password_hash: (str) the hash of the supplied password.
-        :returns: (User) the user.
+        :param password: (str) the supplied password.
+        :returns: (User) the user.  None if user doesn't exist.
         :raises: UserNotFoundError if user with email doesn't exist.
         """
         user = User.find_user_by_email(email)
         if not user:
-            raise UserNotFoundError(email)
-        if password_hash != user.password_hash:
-            raise UserLoginError("credentials do not match")
+            return None
+        if not User._verify_hash(user.password_hash, password):
+            return None
         return user
 
     @staticmethod
@@ -196,18 +196,25 @@ class User(mongoengine.Document):
         return password_hash
 
     @staticmethod
-    def check_password(password: str, password_hash: str) -> bool:
+    def _verify_hash(hashed_text: str, plain_text: str) -> bool:
         """
         Checks the supplied password's hash against the one stored in the DB.
 
-        user.check_password('p@ssw0rd')
+        User._verify_hash(password_hash, password)
 
         :returns: (bool) True for a good match, False otherwise
         """
-        return crypto.verify(password, password_hash)
-        #return ws.check_password_hash(self.password_hash, password)
+        return crypto.verify(plain_text, hashed_text)
 
     @staticmethod
     def _hash_text(text: str) -> str:
+        """
+        Hash the given text.
+
+        hashed = User._hash_text(text)
+
+        :param text: (str) the text to hash.
+        :returns: (str) the hash of the supplied text.
+        """
         hashed_text = crypto.encrypt(text, rounds=121547)
         return hashed_text
