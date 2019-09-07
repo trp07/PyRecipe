@@ -6,6 +6,7 @@ from pyrecipe.frontend import TEMPLATESDIR
 from pyrecipe.static import STATICDIR
 from pyrecipe.app.helpers.view_modifiers import response
 from pyrecipe.storage import User
+import pyrecipe.app.helpers.cookie_auth as cookie_auth
 
 
 blueprint = flask.Blueprint(
@@ -14,8 +15,20 @@ blueprint = flask.Blueprint(
 
 
 @blueprint.route("/account", methods=["GET"])
+@blueprint.route("/account/", methods=["GET"])
+@response(template_file="account/index.html")
 def account():
-    return "Not Implemented... yet!"
+    user_id = cookie_auth.get_user_id_via_auth_cookie(flask.request)
+    if user_id is None:
+        return flask.redirect(flask.url_for("account.login_get"))
+
+    user = User.find_user_by_id(user_id)
+    if not user:
+        return flask.redirect(flask.url_for("account.login_get"))
+
+    return {
+        "user": user,
+    }
 
 
 @blueprint.route("/account/login", methods=["GET"])
@@ -40,7 +53,6 @@ def login_post():
             "error": "Some required fields are missing."
         }
 
-    # TODO: validate the user
     user = User.login_user(email=email, password=password)
     if not user:
         return {
@@ -48,15 +60,20 @@ def login_post():
             "password": password,
             "error": "The account does not exist or the password is incorrect."
         }
-    # log in browser as a session
-    return flask.redirect(flask.url_for("account.account"))
+
+    response = flask.redirect(flask.url_for("account.account"))
+    cookie_auth.set_auth(response, user.id)
+
+    return response
 
 
 @blueprint.route("/account/logout")
 @blueprint.route("/logout")
 @response(template_file="account/logout.html")
 def logout():
-    return "Not Implemented... yet!"
+    response = flask.redirect(flask.url_for("home.index"))
+    cookie_auth.logout(response)
+    return response
 
 
 @blueprint.route("/account/register", methods=["GET"])
@@ -91,5 +108,9 @@ def register_post():
             "password": password,
             "error": "A user with that email already exists."
         }
-    # log in browser as a session
-    return flask.redirect(flask.url_for("account.account"))
+
+    response = flask.redirect(flask.url_for("account.account"))
+    cookie_auth.set_auth(response, user.id)
+
+    return response
+

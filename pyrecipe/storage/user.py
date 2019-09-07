@@ -95,6 +95,19 @@ class User(mongoengine.Document):
         return user
 
     @staticmethod
+    def find_user_by_id(user_id: str) -> Optional["User"]:
+        """
+        Check to see if a user with that user_id exists.
+
+        user = User.find_user_by_id(user_id)
+
+        :param user_id: (str) the user's id number.
+        :returns: (User) the user or None.
+        """
+        user = User.objects().filter(id=user_id).first()
+        return user
+
+    @staticmethod
     def find_user_by_email(email: str) -> Optional["User"]:
         """
         Check to see if user with email address already exists.
@@ -136,6 +149,21 @@ class User(mongoengine.Document):
         :returns: list(User)
         """
         return list(User.objects())
+
+    @staticmethod
+    def user_id_to_int(text) -> int:
+        """
+        Returns the User._id as an integer.
+
+        User.user_id_to_int(idnum)
+
+        :param text: (str) the text to convert.
+        :returns: int of the user id or 0 if unable.
+        """
+        try:
+            return int(str(text), 16)
+        except:
+            return 0
 
     def add_recipe(self, recipe: Recipe) -> int:
         """

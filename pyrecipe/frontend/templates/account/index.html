@@ -1,0 +1,15 @@
+{% extends "shared/_base.html" %}
+
+{% block title %}About PyRecipe Demo{% endblock %}
+
+{% block main_content %}
+    <h1>Account</h1>
+
+    <div>
+        Welcome to your account, {{ user.name }}!
+    </div>
+{% endblock %}
+
+{% block additional_css %}
+    <!-- This would be css from about.html -->
+{% endblock%}
