@@ -1,6 +1,4 @@
-"""
-Views specific to viewing Recipes.
-"""
+"""View controllers associated with recipe features."""
 
 from collections.abc import MutableSequence
 from typing import List

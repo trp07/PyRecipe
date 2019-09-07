@@ -1,7 +1,5 @@
-"""
-TODO
-relocate: login, logout, register, etc.
-"""
+"""View controllers associated with account features."""
+
 import flask
 
 from pyrecipe.frontend import TEMPLATESDIR
@@ -52,4 +50,27 @@ def register_get():
 @blueprint.route("/register", methods=["POST"])
 @response(template_file="account/register.html")
 def register_post():
-    return {}
+    r = flask.request
+    name = r.form.get('name')
+    email = r.form.get('email', '').lower().strip()
+    password = r.form.get('password', '').strip()
+
+    if not name or not email or not password:
+        return {
+            "name": name,
+            "email": email,
+            "password": password,
+            "error": "Some required fields are missing."
+        }
+
+    # TODO: create the user
+    user = User.create_user(name=name, email=email, password=password)
+    if not user:
+        return {
+            "name": name,
+            "email": email,
+            "password": password,
+            "error": "A user with that email already exists."
+        }
+    # log in browser as a session
+    return flask.redirect(flask.url_for("account.account"))

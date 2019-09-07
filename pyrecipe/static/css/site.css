@@ -84,6 +84,10 @@ nav > a {
     color: #006dad;
 }
 
+.error-msg {
+    color: #b30000;
+}
+
 
 ul.recipes {
     list-style: none;

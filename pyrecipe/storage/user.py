@@ -5,10 +5,11 @@ ODM for MongoDB
 """
 
 import datetime
-from typing import List
+from typing import List, Optional
 
 import mongoengine
 import werkzeug.security as ws
+from passlib.handlers.sha2_crypt import sha512_crypt as crypto
 
 from pyrecipe.errors import UserNotFoundError, UserLoginError
 from .recipe import Recipe
@@ -70,6 +71,42 @@ class User(mongoengine.Document):
         """Repr of instance for quick debugging purposes."""
         return "<User: {}:{}>".format(self.username, self.email)
 
+
+    @staticmethod
+    def create_user(name: str, email: str, password: str) -> "User":
+        """
+        Create and return the user.
+
+        user = User.create_user(name, email, password)
+
+        :param name: (str) the user's name.
+        :param email: (str) the user's email address.
+        :param password: (str) the user's password.
+        :returns: (User) the user or None if user email already in use.
+        """
+        if User.find_user_by_email(email):
+            return None
+        user = User()
+        user.name = name
+        user.username = name
+        user.email = email
+        user.password_hash = User._hash_text(password)
+        user.save()
+        return user
+
+    @staticmethod
+    def find_user_by_email(email: str) -> Optional["User"]:
+        """
+        Check to see if user with email address already exists.
+
+        user = User.find_user_by_email(email)
+
+        :param email: (str) the user's email address.
+        :returns: (User) the user or None.
+        """
+        user = User.objects().filter(email=email).first()
+        return user
+
     @staticmethod
     def login(email: str, password_hash: str) -> "User":
         """
@@ -82,7 +119,7 @@ class User(mongoengine.Document):
         :returns: (User) the user.
         :raises: UserNotFoundError if user with email doesn't exist.
         """
-        user = User.objects().filter(email=email).first()
+        user = User.find_user_by_email(email)
         if not user:
             raise UserNotFoundError(email)
         if password_hash != user.password_hash:
@@ -150,7 +187,7 @@ class User(mongoengine.Document):
 
         :returns: (str) the hash of the provided password
         """
-        password_hash = ws.generate_password_hash(password)
+        password_hash = User._hash_text(password)
         if self.id:
             self.update(password_hash=password_hash)
             self.reload()
@@ -158,7 +195,8 @@ class User(mongoengine.Document):
             self.password_hash = password_hash
         return password_hash
 
-    def check_password(self, password: str) -> bool:
+    @staticmethod
+    def check_password(password: str, password_hash: str) -> bool:
         """
         Checks the supplied password's hash against the one stored in the DB.
 
@@ -166,4 +204,10 @@ class User(mongoengine.Document):
 
         :returns: (bool) True for a good match, False otherwise
         """
-        return ws.check_password_hash(self.password_hash, password)
+        return crypto.verify(password, password_hash)
+        #return ws.check_password_hash(self.password_hash, password)
+
+    @staticmethod
+    def _hash_text(text: str) -> str:
+        hashed_text = crypto.encrypt(text, rounds=121547)
+        return hashed_text
