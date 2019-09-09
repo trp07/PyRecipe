@@ -21,8 +21,6 @@ from pyrecipe.frontend import TEMPLATESDIR
 from pyrecipe.static import STATICDIR
 from pyrecipe.storage import User, Recipe
 from pyrecipe.app.helpers.view_modifiers import response
-from pyrecipe.app.forms import LoginForm
-from pyrecipe.app.forms import RegistrationForm
 
 
 blueprint = flask.Blueprint(
@@ -46,7 +44,6 @@ def index():
         "tags": tags,
         "username": "Tester",
     }
-    # return render_template("index.html", title="Home Page", recipes=recipes, tags=tags, username='Tester')
 
 
 @blueprint.route("/about")
