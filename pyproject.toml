@@ -30,6 +30,7 @@ flask = "^1.0"
 reportlab = "^3.5"
 pikepdf = "^1.0"
 passlib = "^1.7"
+secure = "^0.2.1"
 
 [tool.poetry.dev-dependencies]
 pytest-cov = "^2.6"

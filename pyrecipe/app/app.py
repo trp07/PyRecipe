@@ -4,6 +4,7 @@ all the views as blueprints in the views/ directory.
 """
 
 import flask
+import secure
 
 from pyrecipe.frontend import TEMPLATESDIR
 from pyrecipe.static import STATICDIR
@@ -22,3 +23,11 @@ app.config.from_object(config.DevConfig)
 app.register_blueprint(home_views.blueprint)
 app.register_blueprint(account_views.blueprint)
 app.register_blueprint(recipe_views.blueprint)
+
+
+secure_headers = secure.SecureHeaders()
+
+@app.after_request
+def set_secure_headers(response):
+    secure_headers.flask(response)
+    return response
