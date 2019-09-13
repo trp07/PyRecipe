@@ -15,13 +15,23 @@ class RequestDictionary(dict):
 
 
 def create(default_val=None, **route_args) -> RequestDictionary:
+    """
+    Creates and returns an instance of RequestDictionary.
+
+    The dict "data" unpacks the kwargs gained in order from
+    "least important" to "most important".  First it unpacks
+    the URL query string, then headers, and then the form data
+    from the flask.request global.  Then, additional args from
+    the routing functions/methods themselves, if passed to the
+    function.
+    """
     request = flask.request
 
     data = {
-        **request.args,  # The key/value pairs in the URL query string
-        **request.headers,  # Header values
-        **request.form,  # The key/value pairs in the body, from a HTML post form
-        **route_args  # And additional arguments the method access, if they want them merged.
+        **request.args,
+        **request.headers,
+        **request.form,
+        **route_args,
     }
 
     return RequestDictionary(data, default_val=default_val)

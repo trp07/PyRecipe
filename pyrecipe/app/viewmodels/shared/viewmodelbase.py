@@ -8,6 +8,15 @@ from pyrecipe.app.helpers import cookie_auth
 
 
 class ViewModelBase:
+    """
+    Base class for viewmodel subclasses to inherit from.
+
+    Upon instantiation, subclasses will have access to the
+    flask.request global variable, the request_dict will form
+    the data structure containing all user-related content, and
+    the user will be gained from any cookies contained in the
+    request.
+    """
     def __init__(self):
         self.request: Request = flask.request
         self.request_dict = request_dict.create(default_val="")
