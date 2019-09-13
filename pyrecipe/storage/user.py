@@ -104,7 +104,10 @@ class User(mongoengine.Document):
         :param user_id: (str) the user's id number.
         :returns: (User) the user or None.
         """
-        user = User.objects().filter(id=user_id).first()
+        try:
+            user = User.objects().filter(id=user_id).first()
+        except mongoengine.errors.ValidationError:
+            user = None
         return user
 
     @staticmethod

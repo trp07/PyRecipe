@@ -4,8 +4,9 @@ import flask
 
 from pyrecipe.frontend import TEMPLATESDIR
 from pyrecipe.static import STATICDIR
-from pyrecipe.app.helpers.view_modifiers import response
 from pyrecipe.storage import User
+from pyrecipe.app.helpers.view_modifiers import response
+from pyrecipe.app.viewmodels.account import IndexViewModel
 import pyrecipe.app.helpers.cookie_auth as cookie_auth
 
 
@@ -18,17 +19,11 @@ blueprint = flask.Blueprint(
 @blueprint.route("/account/", methods=["GET"])
 @response(template_file="account/index.html")
 def account():
-    user_id = cookie_auth.get_user_id_via_auth_cookie(flask.request)
-    if user_id is None:
+    vm = IndexViewModel()
+    if not vm.user:
         return flask.redirect(flask.url_for("account.login_get"))
 
-    user = User.find_user_by_id(user_id)
-    if not user:
-        return flask.redirect(flask.url_for("account.login_get"))
-
-    return {
-        "user": user,
-    }
+    return vm.to_dict()
 
 
 @blueprint.route("/account/login", methods=["GET"])
