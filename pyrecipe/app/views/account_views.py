@@ -14,11 +14,12 @@ blueprint = flask.Blueprint(
     "account", __name__, template_folder=str(TEMPLATESDIR), static_folder=str(STATICDIR)
 )
 
+#################### Index ##########################
 
 @blueprint.route("/account", methods=["GET"])
 @blueprint.route("/account/", methods=["GET"])
 @response(template_file="account/index.html")
-def account():
+def index():
     vm = IndexViewModel()
     if not vm.user:
         return flask.redirect(flask.url_for("account.login_get"))
@@ -26,11 +27,13 @@ def account():
     return vm.to_dict()
 
 
+#################### Login ##########################
+
 @blueprint.route("/account/login", methods=["GET"])
 @blueprint.route("/login", methods=["GET"])
 @response(template_file="account/login.html")
 def login_get():
-    return {"msg": "Not Implemented... yet!"}
+    return {}
 
 
 @blueprint.route("/account/login", methods=["POST"])
@@ -56,11 +59,13 @@ def login_post():
             "error": "The account does not exist or the password is incorrect."
         }
 
-    response = flask.redirect(flask.url_for("account.account"))
+    response = flask.redirect(flask.url_for("account.index"))
     cookie_auth.set_auth(response, user.id)
 
     return response
 
+
+#################### Logout #########################
 
 @blueprint.route("/account/logout")
 @blueprint.route("/logout")
@@ -70,6 +75,8 @@ def logout():
     cookie_auth.logout(response)
     return response
 
+
+#################### Register #######################
 
 @blueprint.route("/account/register", methods=["GET"])
 @blueprint.route("/register", methods=["GET"])
@@ -104,7 +111,7 @@ def register_post():
             "error": "A user with that email already exists."
         }
 
-    response = flask.redirect(flask.url_for("account.account"))
+    response = flask.redirect(flask.url_for("account.index"))
     cookie_auth.set_auth(response, user.id)
 
     return response
