@@ -6,7 +6,7 @@ from pyrecipe.frontend import TEMPLATESDIR
 from pyrecipe.static import STATICDIR
 from pyrecipe.storage import User
 from pyrecipe.app.helpers.view_modifiers import response
-from pyrecipe.app.viewmodels.account import IndexViewModel
+from pyrecipe.app.viewmodels.account import IndexViewModel, RegisterViewModel
 import pyrecipe.app.helpers.cookie_auth as cookie_auth
 
 
@@ -82,34 +82,24 @@ def logout():
 @blueprint.route("/register", methods=["GET"])
 @response(template_file="account/register.html")
 def register_get():
-    return {}
+    vm = RegisterViewModel()
+    return vm.to_dict()
 
 
 @blueprint.route("/account/register", methods=["POST"])
 @blueprint.route("/register", methods=["POST"])
 @response(template_file="account/register.html")
 def register_post():
-    r = flask.request
-    name = r.form.get('name')
-    email = r.form.get('email', '').lower().strip()
-    password = r.form.get('password', '').strip()
+    vm = RegisterViewModel()
 
-    if not name or not email or not password:
-        return {
-            "name": name,
-            "email": email,
-            "password": password,
-            "error": "Some required fields are missing."
-        }
+    vm.validate()
 
-    user = User.login_user(email=email, password=password)
+    if vm.error:
+        return vm.to_dict()
+
+    user = User.create_user(name=vm.name, email=vm.email, password=vm.password)
     if not user:
-        return {
-            "name": name,
-            "email": email,
-            "password": password,
-            "error": "A user with that email already exists."
-        }
+        return vm.to_dict()
 
     response = flask.redirect(flask.url_for("account.index"))
     cookie_auth.set_auth(response, user.id)
