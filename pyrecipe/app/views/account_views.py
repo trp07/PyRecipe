@@ -6,7 +6,9 @@ from pyrecipe.frontend import TEMPLATESDIR
 from pyrecipe.static import STATICDIR
 from pyrecipe.storage import User
 from pyrecipe.app.helpers.view_modifiers import response
-from pyrecipe.app.viewmodels.account import IndexViewModel, RegisterViewModel
+from pyrecipe.app.viewmodels.account import IndexViewModel
+from pyrecipe.app.viewmodels.account import RegisterViewModel
+from pyrecipe.app.viewmodels.account import LoginViewModel
 import pyrecipe.app.helpers.cookie_auth as cookie_auth
 
 
@@ -33,31 +35,24 @@ def index():
 @blueprint.route("/login", methods=["GET"])
 @response(template_file="account/login.html")
 def login_get():
-    return {}
+    vm = LoginViewModel()
+    return vm.to_dict()
 
 
 @blueprint.route("/account/login", methods=["POST"])
 @blueprint.route("/login", methods=["POST"])
 @response(template_file="account/login.html")
 def login_post():
-    r = flask.request
-    email = r.form.get('email', '').lower().strip()
-    password = r.form.get('password', '').strip()
+    vm = LoginViewModel()
 
-    if not email or not password:
-        return {
-            "email": email,
-            "password": password,
-            "error": "Some required fields are missing."
-        }
+    vm.validate()
 
-    user = User.login_user(email=email, password=password)
+    if vm.error:
+        return vm.to_dict()
+
+    user = User.login_user(email=vm.email, password=vm.password)
     if not user:
-        return {
-            "email": email,
-            "password": password,
-            "error": "The account does not exist or the password is incorrect."
-        }
+        return vm.to_dict()
 
     response = flask.redirect(flask.url_for("account.index"))
     cookie_auth.set_auth(response, user.id)
