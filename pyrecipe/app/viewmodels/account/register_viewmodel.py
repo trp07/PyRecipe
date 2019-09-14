@@ -10,7 +10,7 @@ class RegisterViewModel(ViewModelBase):
         self.email = self.request_dict.email.lower().strip()
         self.password = self.request_dict.password.strip()
 
-    def validate(self):
+    def validate(self) -> None:
         if not self.name or not self.name.strip():
             self.error = "You must specify a name."
         elif not self.email or not self.email.strip():

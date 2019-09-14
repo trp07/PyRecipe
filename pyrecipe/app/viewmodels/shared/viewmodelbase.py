@@ -23,5 +23,5 @@ class ViewModelBase:
         self.error: Optional[str] = None
         self.user_id: Optional[int] = cookie_auth.get_user_id_via_auth_cookie(self.request)
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         return self.__dict__

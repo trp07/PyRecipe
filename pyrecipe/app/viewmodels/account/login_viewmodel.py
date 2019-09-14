@@ -9,7 +9,7 @@ class LoginViewModel(ViewModelBase):
         self.email = self.request_dict.email.lower().strip()
         self.password = self.request_dict.password.strip()
 
-    def validate(self):
+    def validate(self) -> None:
         if not self.email or not self.email.strip():
             self.error = "Please enter an email address."
         elif not self.password:
