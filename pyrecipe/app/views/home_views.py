@@ -19,8 +19,9 @@ from werkzeug.urls import url_parse
 
 from pyrecipe.frontend import TEMPLATESDIR
 from pyrecipe.static import STATICDIR
-from pyrecipe.storage import User, Recipe
 from pyrecipe.app.helpers.view_modifiers import response
+from pyrecipe.app.viewmodels.home import IndexViewModel
+from pyrecipe.app.viewmodels.home import AboutViewModel
 
 
 blueprint = flask.Blueprint(
@@ -34,19 +35,18 @@ blueprint = flask.Blueprint(
 def index():
     """
     Routing required for the main page or index.html page.
-    Login is required.
+    Login not required.
     """
-    recipes = [r for r in Recipe.objects() if r.deleted == False]
-    tags = Recipe.get_tags()
-    return {
-        "title": "Home Page",
-        "recipes": recipes,
-        "tags": tags,
-        "username": "Tester",
-    }
+    vm = IndexViewModel()
+
+    vm.validate()
+    vm.get_recipes()
+
+    return vm.to_dict()
 
 
 @blueprint.route("/about")
 @response(template_file="home/about.html")
 def about():
-    return {"message": "About Page"}
+    vm = AboutViewModel()
+    return vm.to_dict()
