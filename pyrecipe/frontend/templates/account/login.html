@@ -5,8 +5,8 @@
         <form action="" method="POST" class="account-form">
             <h1>Login to PyRecipe</h1>
 
-            <input name="email" type="text" placeholder=" Email address" class="form-control" value="{{ email }}">
-            <input name="password" type="password" placeholder=" Password" class="form-control" value="{{ password }}">
+            <input name="email" type="email" placeholder=" Email address" class="form-control" value="{{ email }}" required>
+            <input name="password" type="password" placeholder=" Password" class="form-control" value="{{ password }}" required>
             <button type="submit" class="btn btn-danger">Login</button>
             <div style="clear: both"></div>
 
