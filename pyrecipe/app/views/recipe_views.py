@@ -16,7 +16,9 @@ blueprint = flask.Blueprint(
 )
 
 
-@blueprint.route("/recipe")
+#################### Recipe Viewing #########################
+
+@blueprint.route("/recipe/all", methods=["GET"])
 def recipes_all():
     """
     Routing required to view all recipes.
@@ -27,7 +29,7 @@ def recipes_all():
     return "Not Implemented... yet"
 
 
-@blueprint.route("/recipe/view/<recipe_id>")
+@blueprint.route("/recipe/view/<recipe_id>", methods=["GET"])
 @response(template_file="recipe/recipe.html")
 def recipe_view(recipe_id: str):
     """
@@ -43,6 +45,8 @@ def recipe_view(recipe_id: str):
     return {"recipe": recipe}
 
 
+#################### Recipe Adding ##########################
+
 @blueprint.route("/recipe/add", methods=["GET"])
 def recipe_add_get():
     pass
@@ -52,6 +56,8 @@ def recipe_add_get():
 def recipe_add_post():
     return "Not Implemented... yet"
 
+
+#################### Recipe Editing #########################
 
 @blueprint.route("/recipe/edit/<recipe_id>", methods=["GET"])
 def recipe_edit_get():
@@ -63,7 +69,9 @@ def recipe_edit_post():
     return "Not Implemented... yet"
 
 
-@blueprint.route("/recipe/tag/<tags>")
+#################### Recipes with... ########################
+
+@blueprint.route("/recipe/tag/<tags>", methods=["GET"])
 @response(template_file="recipe/tag.html")
 def recipes_with_tags(tags: List[str]):
     """
@@ -79,7 +87,7 @@ def recipes_with_tags(tags: List[str]):
     return {"recipes": recipes}
 
 
-@blueprint.route("/recipe/deleted")
+@blueprint.route("/recipe/deleted", methods=["GET"])
 def recipes_deleted(username: str):
     """
     Routing required to view recipes that have been deleted.
@@ -88,3 +96,36 @@ def recipes_deleted(username: str):
     """
     recipes = [r for r in Recipe.objects() if r.deleted == True]
     return "Not Implemented... yet"
+
+
+@blueprint.route("/recipes/recent", methods=["GET"])
+@blueprint.route("/recipes/recent/", methods=["GET"])
+@blueprint.route("/recipes/recent/<num_rec>", methods=["GET"])
+@response(template_file="recipe/recent_recipes.html")
+def recipes_recently_added(num_rec:int = 10):
+    """Show the num_rec most recently added recipes."""
+    return {
+        "error": "Not yet implemented!"
+    }
+
+
+@blueprint.route("/recipes/favorites", methods=["GET"])
+@blueprint.route("/recipes/favorites/", methods=["GET"])
+@blueprint.route("/recipes/favorites/<num_rec>", methods=["GET"])
+@response(template_file="recipe/favorite_recipes.html")
+def recipes_favorite(num_rec:int = 10):
+    """Show the num_rec favorite recipes."""
+    return {
+        "error": "Not yet implemented!"
+    }
+
+
+@blueprint.route("/recipes/random", methods=["GET"])
+@blueprint.route("/recipes/random/", methods=["GET"])
+@blueprint.route("/recipes/random/<num_rec>", methods=["GET"])
+@response(template_file="recipe/random_recipes.html")
+def recipes_random(num_rec:int = 10):
+    """Show the num_rec random recipes."""
+    return {
+        "error": "Not yet implemented!"
+    }

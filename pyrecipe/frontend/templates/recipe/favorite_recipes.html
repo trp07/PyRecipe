@@ -1,0 +1,11 @@
+{% extends "shared/_base.html" %}
+
+{% block main_content %}
+
+</div class="form-container">
+    {% if error %}
+        <div class="error-msg">{{ error }}</div>
+    {% endif %}
+</div>
+
+{% endblock %}

@@ -8,9 +8,13 @@
 
         <input type="text" placeholder="Search recipes, available: {{recipes|length}}" class="form-control">
 
-        <a href="{{ url_for('home.index') }}">Favorites</a>
-        <a href="{{ url_for('home.index') }}">Most Recent</a>
-        <a href="{{ url_for('home.index') }}">Random</a>
+        <a href="{{ url_for('recipe.recipes_favorite') }}">Favorites</a>
+        <a href="{{ url_for('recipe.recipes_recently_added') }}">Most Recent</a>
+        <a href="{{ url_for('recipe.recipes_random') }}">Random</a>
+
+        {% if error %}
+            <div class="error-msg">{{ error }}</div>
+        {% endif %}
     </div>
 </div>
 
