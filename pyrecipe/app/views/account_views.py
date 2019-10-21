@@ -18,6 +18,7 @@ blueprint = flask.Blueprint(
 
 #################### Index ##########################
 
+
 @blueprint.route("/account", methods=["GET"])
 @blueprint.route("/account/", methods=["GET"])
 @response(template_file="account/index.html")
@@ -30,6 +31,7 @@ def index():
 
 
 #################### Login ##########################
+
 
 @blueprint.route("/account/login", methods=["GET"])
 @blueprint.route("/login", methods=["GET"])
@@ -62,6 +64,7 @@ def login_post():
 
 #################### Logout #########################
 
+
 @blueprint.route("/account/logout")
 @blueprint.route("/logout")
 @response(template_file="account/logout.html")
@@ -72,6 +75,7 @@ def logout():
 
 
 #################### Register #######################
+
 
 @blueprint.route("/account/register", methods=["GET"])
 @blueprint.route("/register", methods=["GET"])
@@ -100,4 +104,3 @@ def register_post():
     cookie_auth.set_auth(response, user.id)
 
     return response
-

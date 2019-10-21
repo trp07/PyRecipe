@@ -11,6 +11,12 @@ class RequestDictionary(dict):
         super().__init__(*args, **kwargs)
 
     def __getattr__(self, key):
+        """
+        So you can access key by attribute...
+
+        i.e.
+        r.name -> r["name"]
+        """
         return self.get(key, self.default_val)
 
 

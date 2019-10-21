@@ -8,6 +8,8 @@ import flask
 from pyrecipe.frontend import TEMPLATESDIR
 from pyrecipe.static import STATICDIR
 from pyrecipe.app.helpers.view_modifiers import response
+from pyrecipe.app.helpers import request_dict
+from pyrecipe.app.viewmodels.recipe import AddViewModel
 from pyrecipe.storage import Recipe
 
 
@@ -18,6 +20,7 @@ blueprint = flask.Blueprint(
 
 #################### Recipe Viewing #########################
 
+
 @blueprint.route("/recipe/all", methods=["GET"])
 def recipes_all():
     """
@@ -25,7 +28,7 @@ def recipes_all():
 
     :returns: all recipes where recipe.deleted==False.
     """
-    recipes = [r for r in Recipe.objects() if r.deleted == False]
+    recipes = Recipe.deleted_recipes()
     return "Not Implemented... yet"
 
 
@@ -39,7 +42,7 @@ def recipe_view(recipe_id: str):
 
     :returns: recipe or 404 if recipe is not found.
     """
-    recipe = Recipe.objects().filter(id=recipe_id).first()
+    recipe = Recipe.find_recipe_by_id(recipe_id)
     if not recipe:
         flask.abort(404)
     return {"recipe": recipe}
@@ -47,17 +50,42 @@ def recipe_view(recipe_id: str):
 
 #################### Recipe Adding ##########################
 
+
 @blueprint.route("/recipe/add", methods=["GET"])
+@response(template_file="recipe/add_recipe.html")
 def recipe_add_get():
-    pass
+    vm = AddViewModel()
+    if not vm.user:
+        return flask.redirect(flask.url_for("account.login_get"))
+    return vm.to_dict()
 
 
 @blueprint.route("/recipe/add", methods=["POST"])
+@response(template_file="recipe/add_recipe.html")
 def recipe_add_post():
-    return "Not Implemented... yet"
+    """
+    redirect this to the actual recipe view afterwards
+    """
+    vm = AddViewModel()
+    if not vm.user:
+        return flask.redirect(flask.url_for("account.login_get"))
+    recipe = Recipe.create_recipe(
+        name=vm.name,
+        prep_time=vm.prep_time,
+        cook_time=vm.cook_time,
+        servings=vm.servings,
+        ingredients=vm.ingredients,
+        directions=vm.directions,
+        tags=vm.tags,
+        notes=vm.notes,
+    )
+    if recipe:
+        return flask.redirect(flask.url_for("recipe.recipe_view", recipe_id=str(recipe.id)))
+    return vm.to_dict()
 
 
 #################### Recipe Editing #########################
+
 
 @blueprint.route("/recipe/edit/<recipe_id>", methods=["GET"])
 def recipe_edit_get():
@@ -70,6 +98,7 @@ def recipe_edit_post():
 
 
 #################### Recipes with... ########################
+
 
 @blueprint.route("/recipe/tag/<tags>", methods=["GET"])
 @response(template_file="recipe/tag.html")
@@ -90,11 +119,9 @@ def recipes_with_tags(tags: List[str]):
 @blueprint.route("/recipe/deleted", methods=["GET"])
 def recipes_deleted(username: str):
     """
-    Routing required to view recipes that have been deleted.
-
-    :returns: recipes where recipe.deleted==True.
+    Routing required to view recipes that have been marked as deleted.
     """
-    recipes = [r for r in Recipe.objects() if r.deleted == True]
+    recipes = Recipe.deleted_recipes()
     return "Not Implemented... yet"
 
 
@@ -102,30 +129,24 @@ def recipes_deleted(username: str):
 @blueprint.route("/recipes/recent/", methods=["GET"])
 @blueprint.route("/recipes/recent/<num_rec>", methods=["GET"])
 @response(template_file="recipe/recent_recipes.html")
-def recipes_recently_added(num_rec:int = 10):
+def recipes_recently_added(num_rec: int = 10):
     """Show the num_rec most recently added recipes."""
-    return {
-        "error": "Not yet implemented!"
-    }
+    return {"error": "Not yet implemented!"}
 
 
 @blueprint.route("/recipes/favorites", methods=["GET"])
 @blueprint.route("/recipes/favorites/", methods=["GET"])
 @blueprint.route("/recipes/favorites/<num_rec>", methods=["GET"])
 @response(template_file="recipe/favorite_recipes.html")
-def recipes_favorite(num_rec:int = 10):
+def recipes_favorite(num_rec: int = 10):
     """Show the num_rec favorite recipes."""
-    return {
-        "error": "Not yet implemented!"
-    }
+    return {"error": "Not yet implemented!"}
 
 
 @blueprint.route("/recipes/random", methods=["GET"])
 @blueprint.route("/recipes/random/", methods=["GET"])
 @blueprint.route("/recipes/random/<num_rec>", methods=["GET"])
 @response(template_file="recipe/random_recipes.html")
-def recipes_random(num_rec:int = 10):
+def recipes_random(num_rec: int = 10):
     """Show the num_rec random recipes."""
-    return {
-        "error": "Not yet implemented!"
-    }
+    return {"error": "Not yet implemented!"}

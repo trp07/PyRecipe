@@ -7,7 +7,6 @@ class IndexViewModel(ViewModelBase):
     """Viewmodel used for the /index view."""
     def __init__(self):
         super().__init__()
-        self.user = User.find_user_by_id(self.user_id)
 
     def validate(self):
         if not self.user:

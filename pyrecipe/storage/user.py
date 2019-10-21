@@ -71,7 +71,6 @@ class User(mongoengine.Document):
         """Repr of instance for quick debugging purposes."""
         return "<User: {}:{}>".format(self.username, self.email)
 
-
     @staticmethod
     def create_user(name: str, email: str, password: str) -> "User":
         """

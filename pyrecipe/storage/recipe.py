@@ -6,6 +6,7 @@ ODM for MongoDB
 
 import datetime
 from typing import List
+from typing import Optional
 
 import mongoengine
 
@@ -84,28 +85,74 @@ class Recipe(mongoengine.Document):
         return "<Recipe: {}>".format(self.name)
 
     @staticmethod
-    def find_recipes_by_name(search_string: str) -> List["Recipe"]:
+    def create_recipe(
+        name: str,
+        prep_time: int,
+        cook_time: int,
+        servings: int,
+        ingredients: List["ingredients"],
+        directions: List["directions"],
+        tags: List["tags"] = [],
+        notes: List["notes"] = [],
+    ) -> "Recipe":
+        """
+        Given the correct parameters, create a recipe.
+
+        r = Recipe.create_recipe(**kwargs)
+
+        :returns: Recipe instance and saves it into the DB.
+        """
+        r = Recipe()
+        r.name = name
+
+        r.prep_time = float(prep_time)
+        r.cook_time = float(cook_time)
+        r.servings = int(servings)
+
+        igrs = []
+        for i in ingredients:
+            igr = Ingredient.create_ingredient(
+                i.name, i.quantity, i.unit, i.preparation
+            )
+            igrs.append(igr)
+        r.num_ingredients = len(igrs)
+        r.ingredients = igrs
+
+        r.directions = directions
+        r.tags = tags
+        r.notes = notes
+
+        r.save()
+        return r
+
+    @staticmethod
+    def find_recipe_by_id(recipe_id: str) -> Optional["Recipe"]:
+        """Return the recipe with the given id."""
+        return Recipe.objects().filter(id=recipe_id).first()
+
+    @staticmethod
+    def find_recipes_by_name(search_string: str) -> Optional["Recipe"]:
         """
         Returns a match of all recipes for the search_string using a case insensitive
         regex match in the Recipe.name field
 
         recipes = Recipe.find_recipes_by_name("spam")
 
-        :param search_string: (str) string to search
-        :returns: List["Recipe"] a list of all recipes that match
+        :param search_string: (str) string to search.
+        :returns: List["Recipe"] a list of all recipes that match or None.
         """
         recipes = Recipe.objects().filter(name__icontains=search_string, deleted=False)
         return list(recipes)
 
     @staticmethod
-    def find_recipes_by_tag(tags: List[str]) -> List["Recipe"]:
+    def find_recipes_by_tag(tags: List[str]) -> Optional["Recipe"]:
         """
         Returns a match of all recipes for with the given tag.
 
-        recipes = Recipe.find_recipes_by_tag()
+        recipes = Recipe.find_recipes_by_tag(["tag1", "tag2"])
 
-        :param tags: List[str] list of strings (tags) to search
-        :returns: List["Recipe"] a list of all recipes that match
+        :param tags: List[str] list of strings (tags) to search.
+        :returns: List["Recipe"] a list of all recipes that match or None.
         """
         tags = [tag.lower() for tag in tags]
         recipes = Recipe.objects().filter(tags__all=tags, deleted=False)
@@ -121,6 +168,18 @@ class Recipe(mongoengine.Document):
         :returns: List["tags"] a list of all distinct tags in the collection.
         """
         return list(Recipe.objects().distinct("tags"))
+
+    @staticmethod
+    def deleted_recipes() -> Optional["Recipe"]:
+        """
+        Get all the recipes that have been marked as deleted.
+
+        recipes = Recipe.deleted_recipes()
+
+        :returns: List["Recipe"] of all recipes where deleted==True.
+        """
+        result = [r for r in Recipe.objects() if r.deleted == True]
+        return result
 
     def copy_recipe(self) -> "Recipe":
         """
