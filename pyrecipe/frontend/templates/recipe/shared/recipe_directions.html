@@ -1,10 +1,14 @@
-<div class="recipe-add">
-    <table class="recipe-directions">
-        <button class="add-direction">Add Another</button>
-        <tbody>
-            <tr class="new-direction">
-                <td><input name="directions" type="text" placeholder=" i.e. Saute the garlic..." class="form-control" value="{{ directions }}" required /></td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+<table class="recipe-directions">
+    <thead>
+        <tr>
+            <th>Directions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <textarea name="directions" rows="4", cols="100" placeholder="Put each direction on its own line"></textarea>
+            </td>
+        </tr>
+    </tbody>
+</table>

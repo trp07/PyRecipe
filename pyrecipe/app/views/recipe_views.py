@@ -80,7 +80,9 @@ def recipe_add_post():
         notes=vm.notes,
     )
     if recipe:
-        return flask.redirect(flask.url_for("recipe.recipe_view", recipe_id=str(recipe.id)))
+        return flask.redirect(
+            flask.url_for("recipe.recipe_view", recipe_id=str(recipe.id))
+        )
     return vm.to_dict()
 
 

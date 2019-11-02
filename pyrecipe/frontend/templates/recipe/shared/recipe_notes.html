@@ -1,10 +1,15 @@
-<div class="recipe-add">
-    <table class="recipe-notes">
-        <button class="add-note">Add Another</button>
-        <tbody>
-            <tr class="new-note">
-                <td><input name="notes" type="text" placeholder=" i.e. Can substitute shallots for garlic..." class="form-control" value="{{ notes }}" /></td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+<table class="recipe-notes">
+    <thead>
+        <tr>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <textarea name="notes" rows="4", cols="100" placeholder="Put each note on its own line"></textarea>
+            </td>
+        </tr>
+    </tbody>
+</table>
+

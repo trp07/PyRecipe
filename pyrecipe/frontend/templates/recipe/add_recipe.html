@@ -2,40 +2,45 @@
 
 <!-- ***************************************************** -->
 {% block main_content %}
-</div class="form-container">
-    <h1>Create a Recipe</h1>
-    <form action="" method="POST" class="account-form">
+    </div class="form-container">
+        <h1>Create a Recipe</h1>
+        <form action="" method="POST" class="recipe-form">
 
-        <h2>General Information</h2>
-        {% include "recipe/shared/recipe_general.html" %}
+            <div class="recipe-section">
+                {% include "recipe/shared/recipe_general.html" %}
+            </div>
 
-        <h2>Ingredients</h2>
-        {% include "recipe/shared/recipe_ingredients.html" %}
+            <div class="recipe-section">
+                {% include "recipe/shared/recipe_ingredients.html" %}
+            </div>
 
-        <h2>Directions</h2>
-        {% include "recipe/shared/recipe_directions.html" %}
+            <div class="recipe-section">
+                {% include "recipe/shared/recipe_directions.html" %}
+            </div>
 
-        <h2>Tags</h2>
-        {% include "recipe/shared/recipe_tags.html" %}
+            <div class="recipe-section">
+                {% include "recipe/shared/recipe_tags.html" %}
+            </div>
 
-        <h2>Notes</h2>
-        {% include "recipe/shared/recipe_notes.html" %}
+            <div class="recipe-section">
+                {% include "recipe/shared/recipe_notes.html" %}
+            </div>
 
-        <button type="submit" class="btn btn-success">Save</button>
-        <div style="clear: both"></div>
-        {% if error %}
-            <div class="error-msg">{{ error }}</div>
-        {% endif %}
+            <button type="submit" class="btn btn-success">Save</button>
+            <div style="clear: both"></div>
+            {% if error %}
+                <div class="error-msg">{{ error }}</div>
+            {% endif %}
 
-    </form>
-</div>
+        </form>
+    </div>
 {% endblock %}
 
 <!-- ***************************************************** -->
 {% block additional_css %}
-<link rel="stylesheet" href="/static/css/recipe.css">
+    <link rel="stylesheet" href="/static/css/recipe.css">
 {% endblock %}
 
 {% block additional_js %}
-<script src="/static/js/pyrecipe/recipe_input.js"></script>
+    <script src="/static/js/pyrecipe/recipe_input.js"></script>
 {% endblock %}

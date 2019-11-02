@@ -44,7 +44,7 @@ class AddViewModel(ViewModelBase):
     @property
     def tags(self) -> List["tags"]:
         """Returns all tags passed in from user input."""
-        tags = self.request.form.getlist("tags")
+        tags = [t.strip().lower() for t in self.request.form["tags"].split("\n") if t.strip()]
         if not tags:
             return []
         return list(set(tags))
@@ -52,15 +52,13 @@ class AddViewModel(ViewModelBase):
     @property
     def directions(self) -> List["directions"]:
         """Returns all directions passed in from user input."""
-        directions = self.request.form.getlist("directions")
+        directions = [d.strip() for d in self.request.form["directions"].split("\n") if d.strip()]
         return directions
 
     @property
     def notes(self) -> List["notes"]:
         """Returns all notes passed in from user input."""
-        notes = self.request.form.getlist("notes")
-        if not notes:
-            return []
+        notes = [n.strip() for n in self.request.form["notes"].split("\n") if n.strip()]
         return notes
 
     @property

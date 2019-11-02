@@ -2,20 +2,20 @@
     <table class="recipe-ingredients">
         <thead>
             <tr>
-                <th>Name</th>
+                <th>Ingredient</th>
                 <th>Quantity</th>
-                <th>Units</th>
+                <th>Unit</th>
                 <th>Preparation</th>
-                <th>Actions</th>
+
             </tr>
         </thead>
-        <button class="add-ingredient">Add Another</button>
+        <button class="add-ingredient btn btn-success">+</button>
         <tbody>
             <tr class="new-ingredient">
-                <td><input name="i_name" type="text" placeholder=" garlic" class="form-control" value="{{ i_name }}" required /></td>
-                <td><input name="i_quantity" type="number" placeholder=" 1" class="form-control" value="{{ i_quantity }}" required /></td>
-                <td><input name="i_unit" type="text" placeholder=" clove" class="form-control" value="{{ i_unit }}" /></td>
-                <td><input name="i_preparation" type="text" placeholder=" minced" class="form-control" value="{{ i_preparation }}" /></td>
+                <td><input name="i_name" type="text" placeholder="" class="form-control" value="{{ i_name }}" required /></td>
+                <td><input name="i_quantity" type="number" step="0.1" placeholder="" class="form-control" value="{{ i_quantity }}" required /></td>
+                <td><input name="i_unit" type="text" placeholder="" class="form-control" value="{{ i_unit }}" /></td>
+                <td><input name="i_preparation" type="text" placeholder="" class="form-control" value="{{ i_preparation }}" /></td>
 
                 {% if path != url_for("recipe.recipe_add_get") %}
                     <td><button class="btn btn-danger" type="button">X</button></td>
