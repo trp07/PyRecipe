@@ -28,3 +28,19 @@ class Ingredient(mongoengine.EmbeddedDocument):
     preparation = mongoengine.StringField(required=False, default="")
 
     meta = {"db_alias": "core", "collection": "ingredients"}
+
+    @staticmethod
+    def create_ingredient(name, quantity, unit, preparation) -> "Ingredient":
+        """
+        Given the correct params, return a valid Ingredient
+
+        i = Ingredient.create_ingredient(name, quantity, unit, preparation)
+
+        :returns: Ingredient or None if failed
+        """
+        i = Ingredient()
+        i.name = name
+        i.quantity = quantity
+        i.unit = unit
+        i.preparation = preparation
+        return i

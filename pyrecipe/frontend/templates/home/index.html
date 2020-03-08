@@ -1,0 +1,56 @@
+{% extends "shared/_base.html" %}
+
+{% block main_content %}
+
+<div class="hero">
+    <div class="hero-inner">
+        <h1>Hello, {{ name }}!</h1>
+
+        <input type="text" placeholder="Search recipes, available: {{recipes|length}}" class="form-control">
+
+        <a href="{{ url_for('recipe.recipes_favorite') }}">Favorites</a>
+        <a href="{{ url_for('recipe.recipes_recently_added') }}">Most Recent</a>
+        <a href="{{ url_for('recipe.recipes_random') }}">Random</a>
+
+        {% if error %}
+            <div class="error-msg">{{ error }}</div>
+        {% endif %}
+    </div>
+</div>
+
+
+<hr>
+<ul class="tags">
+{% for tag in tags %}
+    {% include "shared/_list_tags.html" %}
+{% endfor %}
+</ul>
+
+<hr>
+
+
+<div class="container recipe-list">
+
+    <h1>Recipes Available</h1>
+
+    <div class="row">
+
+        {% for recipe in recipes %}
+        <div class="col-md-6">
+            <div class="recipe">
+                <div class="title">
+                    <a href="{{ url_for('recipe.recipe_view', recipe_id=recipe.id) }}">{{ recipe.name }}</a>
+                    <div class="description">Cook Time: {{(recipe.cook_time|string).rstrip(".0")}} min.</div>
+
+                    {% for tag in recipe.tags %}
+                        <div class="tag">{{tag}}</div>
+                    {%endfor %}
+
+                </div>
+            </div>
+        </div>
+            {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

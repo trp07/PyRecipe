@@ -1,0 +1,31 @@
+{% extends "shared/_base.html" %}
+
+{% block main_content %}
+
+<div class="tags">
+    Tags:
+    {% for tag in recipe.tags %}
+        {% include "shared/_list_tags.html" %}
+    {% endfor %}
+</div>
+<hr>
+
+<h1 class="title">{{ recipe.name.title() }}</h1>
+<h2>Prep Time: {{ recipe.prep_time|int }} min. |  Cook Time: {{ recipe.cook_time|int }} min. </h2>
+<h2>Servings: {{ recipe.servings }}</h2>
+
+<h2>Ingredients:</h2>
+<ul class="ingredients">
+{% for ingredient in recipe.ingredients %}
+    <li>{{ ingredient.name }} -- {{ ingredient.quantity }} {{ ingredient.unit }}</li>
+{% endfor %}
+</ul>
+
+<h2>Directions:</h2>
+<ul class="directions">
+{% for item in recipe.directions %}
+    <li> {{ item }}</li>
+{% endfor %}
+</ul>
+
+{% endblock %}

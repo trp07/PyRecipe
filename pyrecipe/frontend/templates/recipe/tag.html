@@ -1,0 +1,9 @@
+{% extends "shared/_base.html" %}
+
+{% block main_content %}
+
+{% for recipe in recipes %}
+    {% include "shared/_list_recipes.html" %}
+{% endfor %}
+
+{% endblock %}

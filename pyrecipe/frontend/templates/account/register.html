@@ -1,0 +1,24 @@
+{% extends "shared/_base.html" %}
+
+{% block main_content %}
+    </div class="form-container">
+        <form action="" method="POST" class="account-form">
+            <h1>Register at PyRecipe</h1>
+
+            <input name="name" type="text" placeholder=" Your name" class="form-control" value="{{ name }}" required>
+            <input name="email" type="email" placeholder=" Email address" class="form-control" value="{{ email }}" required>
+            <input name="password" type="password" placeholder=" Password" class="form-control" value="{{ password }}" required>
+            <button type="submit" class="btn btn-danger">Register</button>
+            <div style="clear: both"></div>
+
+            {% if error %}
+                <div class="error-msg">{{ error }}</div>
+            {% endif %}
+
+        </form>
+    </div>
+{% endblock %}
+
+{% block additional_css %}
+    <link rel="stylesheet" href="/static/css/account.css">
+{% endblock %}

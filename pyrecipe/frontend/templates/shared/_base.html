@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}PyRecipe{% endblock %}</title>
+
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css"/>
+    <link rel="stylesheet" href="/static/css/site.css"/>
+
+    {% block additional_css %}{% endblock %}
+</head>
+
+<body>
+
+<nav>
+    <a href="{{ url_for('home.index') }}">Home</a>
+    <a href="{{ url_for('home.about') }}">About</a>
+    {% if user_id %}
+    <a href="{{ url_for('account.index') }}">Account</a>
+    <a href="{{ url_for('account.logout') }}">Logout</a>
+    {% else %}
+    <a href="{{ url_for('account.login_get') }}">Login</a>
+    <a href="{{ url_for('account.register_get') }}">Register</a>
+    {% endif %}
+</nav>
+
+<div class="main_content">
+    {% block main_content %}{% endblock %}
+</div>
+
+<script src="/static/js/bootstrap/bootstrap.min.js"></script>
+<script src="/static/js/jquery/jquery-3.4.1.min.js"></script>
+
+{% block additional_js %}{% endblock %}
+
+</body>
+</html>

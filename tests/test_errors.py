@@ -5,6 +5,7 @@ Tests for the pyrecipe.errors.custom_exceptions.py module.
 import pytest
 
 from pyrecipe.errors.custom_exceptions import UserNotFoundError
+from pyrecipe.errors.custom_exceptions import UserLoginError
 from pyrecipe.errors.custom_exceptions import UserCreationError
 
 
@@ -18,6 +19,13 @@ def test_UserNotFoundError(capsys):
         raise UserNotFoundError('Bob')
         out, err = capsys.readouterr()
         assert "User <Bob> was not found in the Database." in out
+
+
+def test_UserLoginError(capsys):
+    with pytest.raises(UserLoginError):
+        raise UserLoginError("incorrect password")
+        out, err = capsys.readouterr()
+        assert 'incorrect password' in out
 
 
 def test_UserCreationErrror_email(capsys):

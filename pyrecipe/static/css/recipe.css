@@ -1,0 +1,54 @@
+
+.form-container {
+    padding: 50px;
+}
+
+.form-container h1 {
+    text-align: center;
+}
+
+.recipe-section {
+    padding-top: 20px;
+}
+
+form.recipe-form > * {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+
+form.recipe-form button {
+    float: center;
+}
+
+form.recipe-form th {
+    color: grey;
+    font-style: italic;
+    padding-left: 15px;
+    opacity: 0.6;
+}
+
+form.recipe-form {
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    min-width: 500px;
+    max-width: 1000px;
+    background-color: #baf3f1;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+textarea {
+    resize: none;
+    overflow: auto;
+}
+
+button.add-ingredient {
+    float: right;
+}
+
+.error-msg {
+    text-align: center;
+}

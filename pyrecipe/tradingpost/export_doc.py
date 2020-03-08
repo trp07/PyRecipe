@@ -29,7 +29,6 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
 
 from pyrecipe import __version__ as VERSION
-from pyrecipe.templates.images import PDF_LOGO_PATH
 
 
 class FileWriter:
@@ -52,6 +51,7 @@ class FileWriter:
 
     PARENT_DIR = pathlib.Path(__file__).absolute().parent
     EXPORT_DIR = PARENT_DIR.joinpath("exports/")
+    PDF_LOGO_PATH = PARENT_DIR.joinpath("images/pyrecipe_pdf_logo.png")
 
     if not EXPORT_DIR.exists():
         EXPORT_DIR.mkdir()
@@ -103,7 +103,7 @@ class FileWriter:
 
             flowables.append(self._add_section("Directions", "Heading2"))
             for direction in recipe.directions:
-                flowables.append(self._add_sequence(recipe._id, direction))
+                flowables.append(self._add_sequence(recipe.id, direction))
                 flowables.append(Spacer(0, 5))
 
             if recipe.notes:
@@ -135,7 +135,7 @@ class FileWriter:
         """
         width, height = doc.pagesize
 
-        img = Image(PDF_LOGO_PATH, width=76.2, height=20)
+        img = Image(FileWriter.PDF_LOGO_PATH, width=76.2, height=20)
         img.wrapOn(canvas, width, height)
         img.drawOn(canvas, 0.5 * inch, 0.5 * inch)
 

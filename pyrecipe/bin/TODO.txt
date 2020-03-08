@@ -1,0 +1,7 @@
+Create a CLI for...
+* maintenance/admin purposes -- view users, change passwords, etc.
+* backup the database and other information/data
+
+Database migrations
+* script that compares the ODM's to what's in the DB
+and adds/deletes certain fields
