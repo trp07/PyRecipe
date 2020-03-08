@@ -98,7 +98,7 @@ def register_post():
     if vm.error:
         return vm.to_dict()
 
-    user = account_uc.create_user(name=vm.name, email=vm.email, password=vm.password)
+    user = account_uc.register_user(name=vm.name, email=vm.email, password=vm.password)
     if not user:
         vm.error = "User with email address already exists."
         return vm.to_dict()

@@ -18,11 +18,14 @@ class ViewModelBase:
     the user will be gained from any cookies contained in the
     request.
     """
+
     def __init__(self):
         self.request: Request = flask.request
         self.request_dict = request_dict.create(default_val="")
         self.error: Optional[str] = None
-        self.user_id: Optional[int] = cookie_auth.get_user_id_via_auth_cookie(self.request)
+        self.user_id: Optional[int] = cookie_auth.get_user_id_via_auth_cookie(
+            self.request
+        )
         self.user = User.find_user_by_id(self.user_id)
 
     def to_dict(self) -> dict:

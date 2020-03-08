@@ -5,6 +5,7 @@ from pyrecipe.storage.recipe import Recipe
 
 class IndexViewModel(ViewModelBase):
     """Viewmodel used for the /index view."""
+
     def __init__(self):
         super().__init__()
 

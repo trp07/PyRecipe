@@ -3,6 +3,7 @@ from pyrecipe.app.viewmodels.shared import ViewModelBase
 
 class RegisterViewModel(ViewModelBase):
     """Viewmodel used for the /account/register view."""
+
     def __init__(self):
         super().__init__()
         self.name = self.request_dict.name

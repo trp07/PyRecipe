@@ -27,6 +27,7 @@ app.register_blueprint(recipe_views.blueprint)
 
 secure_headers = secure.SecureHeaders()
 
+
 @app.after_request
 def set_secure_headers(response):
     secure_headers.flask(response)

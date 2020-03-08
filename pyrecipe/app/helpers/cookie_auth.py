@@ -9,7 +9,7 @@ from flask import Response
 
 from pyrecipe.storage import User
 
-AUTH_COOKIE_NAME = 'pyrecipe_demo_user'
+AUTH_COOKIE_NAME = "pyrecipe_demo_user"
 
 
 def set_auth(response: Response, user_id: int):
@@ -21,8 +21,8 @@ def set_auth(response: Response, user_id: int):
 
 def _hash_text(text: str) -> str:
     """Hash the given text."""
-    text = 'salty__' + text + '__text'
-    return hashlib.sha512(text.encode('utf-8')).hexdigest()
+    text = "salty__" + text + "__text"
+    return hashlib.sha512(text.encode("utf-8")).hexdigest()
 
 
 def _add_cookie_callback(_, response: Response, name: str, value: str):
@@ -35,7 +35,7 @@ def get_user_id_via_auth_cookie(request: Request) -> Optional[int]:
         return None
 
     val = request.cookies[AUTH_COOKIE_NAME]
-    parts = val.split(':')
+    parts = val.split(":")
     if len(parts) != 2:
         return None
 

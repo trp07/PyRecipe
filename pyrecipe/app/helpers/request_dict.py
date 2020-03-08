@@ -6,6 +6,7 @@ class RequestDictionary(dict):
     Dict subclass that enables one to retrieve key, value
     pairs via class.attr method.
     """
+
     def __init__(self, *args, default_val=None, **kwargs):
         self.default_val = default_val
         super().__init__(*args, **kwargs)
@@ -33,11 +34,6 @@ def create(default_val=None, **route_args) -> RequestDictionary:
     """
     request = flask.request
 
-    data = {
-        **request.args,
-        **request.headers,
-        **request.form,
-        **route_args,
-    }
+    data = {**request.args, **request.headers, **request.form, **route_args}
 
     return RequestDictionary(data, default_val=default_val)

@@ -4,7 +4,7 @@ from typing import Optional
 from pyrecipe.storage import User
 
 
-def login_user(email:str, password:str) -> Optional[User]:
+def login_user(email: str, password: str) -> Optional[User]:
     """
     Login the user and return their DB instance.
 
@@ -15,7 +15,7 @@ def login_user(email:str, password:str) -> Optional[User]:
     return user
 
 
-def create_user(name:str, email:str, password:str) -> Optional[User]:
+def register_user(name: str, email: str, password: str) -> Optional[User]:
     """
     Create a new user upon registration.
 
