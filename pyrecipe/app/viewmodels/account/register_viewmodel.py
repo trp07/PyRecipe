@@ -1,5 +1,4 @@
 from pyrecipe.app.viewmodels.shared import ViewModelBase
-from pyrecipe.storage.user import User
 
 
 class RegisterViewModel(ViewModelBase):
@@ -19,5 +18,3 @@ class RegisterViewModel(ViewModelBase):
             self.error = "You must specify a password."
         elif len(self.password) < 5:
             self.error = "The password must be at least 5 characters."
-        elif User.find_user_by_email(self.email):
-            self.error = "A user with that email address already exists."

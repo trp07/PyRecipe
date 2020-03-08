@@ -5,6 +5,7 @@ import flask
 from pyrecipe.frontend import TEMPLATESDIR
 from pyrecipe.static import STATICDIR
 from pyrecipe.storage import User
+from pyrecipe.usecases import account_uc
 from pyrecipe.app.helpers.view_modifiers import response
 from pyrecipe.app.viewmodels.account import IndexViewModel
 from pyrecipe.app.viewmodels.account import RegisterViewModel
@@ -52,8 +53,9 @@ def login_post():
     if vm.error:
         return vm.to_dict()
 
-    user = User.login_user(email=vm.email, password=vm.password)
+    user = account_uc.login_user(email=vm.email, password=vm.password)
     if not user:
+        vm.error = "Username or password are incorrect."
         return vm.to_dict()
 
     response = flask.redirect(flask.url_for("account.index"))
@@ -96,8 +98,9 @@ def register_post():
     if vm.error:
         return vm.to_dict()
 
-    user = User.create_user(name=vm.name, email=vm.email, password=vm.password)
+    user = account_uc.create_user(name=vm.name, email=vm.email, password=vm.password)
     if not user:
+        vm.error = "User with email address already exists."
         return vm.to_dict()
 
     response = flask.redirect(flask.url_for("account.index"))
