@@ -170,6 +170,18 @@ class Recipe(mongoengine.Document):
         return list(Recipe.objects().distinct("tags"))
 
     @staticmethod
+    def all_recipes() -> List["Recipe"]:
+        """
+        Get all the recipes that have not been marked as deleted.
+
+        recipes = Recipe.all_recipes()
+
+        :returns: List["Recipe"] of all recipes where deleted==False.
+        """
+        result = [r for r in Recipe.objects() if r.deleted == False]
+        return result
+
+    @staticmethod
     def deleted_recipes() -> Optional["Recipe"]:
         """
         Get all the recipes that have been marked as deleted.

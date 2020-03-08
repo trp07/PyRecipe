@@ -10,6 +10,7 @@ from pyrecipe.static import STATICDIR
 from pyrecipe.app.helpers.view_modifiers import response
 from pyrecipe.app.helpers import request_dict
 from pyrecipe.app.viewmodels.recipe import AddViewModel
+from pyrecipe.app.viewmodels.recipe import EditViewModel
 from pyrecipe.storage import Recipe
 
 
@@ -28,7 +29,7 @@ def recipes_all():
 
     :returns: all recipes where recipe.deleted==False.
     """
-    recipes = Recipe.deleted_recipes()
+    recipes = Recipe.all_recipes()
     return "Not Implemented... yet"
 
 
@@ -63,9 +64,6 @@ def recipe_add_get():
 @blueprint.route("/recipe/add", methods=["POST"])
 @response(template_file="recipe/add_recipe.html")
 def recipe_add_post():
-    """
-    redirect this to the actual recipe view afterwards
-    """
     vm = AddViewModel()
     if not vm.user:
         return flask.redirect(flask.url_for("account.login_get"))
@@ -90,8 +88,12 @@ def recipe_add_post():
 
 
 @blueprint.route("/recipe/edit/<recipe_id>", methods=["GET"])
-def recipe_edit_get():
-    return "Not Implemented... yet"
+def recipe_edit_get(recipe_id: str):
+    vm = EditViewModel()
+    if not vm.user:
+        return flask.redirect(flask.url_for("account.login_get"))
+    print(vm.recipe.ingredients)
+    return flask.redirect(flask.url_for("home.index"))
 
 
 @blueprint.route("/recipe/edit/<recipe_id>", methods=["POST"])
