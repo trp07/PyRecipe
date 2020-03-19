@@ -11,7 +11,7 @@ from pyrecipe.app.helpers.view_modifiers import response
 from pyrecipe.app.helpers import request_dict
 from pyrecipe.app.viewmodels.recipe import AddViewModel
 from pyrecipe.app.viewmodels.recipe import EditViewModel
-from pyrecipe.storage import Recipe
+from pyrecipe.usecases import recipe_uc
 
 
 blueprint = flask.Blueprint(
@@ -29,7 +29,7 @@ def recipes_all():
 
     :returns: all recipes where recipe.deleted==False.
     """
-    recipes = Recipe.all_recipes()
+    recipes = recipe_uc.get_all_recipes()
     return "Not Implemented... yet"
 
 
@@ -43,7 +43,7 @@ def recipe_view(recipe_id: str):
 
     :returns: recipe or 404 if recipe is not found.
     """
-    recipe = Recipe.find_recipe_by_id(recipe_id)
+    recipe = recipe_uc.find_recipe_by_id(recipe_id)
     if not recipe:
         flask.abort(404)
     return {"recipe": recipe}
@@ -67,7 +67,7 @@ def recipe_add_post():
     vm = AddViewModel()
     if not vm.user:
         return flask.redirect(flask.url_for("account.login_get"))
-    recipe = Recipe.create_recipe(
+    recipe = recipe_uc.create_recipe(
         name=vm.name,
         prep_time=vm.prep_time,
         cook_time=vm.cook_time,
@@ -116,7 +116,7 @@ def recipes_with_tags(tags: List[str]):
     """
     if not isinstance(tags, MutableSequence):
         tags = [tags]
-    recipes = Recipe.find_recipes_by_tag(tags)
+    recipes = recipe_uc.find_recipes_by_tag(tags)
     return {"recipes": recipes}
 
 
