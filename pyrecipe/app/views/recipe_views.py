@@ -11,6 +11,7 @@ from pyrecipe.app.helpers.view_modifiers import response
 from pyrecipe.app.helpers import request_dict
 from pyrecipe.app.viewmodels.recipe import AddViewModel
 from pyrecipe.app.viewmodels.recipe import EditViewModel
+from pyrecipe.app.viewmodels.recipe import RecipeViewModel
 from pyrecipe.usecases import recipe_uc
 
 
@@ -43,10 +44,10 @@ def recipe_view(recipe_id: str):
 
     :returns: recipe or 404 if recipe is not found.
     """
-    recipe = recipe_uc.find_recipe_by_id(recipe_id)
-    if not recipe:
+    vm = RecipeViewModel(recipe_id)
+    if not vm.recipe:
         flask.abort(404)
-    return {"recipe": recipe}
+    return vm.to_dict()
 
 
 #################### Recipe Adding ##########################
