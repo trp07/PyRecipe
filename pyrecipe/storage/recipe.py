@@ -170,7 +170,7 @@ class Recipe(mongoengine.Document):
         return list(Recipe.objects().distinct("tags"))
 
     @staticmethod
-    def all_recipes() -> List["Recipe"]:
+    def active_recipes(deleted=None) -> List["Recipe"]:
         """
         Get all the recipes that have not been marked as deleted.
 

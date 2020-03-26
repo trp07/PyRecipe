@@ -30,7 +30,7 @@ def recipes_all():
 
     :returns: all recipes where recipe.deleted==False.
     """
-    recipes = recipe_uc.get_all_recipes()
+    recipes = recipe_uc.get_recipes(deleted=False)
     return "Not Implemented... yet"
 
 
@@ -44,7 +44,8 @@ def recipe_view(recipe_id: str):
 
     :returns: recipe or 404 if recipe is not found.
     """
-    vm = RecipeViewModel(recipe_id)
+    vm = RecipeViewModel()
+    vm.recipe = recipe_uc.find_recipe_by_id(recipe_id)
     if not vm.recipe:
         flask.abort(404)
     return vm.to_dict()
@@ -93,7 +94,8 @@ def recipe_edit_get(recipe_id: str):
     vm = EditViewModel()
     if not vm.user:
         return flask.redirect(flask.url_for("account.login_get"))
-    print(vm.recipe.ingredients)
+    recipe = recipe_uc.find_recipe_by_id(recipe_id)
+    print(recipe)
     return flask.redirect(flask.url_for("home.index"))
 
 
@@ -126,7 +128,7 @@ def recipes_deleted(username: str):
     """
     Routing required to view recipes that have been marked as deleted.
     """
-    recipes = Recipe.deleted_recipes()
+    recipes = recipe_uc.get_all_recipes(deleted=True)
     return "Not Implemented... yet"
 
 

@@ -5,7 +5,7 @@ from flask import Request
 
 from pyrecipe.app.helpers import request_dict
 from pyrecipe.app.helpers import cookie_auth
-from pyrecipe.storage.user import User
+from pyrecipe.usecases import account_uc
 
 
 class ViewModelBase:
@@ -26,7 +26,7 @@ class ViewModelBase:
         self.user_id: Optional[int] = cookie_auth.get_user_id_via_auth_cookie(
             self.request
         )
-        self.user = User.find_user_by_id(self.user_id)
+        self.user = account_uc.find_user_by_id(self.user_id)
 
     def to_dict(self) -> dict:
         return self.__dict__

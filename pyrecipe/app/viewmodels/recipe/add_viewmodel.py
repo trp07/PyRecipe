@@ -2,8 +2,6 @@ from collections import namedtuple
 from typing import List
 
 from pyrecipe.app.viewmodels.shared import ViewModelBase
-from pyrecipe.storage.recipe import Recipe
-from pyrecipe.storage.user import User
 
 
 class AddViewModel(ViewModelBase):

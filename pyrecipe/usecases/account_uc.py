@@ -24,3 +24,13 @@ def register_user(name: str, email: str, password: str) -> Optional[User]:
     """
     user = User.create_user(name, email, password)
     return user
+
+
+def find_user_by_id(user_id: str) -> Optional[User]:
+    """
+    Get the user object by the supplied user_id.
+
+    Returns the user object or None if the user doesn't exist.
+    """
+    user = User.find_user_by_id(user_id)
+    return user

@@ -5,14 +5,19 @@ from typing import List
 from pyrecipe.storage import Recipe
 
 
-def get_all_recipes() -> List[Recipe]:
-    """Get all recipes in database"""
-    recipes = Recipe.all_recipes()
+def get_all_recipes(deleted=None) -> List[Recipe]:
+    """Get all recipes in database."""
+    if deleted == False:
+        recipes = Recipe.active_recipes()
+    elif deleted == True:
+        recipes = Recipe.deleted_recipes()
+    else:
+        recipes = Recipe.active_recipes() + Recipe.deleted_recipes()
     return recipes
 
 
 def find_recipe_by_id(recipe_id: str) -> Optional["Recipe"]:
-    """Get specific recipe by id in database"""
+    """Get specific recipe by id in database."""
     recipe = Recipe.find_recipe_by_id(recipe_id)
     return recipe
 
@@ -41,6 +46,11 @@ def create_recipe(
 
 
 def find_recipes_by_tag(tags: List[str]) -> List[Recipe]:
-    """Find recipes with the given tags"""
+    """Find recipes with the given tags."""
     recipes = Recipe.find_recipes_by_tag(tags)
     return recipes
+
+
+def get_tags() -> List[str]:
+    tags = Recipe.get_tags()
+    return tags
