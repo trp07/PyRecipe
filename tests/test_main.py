@@ -6,7 +6,7 @@ import pytest
 
 from pyrecipe import main
 from pyrecipe.app import app
-from pyrecipe.storage import mongo_setup
+from pyrecipe.storage.mongo import MongoDriver
 
 def test_main(mocker):
     """
@@ -14,7 +14,7 @@ def test_main(mocker):
     WHEN main.main() is called
     THEN assert the application is started
     """
-    mongo_mock = mocker.patch.object(mongo_setup, "global_init")
+    mongo_mock = mocker.patch.object(MongoDriver, "db_initialize")
     app_mock = mocker.patch.object(app, "run")
     main.main()
 
