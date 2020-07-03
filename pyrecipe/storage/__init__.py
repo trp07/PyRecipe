@@ -1,3 +1,6 @@
+from . import shared
+from . import mongo
+
 from . import mongo_setup
 from .ingredient import Ingredient
 from .image import Image
