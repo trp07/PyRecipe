@@ -4,7 +4,6 @@ import flask
 
 from pyrecipe.frontend import TEMPLATESDIR
 from pyrecipe.static import STATICDIR
-from pyrecipe.storage import User
 from pyrecipe.usecases import account_uc
 from pyrecipe.app.helpers.view_modifiers import response
 from pyrecipe.app.viewmodels.account import IndexViewModel
