@@ -2,23 +2,23 @@
 
 from typing import Optional
 from typing import List
-from pyrecipe.storage import Recipe
+from pyrecipe.storage.mongo import MongoDriver
 
 
-def get_all_recipes(deleted=None) -> List[Recipe]:
+def get_all_recipes(deleted=None) -> List["RecipeModel"]:
     """Get all recipes in database."""
     if deleted == False:
-        recipes = Recipe.active_recipes()
+        recipes = MongoDriver.recipes_active()
     elif deleted == True:
-        recipes = Recipe.deleted_recipes()
+        recipes = MongoDriver.recipes_deleted()
     else:
-        recipes = Recipe.active_recipes() + Recipe.deleted_recipes()
+        recipes = MongoDriver.recipes_all()
     return recipes
 
 
-def find_recipe_by_id(recipe_id: str) -> Optional["Recipe"]:
+def find_recipe_by_id(recipe_id: str) -> Optional["RecipeModel"]:
     """Get specific recipe by id in database."""
-    recipe = Recipe.find_recipe_by_id(recipe_id)
+    recipe = MongoDriver.recipe_find_by_id(recipe_id)
     return recipe
 
 
@@ -31,9 +31,9 @@ def create_recipe(
         directions: List["directions"],
         tags: List["tags"] = [],
         notes: List["notes"] = [],
-    ) -> Recipe:
+    ) -> "RecipeModel":
     """Create a recipe in the database and return it."""
-    recipe = Recipe.create_recipe(
+    recipe = MongoDriver.recipe_create(
         name=name,
         prep_time=prep_time,
         cook_time=cook_time,
@@ -45,12 +45,13 @@ def create_recipe(
     return recipe
 
 
-def find_recipes_by_tag(tags: List[str]) -> List[Recipe]:
+def find_recipes_by_tag(tags: List[str]) -> List["RecipeModel"]:
     """Find recipes with the given tags."""
-    recipes = Recipe.find_recipes_by_tag(tags)
+    recipes = MongoDriver.recipes_find_by_tag(tags)
     return recipes
 
 
 def get_tags() -> List[str]:
-    tags = Recipe.get_tags()
+    """Get all the unique tags in the DB."""
+    tags = MongoDriver.recipes_get_tags()
     return tags
