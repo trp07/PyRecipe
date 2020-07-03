@@ -377,7 +377,7 @@ class MongoDriver(DBInitInt, RecipeDBInt, UserDBInt):
         user = User.objects().filter(email=email).first()
         if not user:
             return None
-        if not auth.verify_password(user.password_hash, password):
+        if not auth.verify_password(password, user.password_hash):
             return None
         return UserModel.from_dict(MongoDriver._user_to_dict(user))
 
