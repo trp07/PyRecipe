@@ -23,15 +23,15 @@ def find_recipe_by_id(recipe_id: str) -> Optional["RecipeModel"]:
 
 
 def create_recipe(
-        name: str,
-        prep_time: int,
-        cook_time: int,
-        servings: int,
-        ingredients: List["ingredients"],
-        directions: List["directions"],
-        tags: List["tags"] = [],
-        notes: List["notes"] = [],
-    ) -> "RecipeModel":
+    name: str,
+    prep_time: int,
+    cook_time: int,
+    servings: int,
+    ingredients: List["ingredients"],
+    directions: List["directions"],
+    tags: List["tags"] = [],
+    notes: List["notes"] = [],
+) -> "RecipeModel":
     """Create a recipe in the database and return it."""
     recipe = MongoDriver.recipe_create(
         name=name,
@@ -41,7 +41,8 @@ def create_recipe(
         ingredients=ingredients,
         directions=directions,
         tags=tags,
-        notes=notes)
+        notes=notes,
+    )
     return recipe
 
 

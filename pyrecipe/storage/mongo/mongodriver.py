@@ -143,7 +143,9 @@ class MongoDriver(DBInitInt, RecipeDBInt, UserDBInt):
         :param search_string: (str) string to search.
         :returns: List["RecipeModel"] a list of all recipes that match or None.
         """
-        recipes = list(Recipe.objects().filter(name__icontains=search_string, deleted=False))
+        recipes = list(
+            Recipe.objects().filter(name__icontains=search_string, deleted=False)
+        )
         return [RecipeModel.from_dict(MongoDriver._recipe_to_dict(r)) for r in recipes]
 
     @staticmethod
@@ -182,7 +184,6 @@ class MongoDriver(DBInitInt, RecipeDBInt, UserDBInt):
         """
         recipes = list(Recipe.objects())
         return [RecipeModel.from_dict(MongoDriver._recipe_to_dict(r)) for r in recipes]
-
 
     @staticmethod
     def recipes_active() -> List[RecipeModel]:
@@ -304,7 +305,6 @@ class MongoDriver(DBInitInt, RecipeDBInt, UserDBInt):
         r._update_last_mod_date()
         return result
 
-
     #### UserDBInt methods ####
 
     @staticmethod
@@ -362,7 +362,6 @@ class MongoDriver(DBInitInt, RecipeDBInt, UserDBInt):
         if user:
             return UserModel.from_dict(MongoDriver._user_to_dict(user))
 
-
     @staticmethod
     def user_login(email: str, password: str) -> Optional["UserModel"]:
         """
@@ -406,7 +405,9 @@ class MongoDriver(DBInitInt, RecipeDBInt, UserDBInt):
         """
         users = list(User.objects())
         if users:
-            return [UserModel.from_dict(MongoDriver._user_to_dict(user)) for user in users]
+            return [
+                UserModel.from_dict(MongoDriver._user_to_dict(user)) for user in users
+            ]
 
     @staticmethod
     def user_add_recipe(user: "UserModel", recipe_id: str) -> int:
@@ -439,6 +440,6 @@ class MongoDriver(DBInitInt, RecipeDBInt, UserDBInt):
         u = User.objects().filter(id=user.id).first()
         if u:
             password_hash = auth.hash_password(password)
-            u.update(password_hash = password_hash)
+            u.update(password_hash=password_hash)
             return password_hash
         return None
