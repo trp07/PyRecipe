@@ -7,7 +7,6 @@ from typing import Optional
 from flask import Request
 from flask import Response
 
-from pyrecipe.storage import User
 
 AUTH_COOKIE_NAME = "pyrecipe_demo_user"
 
