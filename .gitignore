@@ -104,3 +104,13 @@ venv.bak/
 .mypy_cache/
 
 .idea
+
+# local test files/paths
+pyrecipe/my_app.py
+pyrecipe/storage/dump/
+pyrecipe/storage/fake_db_creator.py
+pyrecipe/storage/fake_db_creator2.py
+pyrecipe/storage/my_app.py
+pyrecipe/tradingpost/my_exporter.py
+pyrecipe/tradingpost/my_importer.py
+pyrecipe/tradingpost/exports/

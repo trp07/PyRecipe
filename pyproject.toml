@@ -12,7 +12,6 @@ classifiers = [
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3 :: Only",
     "Topic :: Database",
@@ -24,13 +23,14 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.6"
-mongoengine = "^0.16.3"
+python = "^3.7"
+mongoengine = "=0.20.0"
 flask = "^1.0"
 reportlab = "^3.5"
 pikepdf = "^1.0"
 passlib = "^1.7"
 secure = "^0.2.1"
+mongomock = "^3.19"
 
 [tool.poetry.dev-dependencies]
 pytest-cov = "^2.6"
