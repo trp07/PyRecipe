@@ -2,7 +2,7 @@
 
 from pyrecipe import __version__ as VERSION
 from pyrecipe.app import app
-from pyrecipe.storage import mongo_setup
+from pyrecipe.storage.mongo import MongoDriver
 
 BANNER = r"""
   _____       _____           _
@@ -25,7 +25,7 @@ _^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^
 def main():
     """Run the app."""
     print(BANNER, flush=True)
-    mongo_setup.global_init(db_name=app.config.get("MONGODB_URI"), verbose=True)
+    MongoDriver.db_initialize(db_name=app.config.get("MONGODB_URI"), verbose=True)
     app.run()
 
 
