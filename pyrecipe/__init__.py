@@ -1,6 +1,7 @@
 __version__ = "0.0.0"
 
 from . import app
+from . import config
 from . import errors
 from . import security
 from . import services

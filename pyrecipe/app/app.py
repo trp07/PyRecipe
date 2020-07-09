@@ -8,10 +8,10 @@ import secure
 
 from pyrecipe.frontend import TEMPLATESDIR
 from pyrecipe.static import STATICDIR
-from pyrecipe.app import config
 from pyrecipe.app.views import home_views
 from pyrecipe.app.views import account_views
 from pyrecipe.app.views import recipe_views
+import pyrecipe.config as config
 
 
 app = flask.Flask(

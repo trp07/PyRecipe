@@ -25,7 +25,7 @@ _^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^
 def main():
     """Run the app."""
     print(BANNER, flush=True)
-    MongoDriver.db_initialize(db_name=app.config.get("MONGODB_URI"), verbose=True)
+    MongoDriver.db_initialize(db_name=app.config.get("DB_URI"), verbose=True)
     app.run()
 
 
