@@ -1,7 +1,7 @@
 """
 Tests for the pyrecipe.tradingpost.export_doc.py module.
 
-"mongodb" is a fixture defined in conftest.py
+fixtures defined in conftest.py
 """
 
 import datetime
@@ -13,7 +13,6 @@ import pyrecipe.tradingpost.export_doc
 from pyrecipe.tradingpost.export_doc import FileWriter
 from pyrecipe.tradingpost.export_doc import export_to_pdf
 from pyrecipe.tradingpost.export_doc import SimpleDocTemplate, getSampleStyleSheet
-from pyrecipe.storage import User, Recipe
 
 
 def test_fw_init_mocked(mocker):
@@ -23,8 +22,10 @@ def test_fw_init_mocked(mocker):
     THEN assert properly created
     * mock out the pathlib functions to not create a directory
     """
-    path_mock = mocker.patch.object(pathlib, 'Path')
-    path_mock.return_value.absolute.return_value.parent.return_value.joinpath.return_value.exists.return_value = None
+    path_mock = mocker.patch.object(pathlib, "Path")
+    path_mock.return_value.absolute.return_value.parent.return_value.joinpath.return_value.exists.return_value = (
+        None
+    )
 
     fw = FileWriter()
     assert isinstance(fw.doc, SimpleDocTemplate)
@@ -43,24 +44,21 @@ def test_fw_init():
     assert isinstance(fw.styles, getSampleStyleSheet().__class__)
 
 
-def test_fw_create_doc(mongodb, tmpdir):
+def test_fw_create_doc(get_recipe, tmpdir):
     """
     GIVEN a db with users and recipes
     WHEN a user's selected recipes are selected for export
     THEN assert FileWriter writes a pdf file
     """
-    db = mongodb
-
-    user = User.objects().filter(email='blackknight@mail.com').first()
-    recipes = user.recipe_ids
+    recipes = get_recipe
 
     testdir = pathlib.Path(tmpdir).absolute()
-    testfile = testdir.joinpath('pyrecipe_test1.pdf')
+    testfile = testdir.joinpath("pyrecipe_test1.pdf")
 
     fw = FileWriter(filename=str(testfile))
 
     result = fw.create_doc(recipes)
-    assert result == 3
+    assert result == 2
     assert pathlib.Path(testfile).absolute().exists()
 
 
@@ -68,32 +66,26 @@ def test_export_to_pdf_mocked(mocker):
     """
     GIVEN a call to export_to_pdf
     WHEN supplied with the correct params
-    THEN assert FileWriter.create_doc() and _write_metadata are called with no errors
+    THEN assert FileWriter.create_doc() is called with no errors
     * mock out the calls to other functions
     """
-    recipes = ['r1', 'r2']
-    create_mock = mocker.patch.object(FileWriter, 'create_doc')
-    meta_mock = mocker.patch.object(pyrecipe.tradingpost.export_doc, '_write_metadata')
+    recipes = ["r1", "r2"]
+    create_mock = mocker.patch.object(FileWriter, "create_doc")
 
     result = export_to_pdf(recipes, verbose=False)
     assert create_mock.call_count == 1
-    assert meta_mock.call_count == 1
 
 
-def test_export_to_pdf(mongodb, tmpdir):
+def test_export_to_pdf(get_recipe, tmpdir):
     """
     GIVEN a call to export_to_pdf
     WHEN supplied with the correct params
     THEN assert the file is written and the correct return values returned
     """
-    db = mongodb
-
-    user = User.objects().filter(email='blackknight@mail.com').first()
-    recipes = user.recipe_ids
+    recipes = get_recipe
 
     testdir = pathlib.Path(tmpdir).absolute()
-    testfile = testdir.joinpath('pyrecipe_test1.pdf')
+    testfile = testdir.joinpath("pyrecipe_test1.pdf")
 
     result = export_to_pdf(recipes, filename=str(testfile), verbose=True)
-    assert result == (3, 3, str(testfile))
-
+    assert result == (2, str(testfile))
