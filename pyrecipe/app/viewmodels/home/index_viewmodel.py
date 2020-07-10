@@ -1,6 +1,4 @@
 from pyrecipe.app.viewmodels.shared import ViewModelBase
-from pyrecipe.usecases import account_uc
-from pyrecipe.usecases import recipe_uc
 
 
 class IndexViewModel(ViewModelBase):
@@ -14,7 +12,3 @@ class IndexViewModel(ViewModelBase):
             self.name = "Guest"
         else:
             self.name = self.user.name
-
-    def get_recipes(self):
-        self.recipes = recipe_uc.get_all_recipes(deleted=False)
-        self.tags = recipe_uc.get_tags()

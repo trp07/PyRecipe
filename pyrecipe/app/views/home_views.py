@@ -9,19 +9,14 @@ from collections.abc import MutableSequence
 from typing import List
 
 import flask
-from flask import render_template
-from flask import flash
-from flask import redirect
-from flask import url_for
-from flask import request
-from werkzeug.urls import url_parse
 
-
-from pyrecipe.frontend import TEMPLATESDIR
-from pyrecipe.static import STATICDIR
 from pyrecipe.app.helpers.view_modifiers import response
 from pyrecipe.app.viewmodels.home import IndexViewModel
 from pyrecipe.app.viewmodels.home import AboutViewModel
+from pyrecipe.frontend import TEMPLATESDIR
+from pyrecipe.static import STATICDIR
+from pyrecipe.usecases.recipe_uc import RecipeUC
+from pyrecipe.storage.mongo import MongoDriver
 
 
 blueprint = flask.Blueprint(
@@ -38,9 +33,11 @@ def index():
     Login not required.
     """
     vm = IndexViewModel()
-
     vm.validate()
-    vm.get_recipes()
+
+    uc = RecipeUC(MongoDriver)
+    vm.recipes = uc.get_all_recipes()
+    vm.tags = uc.get_tags()
 
     return vm.to_dict()
 

@@ -3,18 +3,20 @@
 import flask
 
 from pyrecipe.frontend import TEMPLATESDIR
-from pyrecipe.static import STATICDIR
-from pyrecipe.usecases import account_uc
 from pyrecipe.app.helpers.view_modifiers import response
 from pyrecipe.app.viewmodels.account import IndexViewModel
 from pyrecipe.app.viewmodels.account import RegisterViewModel
 from pyrecipe.app.viewmodels.account import LoginViewModel
 import pyrecipe.app.helpers.cookie_auth as cookie_auth
+from pyrecipe.static import STATICDIR
+from pyrecipe.usecases.account_uc import AccountUC
+from pyrecipe.storage.mongo import MongoDriver
 
 
 blueprint = flask.Blueprint(
     "account", __name__, template_folder=str(TEMPLATESDIR), static_folder=str(STATICDIR)
 )
+
 
 #################### Index ##########################
 
@@ -52,7 +54,8 @@ def login_post():
     if vm.error:
         return vm.to_dict()
 
-    user = account_uc.login_user(email=vm.email, password=vm.password)
+    uc = AccountUC(MongoDriver)
+    user = uc.login_user(email=vm.email, password=vm.password)
     if not user:
         vm.error = "Username or password are incorrect."
         return vm.to_dict()
@@ -97,7 +100,8 @@ def register_post():
     if vm.error:
         return vm.to_dict()
 
-    user = account_uc.register_user(name=vm.name, email=vm.email, password=vm.password)
+    uc = AccountUC(MongoDriver)
+    user = uc.register_user(name=vm.name, email=vm.email, password=vm.password)
     if not user:
         vm.error = "User with email address already exists."
         return vm.to_dict()

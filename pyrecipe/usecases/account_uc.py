@@ -1,36 +1,41 @@
 """Use Cases for account-related logic."""
 
 from typing import Optional
-from pyrecipe.storage.mongo import MongoDriver
 
 
-def login_user(email: str, password: str) -> Optional["UserModel"]:
-    """
-    Login the user and return their DB instance.
+class AccountUC:
+    """Class that provides all account-related use cases."""
 
-    Returns the user from the DB or None if no user exists or
-    the password is incorrect.
-    """
-    user = MongoDriver.user_login(email, password)
-    return user
+    def __init__(self, db_driver):
+        self._driver = db_driver
 
+    def login_user(self, email: str, password: str) -> Optional["UserModel"]:
+        """
+        Login the user and return their DB instance.
 
-def register_user(name: str, email: str, password: str) -> Optional["UserModel"]:
-    """
-    Create a new user upon registration.
-
-    Returns the new user instance or None if the user with the
-    same email address already exists.
-    """
-    user = MongoDriver.user_create(name, email, password)
-    return user
+        Returns the user from the DB or None if no user exists or
+        the password is incorrect.
+        """
+        user = self._driver.user_login(email, password)
+        return user
 
 
-def find_user_by_id(user_id: str) -> Optional["User"]:
-    """
-    Get the user object by the supplied user_id.
+    def register_user(self, name: str, email: str, password: str) -> Optional["UserModel"]:
+        """
+        Create a new user upon registration.
 
-    Returns the user object or None if the user doesn't exist.
-    """
-    user = MongoDriver.user_find_by_id(user_id)
-    return user
+        Returns the new user instance or None if the user with the
+        same email address already exists.
+        """
+        user = self._driver.user_create(name, email, password)
+        return user
+
+
+    def find_user_by_id(self, user_id: str) -> Optional["User"]:
+        """
+        Get the user object by the supplied user_id.
+
+        Returns the user object or None if the user doesn't exist.
+        """
+        user = self._driver.user_find_by_id(user_id)
+        return user
