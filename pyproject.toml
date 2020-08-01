@@ -30,6 +30,7 @@ reportlab = "^3.5"
 passlib = "^1.7"
 secure = "^0.2.1"
 mongomock = "^3.19"
+webtest = "^2.0"
 
 [tool.poetry.dev-dependencies]
 pytest-cov = "^2.6"
