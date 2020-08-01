@@ -9,8 +9,6 @@ from pyrecipe.app.viewmodels.account import IndexViewModel
 from pyrecipe.app import app as flask_app
 from pyrecipe.app.views import account_views
 
-from conftest import User
-
 
 #################### Index ##########################
 
@@ -57,7 +55,7 @@ def test_login_get(mocker):
     assert resp.location is None
 
 
-def test_login_post_valid(mocker):
+def test_login_post_valid(mocker, testuser):
     """
     GIVEN a running app
     WHEN valid user logs in
@@ -70,7 +68,7 @@ def test_login_post_valid(mocker):
     find = mocker.patch.object(AccountUC, "find_user_by_id")
     find.return_value = None
     login = mocker.patch.object(AccountUC, "login_user")
-    login.return_value = User(**form_data)
+    login.return_value = testuser(**form_data)
 
     with flask_app.test_request_context(path="/account/login", data=form_data):
         resp: Response = account_views.login_post()
@@ -125,7 +123,7 @@ def test_register_get(mocker):
     assert resp.location is None
 
 
-def test_register_post_valid(mocker):
+def test_register_post_valid(mocker, testuser):
     """
     GIVEN valid user form data
     WHEN posted through register_post
@@ -140,7 +138,7 @@ def test_register_post_valid(mocker):
     find = mocker.patch.object(AccountUC, "find_user_by_id")
     find.return_value = None
     register = mocker.patch.object(AccountUC, "register_user")
-    register.return_value = User(**form_data)
+    register.return_value = testuser(**form_data)
 
     with flask_app.test_request_context(path="/account/register", data=form_data):
         resp: Response = account_views.register_post()
