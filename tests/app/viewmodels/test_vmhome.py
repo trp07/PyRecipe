@@ -23,7 +23,7 @@ def test_idxvm_nouser(mocker):
     """
     target = mocker.patch.object(AccountUC, "find_user_by_id")
     target.return_value = None
-    with flask_app.test_request_context(path='/account/register', data=None):
+    with flask_app.test_request_context(path='/index', data=None):
         vm = IndexViewModel()
 
     vm.validate()
@@ -40,7 +40,7 @@ def test_idxvm_withuser(mocker):
     """
     target = mocker.patch.object(AccountUC, "find_user_by_id")
     target.return_value = USER("Dude")
-    with flask_app.test_request_context(path='/account/register', data=None):
+    with flask_app.test_request_context(path='/index', data=None):
         vm = IndexViewModel()
 
     vm.validate()
@@ -57,6 +57,6 @@ def test_aboutvm(mocker):
     """
     target = mocker.patch.object(AccountUC, "find_user_by_id")
     target.return_value = None
-    with flask_app.test_request_context(path='/account/register', data=None):
+    with flask_app.test_request_context(path='/about', data=None):
         vm = AboutViewModel()
     assert isinstance(vm, AboutViewModel)

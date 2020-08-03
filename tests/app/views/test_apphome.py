@@ -37,7 +37,7 @@ def test_aboutview(mocker):
     acct = mocker.patch.object(AccountUC, "find_user_by_id")
     aboutvm = mocker.patch.object(AboutViewModel, "__call__")
 
-    with flask_app.test_request_context(path="/index", data=None):
+    with flask_app.test_request_context(path="/about", data=None):
         resp: Response = home_views.about()
     assert resp.location is None
 

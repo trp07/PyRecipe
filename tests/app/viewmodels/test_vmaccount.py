@@ -19,7 +19,7 @@ def test_idxvm(mocker):
     """
     target = mocker.patch.object(AccountUC, "find_user_by_id")
     target.return_value = None
-    with flask_app.test_request_context(path='/account/register', data=None):
+    with flask_app.test_request_context(path="/account", data=None):
         vm = IndexViewModel()
 
     vm.to_dict()
@@ -39,7 +39,7 @@ def test_logvm_valid(mocker):
 
     target = mocker.patch.object(AccountUC, "find_user_by_id")
     target.return_value = None
-    with flask_app.test_request_context(path='/account/register', data=form_data):
+    with flask_app.test_request_context(path="/account/login", data=form_data):
         vm = LoginViewModel()
 
     vm.validate()
@@ -59,7 +59,7 @@ def test_logvm_noemail(mocker):
 
     target = mocker.patch.object(AccountUC, "find_user_by_id")
     target.return_value = None
-    with flask_app.test_request_context(path='/account/register', data=form_data):
+    with flask_app.test_request_context(path="/account/login", data=form_data):
         vm = LoginViewModel()
 
     vm.validate()
@@ -79,7 +79,7 @@ def test_logvm_nopwd(mocker):
 
     target = mocker.patch.object(AccountUC, "find_user_by_id")
     target.return_value = None
-    with flask_app.test_request_context(path='/account/register', data=form_data):
+    with flask_app.test_request_context(path="/account/login", data=form_data):
         vm = LoginViewModel()
 
     vm.validate()
@@ -100,7 +100,7 @@ def test_regvm_valid(mocker):
 
     target = mocker.patch.object(AccountUC, "find_user_by_id")
     target.return_value = None
-    with flask_app.test_request_context(path='/account/register', data=form_data):
+    with flask_app.test_request_context(path="/account/register", data=form_data):
         vm = RegisterViewModel()
 
     vm.validate()
@@ -121,7 +121,7 @@ def test_regvm_noname(mocker):
 
     target = mocker.patch.object(AccountUC, "find_user_by_id")
     target.return_value = None
-    with flask_app.test_request_context(path='/account/register', data=form_data):
+    with flask_app.test_request_context(path="/account/register", data=form_data):
         vm = RegisterViewModel()
 
     vm.validate()
@@ -142,7 +142,7 @@ def test_regvm_noemail(mocker):
 
     target = mocker.patch.object(AccountUC, "find_user_by_id")
     target.return_value = None
-    with flask_app.test_request_context(path='/account/register', data=form_data):
+    with flask_app.test_request_context(path="/account/register", data=form_data):
         vm = RegisterViewModel()
 
     vm.validate()
@@ -163,7 +163,7 @@ def test_regvm_nopassword(mocker):
 
     target = mocker.patch.object(AccountUC, "find_user_by_id")
     target.return_value = None
-    with flask_app.test_request_context(path='/account/register', data=form_data):
+    with flask_app.test_request_context(path="/account/register", data=form_data):
         vm = RegisterViewModel()
 
     vm.validate()
@@ -184,7 +184,7 @@ def test_regvm_badpassword(mocker):
 
     target = mocker.patch.object(AccountUC, "find_user_by_id")
     target.return_value = None
-    with flask_app.test_request_context(path='/account/register', data=form_data):
+    with flask_app.test_request_context(path="/account/register", data=form_data):
         vm = RegisterViewModel()
 
     vm.validate()
