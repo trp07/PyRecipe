@@ -2,8 +2,10 @@
 
 {% block main_content %}
 
-{% for recipe in recipes %}
-    {% include "shared/_list_recipes.html" %}
-{% endfor %}
+{% if recipes %}
+    {% for recipe in recipes %}
+        {% include "shared/_list_recipes.html" %}
+    {% endfor %}
+{% endif %}
 
 {% endblock %}

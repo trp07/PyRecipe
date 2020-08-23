@@ -32,7 +32,7 @@ def recipes_all():
     :returns: all recipes where recipe.deleted==False.
     """
     uc = RecipeUC(MongoDriver)
-    recipes = uc.get_recipes(deleted=False)
+    recipes = uc.get_all_recipes(deleted=False)
     return "Not Implemented... yet"
 
 
@@ -102,12 +102,11 @@ def recipe_edit_get(recipe_id: str):
 
     uc = RecipeUC(MongoDriver)
     recipe = uc.find_recipe_by_id(recipe_id)
-    print(recipe)
     return flask.redirect(flask.url_for("home.index"))
 
 
 @blueprint.route("/recipe/edit/<recipe_id>", methods=["POST"])
-def recipe_edit_post():
+def recipe_edit_post(recipe_id: str):
     return "Not Implemented... yet"
 
 
@@ -133,7 +132,7 @@ def recipes_with_tags(tags: List[str]):
 
 
 @blueprint.route("/recipe/deleted", methods=["GET"])
-def recipes_deleted(username: str):
+def recipes_deleted():
     """
     Routing required to view recipes that have been marked as deleted.
     """
