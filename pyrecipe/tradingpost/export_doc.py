@@ -95,10 +95,7 @@ class FileWriter:
 
             flowables.append(self._add_section("Ingredients", "Heading2"))
             for ingredient in recipe.ingredients:
-                igr = "{} - {} {}".format(
-                    ingredient.name, ingredient.quantity, ingredient.unit
-                )
-                flowables.append(self._add_bullet(igr))
+                flowables.append(self._add_bullet(ingredient))
 
             flowables.append(self._add_section("Directions", "Heading2"))
             for direction in recipe.directions:

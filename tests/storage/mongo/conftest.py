@@ -5,8 +5,6 @@ import datetime
 import pytest
 import mongoengine
 
-from pyrecipe.storage.mongo.image import Image
-from pyrecipe.storage.mongo.ingredient import Ingredient
 from pyrecipe.storage.mongo.recipe import Recipe
 from pyrecipe.storage.mongo.user import User
 
@@ -27,23 +25,23 @@ def mongodb(request):
 
 
 @pytest.fixture(scope="function")
-def recipes(mongodb, ingredients, image):
+def recipes(mongodb):
     """Return two recipes for testing.  Delete upon test completion."""
     recipe_1 = Recipe()
     recipe_1.name = "spam and eggs"
-    recipe_1.ingredients = ingredients
+    recipe_1.ingredients = ["spam", "eggs"]
     recipe_1.num_ingredients = 2
     recipe_1.directions = ["fry eggs", "add spam", "eat"]
     recipe_1.prep_time = 10
     recipe_1.cook_time = 5
     recipe_1.servings = 1
     recipe_1.tags = ["breakfast", "fast"]
-    recipe_1.images = [image]
+    recipe_1.images = ["/path/to/image"]
     recipe_1.save()
 
     recipe_2 = Recipe()
     recipe_2.name = "spam and oatmeal"
-    recipe_2.ingredients = ingredients
+    recipe_2.ingredients = ["spam", "oatmeal"]
     recipe_2.num_ingredients = 2
     recipe_2.directions = ["microwave oatmeal", "add spam"]
     recipe_2.tags = ["breakfast", "slow"]
@@ -52,34 +50,6 @@ def recipes(mongodb, ingredients, image):
     yield [recipe_1, recipe_2]
     recipe_1.delete()
     recipe_2.delete()
-
-
-@pytest.fixture(scope="function")
-def ingredients(mongodb):
-    """Return two ingredients."""
-    ingredient_1 = Ingredient()
-    ingredient_1.name = "garlic"
-    ingredient_1.quantity = "1"
-    ingredient_1.unit = "clove"
-    ingredient_1.preparation = "minced"
-
-    ingredient_2 = Ingredient()
-    ingredient_2.name = "onion"
-    ingredient_2.quantity = "1"
-    ingredient_2.unit = "large"
-    ingredient_2.preparation = "chopped"
-
-    return [ingredient_1, ingredient_2]
-
-
-@pytest.fixture(scope="function")
-def image(mongodb):
-    """Return Image data."""
-    image = Image()
-    image.recipe_id = "123456"
-    image.filepath = "/path/to/image"
-    image.description = "caption for image"
-    return image
 
 
 @pytest.fixture(scope="function")

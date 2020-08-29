@@ -1,7 +1,6 @@
 from pyrecipe.app.viewmodels.shared import ViewModelBase
 
 
-
 class IndexViewModel(ViewModelBase):
     """Viewmodel used for the /account/ view."""
 
