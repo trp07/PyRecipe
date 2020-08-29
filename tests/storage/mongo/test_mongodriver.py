@@ -6,7 +6,6 @@ Fixtures found in conftest.py
 * recipes -- returns two recipes for testing
 """
 import datetime
-from collections import namedtuple
 
 import pytest
 
@@ -18,9 +17,6 @@ from pyrecipe.storage.mongo.user import User
 from pyrecipe.storage.shared import RecipeModel
 from pyrecipe.storage.shared import UserModel
 from pyrecipe.security import auth
-
-
-INGREDIENT = namedtuple("Ingredient", ["name", "quantity", "unit", "preparation"])
 
 
 #######  DB Tests
@@ -62,48 +58,14 @@ def test_recipe_to_dict(recipes):
     r = MongoDriver._recipe_to_dict(recipes[0])
     assert isinstance(r, dict)
     assert r["name"] == "spam and eggs"
-    assert r["ingredients"] == [
-        {"name": "garlic", "quantity": "1", "unit": "clove", "preparation": "minced"},
-        {"name": "onion", "quantity": "1", "unit": "large", "preparation": "chopped"},
-    ]
+    assert r["ingredients"] == ["spam", "eggs"]
     assert r["num_ingredients"] == 2
     assert r["directions"] == ["fry eggs", "add spam", "eat"]
     assert r["prep_time"] == 10
     assert r["cook_time"] == 5
     assert r["servings"] == 1
     assert r["tags"] == ["breakfast", "fast"]
-    assert r["images"] == [
-        {
-            "recipe_id": "123456",
-            "filepath": "/path/to/image",
-            "description": "caption for image",
-        }
-    ]
-
-
-def test_ingredient_to_dict(ingredients):
-    """
-    GIVEN a mongo Ingredient object
-    WHEN calling MongoDriver._ingredient_to_dict
-    THEN assert it is turned into a dictionary
-    """
-    i = MongoDriver._ingredient_to_dict(ingredients[0])
-    assert i["name"] == "garlic"
-    assert i["quantity"] == "1"
-    assert i["unit"] == "clove"
-    assert i["preparation"] == "minced"
-
-
-def test_image_to_dict(image):
-    """
-    GIVEN a mongo image object
-    WHEN calling MongoDriver._image_to_dict
-    THEN assert it is turned into a dictionary
-    """
-    i = MongoDriver._image_to_dict(image)
-    assert i["recipe_id"] == "123456"
-    assert i["filepath"] == "/path/to/image"
-    assert i["description"] == "caption for image"
+    assert r["images"] == ["/path/to/image"]
 
 
 def test_recipe_create(mongodb):
@@ -112,13 +74,12 @@ def test_recipe_create(mongodb):
     WHEN calling MongoDriver.recipe_create(**kwargs)
     THEN assert the RecipeModel is returned
     """
-    ingredient = INGREDIENT("garlic", "1", "clove", "minced")
     r = MongoDriver.recipe_create(
         name="Tester",
         prep_time=5,
         cook_time=10,
         servings=1,
-        ingredients=[ingredient],
+        ingredients=["garlic, 1 clove minced"],
         directions=["cook", "eat"],
         tags=["breakfast", "easy"],
     )

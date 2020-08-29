@@ -10,9 +10,6 @@ from typing import Optional
 
 import mongoengine
 
-from .ingredient import Ingredient
-from .image import Image
-
 
 class Recipe(mongoengine.Document):
     """
@@ -20,7 +17,7 @@ class Recipe(mongoengine.Document):
 
     REQUIRED params:
     :param name: (str) name of the recipe.
-    :param ingredients: (list(Ingredient)) list of ingredients, an embedded document.
+    :param ingredients: (list) list of ingredients, an embedded document.
     :param num_ingredients: (int) total number of discrete ingredients.
         i.e. len(ingredients)
     :param directions: (list) ordered list of cooking directions.
@@ -32,7 +29,7 @@ class Recipe(mongoengine.Document):
     :param servings: (int) number of servings in the recipe.
     :param tags: (list) descriptive tags for a recipe.
         i.e. ['bbq', 'vegetarian']
-    :param images: (list(dict)) filepath and description for an uploaded image.
+    :param images: (list filepath for an uploaded image.
     :param notes: (list) list of notes about the recipe.
         i.e. "Substitute butter for ghee if you don't have ghee."
     :param rating: (float) user rating of recipe with 0.5 increments [0.0-5.0]
@@ -46,11 +43,13 @@ class Recipe(mongoengine.Document):
     name = mongoengine.StringField(required=True)
     num_ingredients = mongoengine.IntField(required=True, min_val=1)
     directions = mongoengine.ListField(field=mongoengine.StringField(), required=True)
+    ingredients = mongoengine.ListField(field=mongoengine.StringField(), required=True)
 
     prep_time = mongoengine.FloatField(default=0, min_val=0.0)
     cook_time = mongoengine.FloatField(default=0, min_val=0.0)
     servings = mongoengine.IntField(default=0, min_val=1)
     tags = mongoengine.ListField(required=False)
+    images = mongoengine.ListField(field=mongoengine.StringField(), required=False)
     notes = mongoengine.ListField(field=mongoengine.StringField(), required=False)
     rating = mongoengine.FloatField(required=False, min_val=0.0, max_val=5.0)
     favorite = mongoengine.BooleanField(default=False)
@@ -58,9 +57,6 @@ class Recipe(mongoengine.Document):
     deleted = mongoengine.BooleanField(default=False)
     created_date = mongoengine.DateTimeField(default=datetime.datetime.utcnow)
     last_modified_date = mongoengine.DateTimeField(default=datetime.datetime.utcnow)
-
-    ingredients = mongoengine.EmbeddedDocumentListField(Ingredient, required=True)
-    images = mongoengine.EmbeddedDocumentListField(Image, required=False)
 
     meta = {
         "db_alias": "core",
@@ -75,7 +71,7 @@ class Recipe(mongoengine.Document):
             "rating",
             "favorite",
             "deleted",
-            "ingredients.name",
+            "ingredients",
             "when_made",
         ],
     }

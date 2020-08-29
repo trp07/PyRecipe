@@ -15,14 +15,12 @@ from pyrecipe.storage.shared.recipe_model import RecipeModel
 
 from .recipe import Recipe
 from .user import User
-from .ingredient import Ingredient
-from .image import Image
 
 
 class MongoDriver(DBInitInt, RecipeDBInt, UserDBInt):
     """Singleton type class to drive all Mongo DB interactions."""
 
-    #### DBInitInt methods ####
+    #### DBInitInt methods ###################################################
 
     @staticmethod
     def db_initialize(db_name="pyrecipe", verbose=False) -> None:
@@ -31,21 +29,21 @@ class MongoDriver(DBInitInt, RecipeDBInt, UserDBInt):
         if verbose:
             print("[+] MongoDB connection registered to database: {}".format(db_name))
 
-    #### RecipeDBInt methods ####
+    #### RecipeDBInt methods #################################################
 
     @staticmethod
     def _recipe_to_dict(recipe: Recipe) -> dict:
         """Given a mongo Recipe object, return it as a dict."""
-        ingredients = [MongoDriver._ingredient_to_dict(i) for i in recipe.ingredients]
-        images = [MongoDriver._image_to_dict(i) for i in recipe.images]
         return {
             "_id": str(recipe.id),
             "name": recipe.name,
             "num_ingredients": recipe.num_ingredients,
+            "ingredients": recipe.ingredients,
             "directions": recipe.directions,
             "prep_time": recipe.prep_time,
             "cook_time": recipe.cook_time,
             "servings": recipe.servings,
+            "images": recipe.images,
             "tags": recipe.tags,
             "notes": recipe.notes,
             "rating": recipe.rating,
@@ -54,27 +52,6 @@ class MongoDriver(DBInitInt, RecipeDBInt, UserDBInt):
             "deleted": recipe.deleted,
             "created_date": recipe.created_date,
             "last_modified_date": recipe.last_modified_date,
-            "ingredients": ingredients,
-            "images": images,
-        }
-
-    @staticmethod
-    def _ingredient_to_dict(ingredient: Ingredient) -> dict:
-        """Given a mongo Ingredient object, return it as a dict."""
-        return {
-            "name": ingredient.name,
-            "quantity": ingredient.quantity,
-            "unit": ingredient.unit,
-            "preparation": ingredient.preparation,
-        }
-
-    @staticmethod
-    def _image_to_dict(image: Image) -> dict:
-        """Given a mongo Image object, return it as a dict."""
-        return {
-            "recipe_id": str(image.recipe_id),
-            "filepath": image.filepath,
-            "description": image.description,
         }
 
     @staticmethod
@@ -97,24 +74,14 @@ class MongoDriver(DBInitInt, RecipeDBInt, UserDBInt):
         """
         r = Recipe()
         r.name = name
-
         r.prep_time = float(prep_time)
         r.cook_time = float(cook_time)
         r.servings = int(servings)
-
-        igrs = []
-        for i in ingredients:
-            igr = Ingredient.create_ingredient(
-                i.name, i.quantity, i.unit, i.preparation
-            )
-            igrs.append(igr)
-        r.num_ingredients = len(igrs)
-        r.ingredients = igrs
-
+        r.ingredients = ingredients
+        r.num_ingredients = len(ingredients)
         r.directions = directions
         r.tags = tags
         r.notes = notes
-
         r.save()
         return RecipeModel.from_dict(MongoDriver._recipe_to_dict(r))
 
@@ -223,13 +190,7 @@ class MongoDriver(DBInitInt, RecipeDBInt, UserDBInt):
         copy = Recipe()
         copy.name = recipe["name"] + "_COPY"
         copy.num_ingredients = recipe["num_ingredients"]
-        igrs = []
-        for i in recipe["ingredients"]:
-            igr = Ingredient.create_ingredient(
-                i["name"], i["quantity"], i["unit"], i["preparation"]
-            )
-            igrs.append(igr)
-        copy.ingredients = igrs
+        copy.ingredients = recipe["ingredients"]
         copy.directions = recipe["directions"]
         copy.prep_time = recipe["prep_time"]
         copy.cook_time = recipe["cook_time"]
@@ -305,7 +266,7 @@ class MongoDriver(DBInitInt, RecipeDBInt, UserDBInt):
         r._update_last_mod_date()
         return result
 
-    #### UserDBInt methods ####
+    #### UserDBInt methods ###################################################
 
     @staticmethod
     def _user_to_dict(user: User) -> dict:
