@@ -49,8 +49,8 @@ def test_addvm(mocker):
         ],
         "tags": ["breakfast", "easy"],
         "ingredients": [
-            {"i_name": "steel cut oatmeal", "i_quantity": "2", "i_unit": "cup", "i_preparation": "dry"},
-            {"i_name": "water", "i_quantity": "5", "i_unit": "cup", "i_preparation": ""},
+            "steel cut oatmeal, 2 cups",
+            "water, 5 cups",
         ],
     }
 

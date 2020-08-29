@@ -1,4 +1,3 @@
-from collections import namedtuple
 from typing import List
 
 from pyrecipe.app.viewmodels.shared import ViewModelBase
@@ -7,38 +6,18 @@ from pyrecipe.app.viewmodels.shared import ViewModelBase
 class AddViewModel(ViewModelBase):
     """Viewmodel used for the /recipe/add view."""
 
-    Ingredient = namedtuple("Ingredient", ["name", "quantity", "unit", "preparation"])
-
     def __init__(self):
         super().__init__()
         self.method = self.request.method
         self.path = self.request.path
 
     @property
-    def ingredients(self) -> List["Ingredient"]:
+    def ingredients(self) -> List["ingredient"]:
         """Returns all ingredients passed in from user input."""
-        num_ingredients = len(self.request.form.getlist("i_name"))
-        names = self.request.form.getlist("i_name")
-        quantities = self.request.form.getlist("i_quantity")
-        units = self.request.form.getlist("i_unit")
-        preparations = self.request.form.getlist("i_preparation")
-
-        igrs = []
-        for i in range(num_ingredients):
-            try:
-                unit = units[i]
-            except IndexError:
-                unit = ""
-
-            try:
-                prep = preparations[i]
-            except IndexError:
-                prep = ""
-
-            igr = AddViewModel.Ingredient(names[i], quantities[i], unit, prep)
-            igrs.append(igr)
-
-        return igrs
+        ingredients = [
+            i.strip() for i in self.request.form["ingredients"].split("\n") if i.strip()
+        ]
+        return ingredients
 
     @property
     def tags(self) -> List["tags"]:
