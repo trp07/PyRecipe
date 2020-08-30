@@ -19,6 +19,10 @@
     <a href="{{ url_for('account.index') }}">Account</a>
     <a href="{{ url_for('account.logout') }}">Logout</a>
     <a class="btn btn-primary" href="{{ url_for('recipe.recipe_add_get') }}" role="button">Add Recipe</a>
+        {% if recipe %}
+        <a class="btn btn-warning" href="{{ url_for('recipe.recipe_add_get') }}" role="button">Edit Recipe</a>
+        {% endif%}
+
     {% else %}
     <a href="{{ url_for('account.login_get') }}">Login</a>
     <a href="{{ url_for('account.register_get') }}">Register</a>
