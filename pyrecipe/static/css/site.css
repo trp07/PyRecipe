@@ -20,6 +20,10 @@ nav > a {
     color: white;
 }
 
+nav > a.btn {
+    word-spacing: 1px;
+}
+
 .hero {
     background-color: #0073b7;
     color: white;
