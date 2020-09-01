@@ -63,3 +63,30 @@ class RecipeUC:
         """Get all the unique tags in the DB."""
         tags = self._driver.recipes_get_tags()
         return tags
+
+
+    def edit_recipe(
+        self,
+        _id: str,
+        name: str,
+        prep_time: int,
+        cook_time: int,
+        servings: int,
+        ingredients: List["ingredients"],
+        directions: List["directions"],
+        tags: List["tags"] = [],
+        notes: List["notes"] = [],
+    ) -> "RecipeModel":
+        """Create a recipe in the database and return it."""
+        recipe = self._driver.recipe_edit(
+            _id=_id,
+            name=name,
+            prep_time=prep_time,
+            cook_time=cook_time,
+            servings=servings,
+            ingredients=ingredients,
+            directions=directions,
+            tags=tags,
+            notes=notes,
+        )
+        return recipe

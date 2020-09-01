@@ -95,19 +95,43 @@ def recipe_add_post():
 
 
 @blueprint.route("/recipe/edit/<recipe_id>", methods=["GET"])
+@response(template_file="recipe/add_recipe.html")
 def recipe_edit_get(recipe_id: str):
     vm = EditViewModel()
     if not vm.user:
         return flask.redirect(flask.url_for("account.login_get"))
 
     uc = RecipeUC(MongoDriver)
-    recipe = uc.find_recipe_by_id(recipe_id)
-    return flask.redirect(flask.url_for("home.index"))
+    vm.recipe = uc.find_recipe_by_id(recipe_id)
+
+    return {**vm.to_dict(), **vm.edit_form()}
 
 
 @blueprint.route("/recipe/edit/<recipe_id>", methods=["POST"])
+@response(template_file="recipe/add_recipe.html")
 def recipe_edit_post(recipe_id: str):
-    return "Not Implemented... yet"
+    vm = AddViewModel()
+    if not vm.user:
+        return flask.redirect(flask.url_for("account.login_get"))
+
+    uc = RecipeUC(MongoDriver)
+    recipe = uc.edit_recipe(
+        _id=vm.path.split("/")[-1],
+        name=vm.name,
+        prep_time=vm.prep_time,
+        cook_time=vm.cook_time,
+        servings=vm.servings,
+        ingredients=vm.ingredients,
+        directions=vm.directions,
+        tags=vm.tags,
+        notes=vm.notes,
+    )
+    if recipe:
+        return flask.redirect(
+            flask.url_for("recipe.recipe_view", recipe_id=str(recipe.id))
+        )
+    return vm.to_dict()
+
 
 
 #################### Recipes with... ########################

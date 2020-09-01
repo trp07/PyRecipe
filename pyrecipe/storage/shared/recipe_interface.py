@@ -24,6 +24,11 @@ class RecipeDBInt(metaclass=ABCMeta):
         pass
 
     @abstractmethod
+    def recipe_edit(**kwargs) -> "RecipeModel":
+        """Wholescale edit a recipe's information and save it in DB."""
+        pass
+
+    @abstractmethod
     def recipe_find_by_id(recipe_id: str) -> Optional["RecipeModel"]:
         """Find recipe in DB by given id."""
         pass

@@ -86,6 +86,41 @@ class MongoDriver(DBInitInt, RecipeDBInt, UserDBInt):
         return RecipeModel.from_dict(MongoDriver._recipe_to_dict(r))
 
     @staticmethod
+    def recipe_edit(
+        _id: str,
+        name: str,
+        prep_time: int,
+        cook_time: int,
+        servings: int,
+        ingredients: List["ingredients"],
+        directions: List["directions"],
+        tags: List["tags"] = [],
+        notes: List["notes"] = [],
+    ) -> RecipeModel:
+        """
+        Wholescale edit a recipe's information.
+
+        r = MongoDriver.recipe_edit(**kwargs)
+
+        :returns: Recipe instance and saves it into the DB.
+        """
+        r = Recipe.objects().filter(id=_id).first()
+        if r:
+            r.update(
+                name=name,
+                prep_time=prep_time,
+                cook_time=cook_time,
+                servings=servings,
+                ingredients=ingredients,
+                directions=directions,
+                tags=tags,
+                notes=notes,
+            )
+            r.save()
+            return RecipeModel.from_dict(MongoDriver._recipe_to_dict(r))
+
+
+    @staticmethod
     def recipe_find_by_id(recipe_id: str) -> Optional[RecipeModel]:
         """
         Return the recipe with the given id.
