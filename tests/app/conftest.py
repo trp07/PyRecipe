@@ -25,6 +25,7 @@ class TestRecipe:
         self.notes = notes
         self.tags = tags
         self.id = "12345"
+        self._id = self.id
 
 
 @pytest.fixture(scope="function")

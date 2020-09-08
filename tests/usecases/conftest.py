@@ -46,6 +46,20 @@ class RecipeDriver:
         )
         return r
 
+    def recipe_edit(
+        self, _id, name, prep_time, cook_time, servings, ingredients, directions, tags, notes
+    ):
+        r = self.recipe_find_by_id(_id)
+        r.name = name
+        r.prep_time = prep_time
+        r.cook_time = cook_time
+        r.servings = servings
+        r.ingredients = ingredients
+        r.directions = directions
+        r.notes = notes
+        r.tags = tags
+        return r
+
     def recipes_find_by_tag(self, tags):
         tags = [tag.lower() for tag in tags]
         rec = []

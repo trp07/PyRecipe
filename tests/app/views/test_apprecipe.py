@@ -184,7 +184,7 @@ def test_recipe_edit_get_loggedin(mocker):
     """
     GIVEN a logged-in user
     THEN navigating to /recipe/edit/<recipe_id>
-    THEN just redirects to /index for now
+    THEN assert no errors and stays on edit page
     """
     find = mocker.patch.object(AccountUC, "find_user_by_id")
     find.return_value = "FOUND"
@@ -192,7 +192,7 @@ def test_recipe_edit_get_loggedin(mocker):
     rec = mocker.patch.object(RecipeUC, "find_recipe_by_id")
     with flask_app.test_request_context(path="/recipe/edit/<recipe_id>", data=None):
         resp: Response = recipe_views.recipe_edit_get("12345")
-    assert resp.location in ("/index", "/")
+    assert resp.location is None
 
 
 def test_recipe_edit_get_loggedout(mocker):
@@ -209,15 +209,56 @@ def test_recipe_edit_get_loggedout(mocker):
     assert resp.location in ("/account/login", "/login")
 
 
-def test_recipe_edit_post_loggedin(mocker):
+def test_recipe_edit_post_loggedin(mocker, testrecipe):
     """
-    GIVEN not yet implemented
+    GIVEN a logged-in user
     WHEN posting to /recipe/edit/<recipe_id>
-    THEN just receive "Not Implemented"
+    THEN no errors and redirected to recipe/view/<recipe_id> page
     """
-    with flask_app.test_request_context(path="/recipe/edit/<recipe_id>", data=None):
+    rec_data = {
+        "name": "test recipe",
+        "prep_time": "5",
+        "cook_time": "5",
+        "servings": "1",
+        "ingredients": ["garlic", "onion"],
+        "directions": ["cook"],
+        "notes": ["this is a test"],
+        "tags": ["test"],
+    }
+    find = mocker.patch.object(AccountUC, "find_user_by_id")
+    find.return_value = "FOUND"
+    vm = mocker.patch.object(AddViewModel, "__call__")
+    rec = mocker.patch.object(RecipeUC, "edit_recipe")
+    rec.return_value = testrecipe(**rec_data)
+    with flask_app.test_request_context(path="/recipe/add", data=rec_data):
         resp: Response = recipe_views.recipe_edit_post("12345")
-    assert resp == "Not Implemented... yet"
+    assert resp.location in "/recipe/view/12345"
+
+
+def test_recipe_edit_post_loggedout(mocker):
+    """
+    GIVEN a logged-out or unregistered user
+    WHEN attempting to post to /recipe/edit/<recipe_id>
+    THEN assert redirected to login page
+    """
+    rec_data = {
+        "name": "test recipe",
+        "prep_time": "5",
+        "cook_time": "5",
+        "servings": "1",
+        "ingredients": ["garlic", "onion"],
+        "directions": ["cook"],
+        "notes": ["this is a test"],
+        "tags": ["test"],
+    }
+    find = mocker.patch.object(AccountUC, "find_user_by_id")
+    find.return_value = None
+    vm = mocker.patch.object(AddViewModel, "__call__")
+    rec = mocker.patch.object(RecipeUC, "__call__")
+    rec.return_value.create_recipe.return_value = "CREATED"
+    with flask_app.test_request_context(path="/recipe/edit/<recipe_id>", data=rec_data):
+        resp: Response = recipe_views.recipe_edit_post("12345")
+    assert resp.location in ("/login", "/account/login")
 
 
 #################### Recipes with... ########################

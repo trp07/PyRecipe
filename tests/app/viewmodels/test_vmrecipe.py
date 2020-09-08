@@ -65,16 +65,29 @@ def test_addvm(mocker):
     assert vm.prep_time == 2
 
 
-def test_editvm(mocker):
+def test_editvm(mocker, testrecipe):
     """
     GIVEN a request to /recipe/edit/<recipe_id>
     WHEN data is passed through the viewmodel
-    THEN assert there are no errors
+    THEN assert there are no errors and the proper viewmodel is formed
     """
     target = mocker.patch.object(AccountUC, "find_user_by_id")
     target.return_value = None
     with flask_app.test_request_context(path="/recipe/edit/<recipe_id>", data=None):
         vm = EditViewModel()
-
-    vm.to_dict()
+        vm.recipe = testrecipe(
+                name="tester", prep_time=5, cook_time=10, servings=4,
+                ingredients=["igr1", "igr2"], directions=["do this", "do that"],
+                notes=["sub igr3 for igr2"], tags=["t1", "t2"]
+            )
+    edit_form = vm.edit_form()
+    assert edit_form["_id"] == "12345"
+    assert edit_form["name"] == "tester"
+    assert edit_form["prep_time"] == 5
+    assert edit_form["cook_time"] == 10
+    assert edit_form["servings"] == 4
+    assert edit_form["ingredients"] == "igr1\nigr2\n"
+    assert edit_form["directions"] == "do this\ndo that\n"
+    assert edit_form["notes"] == "sub igr3 for igr2\n"
+    assert edit_form["tags"] == "t1\nt2\n"
     assert vm.error is None

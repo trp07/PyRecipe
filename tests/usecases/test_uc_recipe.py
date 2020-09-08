@@ -58,6 +58,27 @@ def test_create_recipe(rec_driver):
     assert result.name == "test"
 
 
+def test_edit_recipe(rec_driver):
+    """
+    GIVEN a recipe to edit
+    WHEN submitting new attributes
+    THEN assert it is returned with new attributes saved
+    """
+    r = RecipeUC(rec_driver)
+    result = r.edit_recipe(
+        _id=123,
+        name="Newtest",
+        prep_time=5,
+        cook_time=10,
+        servings=4,
+        ingredients=["garlic", "onion"],
+        directions=["make food"],
+        tags=["quick", "spicy"],
+        notes=["notes"],
+    )
+    assert result.name == "Newtest"
+
+
 @pytest.mark.parametrize(
     "tags, expected", [(["spicy"], 2), (["quick"], 1), (["slow"], 1)]
 )
