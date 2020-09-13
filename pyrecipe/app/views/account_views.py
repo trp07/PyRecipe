@@ -1,6 +1,7 @@
 """View controllers associated with account features."""
 
 import flask
+from flask import current_app
 
 from pyrecipe.frontend import TEMPLATESDIR
 from pyrecipe.app.helpers.view_modifiers import response
@@ -10,7 +11,6 @@ from pyrecipe.app.viewmodels.account import LoginViewModel
 import pyrecipe.app.helpers.cookie_auth as cookie_auth
 from pyrecipe.static import STATICDIR
 from pyrecipe.usecases.account_uc import AccountUC
-from pyrecipe.storage.mongo import MongoDriver
 
 
 blueprint = flask.Blueprint(
@@ -54,7 +54,7 @@ def login_post():
     if vm.error:
         return vm.to_dict()
 
-    uc = AccountUC(MongoDriver)
+    uc = AccountUC(current_app.config["DB_DRIVER"])
     user = uc.login_user(email=vm.email, password=vm.password)
     if not user:
         vm.error = "Username or password are incorrect."
@@ -100,7 +100,7 @@ def register_post():
     if vm.error:
         return vm.to_dict()
 
-    uc = AccountUC(MongoDriver)
+    uc = AccountUC(current_app.config["DB_DRIVER"])
     user = uc.register_user(name=vm.name, email=vm.email, password=vm.password)
     if not user:
         vm.error = "User with email address already exists."

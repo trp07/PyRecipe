@@ -4,6 +4,7 @@ from collections.abc import MutableSequence
 from typing import List
 
 import flask
+from flask import current_app
 
 from pyrecipe.app.helpers.view_modifiers import response
 from pyrecipe.app.helpers import request_dict
@@ -13,7 +14,6 @@ from pyrecipe.app.viewmodels.recipe import RecipeViewModel
 from pyrecipe.frontend import TEMPLATESDIR
 from pyrecipe.static import STATICDIR
 from pyrecipe.usecases.recipe_uc import RecipeUC
-from pyrecipe.storage.mongo import MongoDriver
 
 
 blueprint = flask.Blueprint(
@@ -31,7 +31,7 @@ def recipes_all():
 
     :returns: all recipes where recipe.deleted==False.
     """
-    uc = RecipeUC(MongoDriver)
+    uc = RecipeUC(current_app.config["DB_DRIVER"])
     recipes = uc.get_all_recipes(deleted=False)
     return "Not Implemented... yet"
 
@@ -47,7 +47,7 @@ def recipe_view(recipe_id: str):
     :returns: recipe or 404 if recipe is not found.
     """
     vm = RecipeViewModel()
-    uc = RecipeUC(MongoDriver)
+    uc = RecipeUC(current_app.config["DB_DRIVER"])
     vm.recipe = uc.find_recipe_by_id(recipe_id)
     if not vm.recipe:
         flask.abort(404)
@@ -73,7 +73,7 @@ def recipe_add_post():
     if not vm.user:
         return flask.redirect(flask.url_for("account.login_get"))
 
-    uc = RecipeUC(MongoDriver)
+    uc = RecipeUC(current_app.config["DB_DRIVER"])
     recipe = uc.create_recipe(
         name=vm.name,
         prep_time=vm.prep_time,
@@ -101,7 +101,7 @@ def recipe_edit_get(recipe_id: str):
     if not vm.user:
         return flask.redirect(flask.url_for("account.login_get"))
 
-    uc = RecipeUC(MongoDriver)
+    uc = RecipeUC(current_app.config["DB_DRIVER"])
     vm.recipe = uc.find_recipe_by_id(recipe_id)
 
     return {**vm.to_dict(), **vm.edit_form()}
@@ -114,7 +114,7 @@ def recipe_edit_post(recipe_id: str):
     if not vm.user:
         return flask.redirect(flask.url_for("account.login_get"))
 
-    uc = RecipeUC(MongoDriver)
+    uc = RecipeUC(current_app.config["DB_DRIVER"])
     recipe = uc.edit_recipe(
         _id=vm.path.split("/")[-1],
         name=vm.name,
@@ -150,7 +150,7 @@ def recipes_with_tags(tags: List[str]):
     if not isinstance(tags, MutableSequence):
         tags = [tags]
 
-    uc = RecipeUC(MongoDriver)
+    uc = RecipeUC(current_app.config["DB_DRIVER"])
     recipes = uc.find_recipes_by_tag(tags)
     return {"recipes": recipes}
 
@@ -160,7 +160,7 @@ def recipes_deleted():
     """
     Routing required to view recipes that have been marked as deleted.
     """
-    uc = RecipeUC(MongoDriver)
+    uc = RecipeUC(current_app.config["DB_DRIVER"])
     recipes = uc.get_all_recipes(deleted=True)
     return "Not Implemented... yet"
 

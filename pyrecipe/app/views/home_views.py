@@ -9,6 +9,7 @@ from collections.abc import MutableSequence
 from typing import List
 
 import flask
+from flask import current_app
 
 from pyrecipe.app.helpers.view_modifiers import response
 from pyrecipe.app.viewmodels.home import IndexViewModel
@@ -16,7 +17,6 @@ from pyrecipe.app.viewmodels.home import AboutViewModel
 from pyrecipe.frontend import TEMPLATESDIR
 from pyrecipe.static import STATICDIR
 from pyrecipe.usecases.recipe_uc import RecipeUC
-from pyrecipe.storage.mongo import MongoDriver
 
 
 blueprint = flask.Blueprint(
@@ -35,7 +35,7 @@ def index():
     vm = IndexViewModel()
     vm.validate()
 
-    uc = RecipeUC(MongoDriver)
+    uc = RecipeUC(current_app.config["DB_DRIVER"])
     vm.recipes = uc.get_all_recipes()
     vm.tags = uc.get_tags()
 
