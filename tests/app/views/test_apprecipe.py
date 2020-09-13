@@ -43,7 +43,7 @@ def test_recipe_view_found(mocker, testrecipe):
         "servings": 1,
         "ingredients": ["garlic", "onion"],
         "directions": ["cook"],
-        "notes": None,
+        "notes": ["this was just a test!"],
         "tags": ["test"]
     }
     find = mocker.patch.object(AccountUC, "find_user_by_id")
