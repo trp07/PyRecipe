@@ -117,6 +117,13 @@ ul.directions {
     margin: 10px;
 }
 
+ul.notes {
+    list-style-type: default;
+    position: relative;
+    left: 5px;
+    margin: 10px;
+}
+
 ul.tags {
     list-style-type: none;
     margin: 0;

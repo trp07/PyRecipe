@@ -28,4 +28,11 @@
 {% endfor %}
 </ul>
 
+<h2>Notes:</h2>
+<ul class="notes">
+{% for item in recipe.notes %}
+    <li> {{ item }}</li>
+{% endfor %}
+</ul>
+
 {% endblock %}
