@@ -10,7 +10,6 @@ before_install:
   - sudo apt-get update
   - sudo apt-get install -y mongodb-org
   - sudo service mongod start
-  - mongorestore --drop --db pyrecipe_tester $TRAVIS_BUILD_DIR/tests/testing_data/mongodb
   - pip install poetry coveralls
 install: poetry install
 script: pytest --cov=pyrecipe
@@ -29,5 +28,4 @@ jobs:
         - sudo apt-get update
         - sudo apt-get install -y mongodb-org
         - sudo service mongod start
-        - mongorestore --drop --db pyrecipe_tester $TRAVIS_BUILD_DIR/tests/testing_data/mongodb
         - pip install poetry coveralls
