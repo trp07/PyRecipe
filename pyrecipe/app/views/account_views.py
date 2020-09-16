@@ -3,6 +3,8 @@
 import flask
 from flask import current_app
 
+#from secure import SecureCookie
+
 from pyrecipe.frontend import TEMPLATESDIR
 from pyrecipe.app.helpers.view_modifiers import response
 from pyrecipe.app.viewmodels.account import IndexViewModel
@@ -62,6 +64,8 @@ def login_post():
 
     response = flask.redirect(flask.url_for("account.index"))
     cookie_auth.set_auth(response, user.id)
+    #secure_cookie = SecureCookie()
+    #secure_cookie.flask(response, name="pyrecipe", value=str(user.id))
 
     return response
 

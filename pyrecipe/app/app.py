@@ -11,28 +11,33 @@ from pyrecipe.static import STATICDIR
 from pyrecipe.app.views import home_views
 from pyrecipe.app.views import account_views
 from pyrecipe.app.views import recipe_views
+from pyrecipe.app.views import rest_views
 import pyrecipe.config as config
 
+
+####### Create the app instance ##############################################
 
 app = flask.Flask(
     __name__, template_folder=str(TEMPLATESDIR), static_folder=str(STATICDIR)
 )
 
 
-####### Config app and register blueprints
+####### Config app and register blueprints ###################################
 
 app.config.from_object(config.DevConfig)
 
-def register_blueprints() -> None:
-    global app
+def register_blueprints(app) -> None:
     app.register_blueprint(home_views.blueprint)
     app.register_blueprint(account_views.blueprint)
     app.register_blueprint(recipe_views.blueprint)
+    app.register_blueprint(rest_views.blueprint)
 
 
-register_blueprints()
+register_blueprints(app)
 
-####### Add secure headers
+
+####### Add secure headers ###################################################
+
 secure_headers = secure.SecureHeaders()
 
 @app.after_request
