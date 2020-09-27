@@ -12,7 +12,6 @@ from pyrecipe.app.views import home_views
 from pyrecipe.app.views import account_views
 from pyrecipe.app.views import recipe_views
 from pyrecipe.app.views import rest_views
-import pyrecipe.config as config
 
 
 ####### Create the app instance ##############################################
@@ -22,9 +21,7 @@ app = flask.Flask(
 )
 
 
-####### Config app and register blueprints ###################################
-
-app.config.from_object(config.DevConfig)
+####### Register app blueprints ##############################################
 
 def register_blueprints(app) -> None:
     app.register_blueprint(home_views.blueprint)

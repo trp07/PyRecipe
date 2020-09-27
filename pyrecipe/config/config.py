@@ -13,6 +13,7 @@ class ProdConfig:
     DB_URI = os.environ.get("MONGODB_URI") or "pyrecipe_prod"
     DB_DRIVER = MongoDriver
     DEBUG = False
+    TESTING = False
 
 
 class DevConfig:
@@ -22,3 +23,4 @@ class DevConfig:
     DB_URI = os.environ.get("MONGODB_URI") or "pyrecipe_tester"
     DB_DRIVER = MongoDriver
     DEBUG = True
+    TESTING = True

@@ -2,6 +2,7 @@
 
 from pyrecipe import __version__ as VERSION
 from pyrecipe.app import app
+import pyrecipe.config as config
 
 BANNER = r"""
   _____       _____           _
@@ -21,12 +22,17 @@ _^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^_^
 )
 
 
-def main():
-    """Run the app."""
+def main(app: "flask.Flask", prod: bool=False) -> None:
+    """Run the app.  prod=False, runs in development mode by default."""
+    if prod:
+        app.config.from_object(config.ProdConfig)
+    else:
+        app.config.from_object(config.DevConfig)
+
     print(BANNER, flush=True)
     app.config.get("DB_DRIVER").db_initialize(db_name=app.config.get("DB_URI"), verbose=True)
     app.run()
 
 
 if __name__ == "__main__":
-    main()
+    main(app, prod=False)
