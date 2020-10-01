@@ -14,6 +14,7 @@ class ProdConfig:
     DB_DRIVER = MongoDriver
     DEBUG = False
     TESTING = False
+    COOKIE_NAME = "pyrecipe_prod"
 
 
 class DevConfig:
@@ -24,3 +25,4 @@ class DevConfig:
     DB_DRIVER = MongoDriver
     DEBUG = True
     TESTING = True
+    COOKIE_NAME = "pyrecipe_dev"

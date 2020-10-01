@@ -10,7 +10,7 @@ from pyrecipe.app.helpers.view_modifiers import response
 from pyrecipe.app.viewmodels.account import IndexViewModel
 from pyrecipe.app.viewmodels.account import RegisterViewModel
 from pyrecipe.app.viewmodels.account import LoginViewModel
-import pyrecipe.app.helpers.cookie_auth as cookie_auth
+import pyrecipe.security.cookie_auth as cookie_auth
 from pyrecipe.static import STATICDIR
 from pyrecipe.usecases.account_uc import AccountUC
 
@@ -63,7 +63,8 @@ def login_post():
         return vm.to_dict()
 
     response = flask.redirect(flask.url_for("account.index"))
-    cookie_auth.set_auth(response, user.id)
+    cookie_auth.set_auth(response, user.id, current_app.config["COOKIE_NAME"],
+        current_app.config["SECRET_KEY"])
     #secure_cookie = SecureCookie()
     #secure_cookie.flask(response, name="pyrecipe", value=str(user.id))
 
@@ -78,7 +79,7 @@ def login_post():
 @response(template_file="account/logout.html")
 def logout():
     response = flask.redirect(flask.url_for("home.index"))
-    cookie_auth.logout(response)
+    cookie_auth.logout(response, current_app.config["COOKIE_NAME"])
     return response
 
 
@@ -111,6 +112,7 @@ def register_post():
         return vm.to_dict()
 
     response = flask.redirect(flask.url_for("account.index"))
-    cookie_auth.set_auth(response, user.id)
+    cookie_auth.set_auth(response, user.id, current_app.config["COOKIE_NAME"],
+        current_app.config["SECRET_KEY"])
 
     return response
