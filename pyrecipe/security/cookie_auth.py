@@ -2,7 +2,18 @@
 
 import hashlib
 from datetime import timedelta
+from enum import Enum
 from typing import Optional
+
+from secure import SecureCookie
+
+
+class Framework(Enum):
+    """Enum for supported frameworks so this module
+    can be reused in other apps."""
+    COOKIE = SecureCookie()
+    FLASK = COOKIE.flask
+
 
 
 def set_auth(response: "Response", user_id: int, cookiename: str, salt: str) -> None:
@@ -17,7 +28,8 @@ def set_auth(response: "Response", user_id: int, cookiename: str, salt: str) -> 
     """
     hash_val = _hash_text(str(user_id), salt)
     val = "{}:{}".format(user_id, hash_val)
-    response.set_cookie(cookiename, val)
+    Framework.FLASK(response, name=cookiename, value=val)
+
 
 
 def _hash_text(text: str, salt: str) -> str:

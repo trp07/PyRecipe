@@ -13,13 +13,14 @@ def test_set_auth(mocker):
     WHEN setting the cookie
     THEN assert it is set in the proper format
     """
+    flaskmock = mocker.patch.object(cookie_auth.Framework, "FLASK")
+    flaskmock.return_value = None
     response = MagicMock()
-    response.set_cookie.return_value = None
     hash_mock = mocker.patch.object(cookie_auth, "_hash_text")
     hash_mock.return_value = "test"
 
-    cookie_auth.set_auth(response, "12345", "pyrecipe", "salt")
-    response.set_cookie.assert_called_with("pyrecipe", "12345:test")
+    cookie_auth.set_auth(response, "12345", "pyrecipe_dev", "salt")
+    flaskmock.assert_called_with(response, name="pyrecipe_dev", value="12345:test")
 
 
 def test_hash_text():
