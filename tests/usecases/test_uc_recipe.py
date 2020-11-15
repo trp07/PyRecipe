@@ -94,8 +94,35 @@ def test_find_recipes_by_tags(rec_driver, tags, expected):
 
 
 def test_get_tags(rec_driver):
+    """
+    GIVEN a db with recipes
+    WHEN requesting all discrete tags in all recipes
+    THEN assert the proper tags and number are returned
+    """
     r = RecipeUC(rec_driver)
     result = r.get_tags()
     assert len(result) == 3
     for tag in ["spicy", "slow", "quick"]:
         assert tag in result
+
+
+def test_delete_recipe_goodID(rec_driver):
+    """
+    GIVEN a db with recipes
+    WHEN requesting to delete a specific recipe
+    THEN assert the recipe is marked as deleted
+    """
+    r = RecipeUC(rec_driver)
+    result = r.delete_recipe(recipe_id=123)
+    assert result == 1
+
+
+def test_delete_recipe_badID(rec_driver):
+    """
+    GIVEN a db with recipes
+    WHEN requesting to delete a nonexistent recipe
+    THEN assert 0 is returned
+    """
+    r = RecipeUC(rec_driver)
+    result = r.delete_recipe(recipe_id=789)
+    assert result == 0

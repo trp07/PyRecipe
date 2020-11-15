@@ -11,6 +11,7 @@ from pyrecipe.usecases.account_uc import AccountUC
 from pyrecipe.app.viewmodels.recipe import RecipeViewModel
 from pyrecipe.app.viewmodels.recipe import AddViewModel
 from pyrecipe.app.viewmodels.recipe import EditViewModel
+from pyrecipe.app.viewmodels.recipe import DeleteViewModel
 from pyrecipe.app import app as flask_app
 from pyrecipe.app.views import recipe_views
 
@@ -260,6 +261,90 @@ def test_recipe_edit_post_loggedout(mocker):
         resp: Response = recipe_views.recipe_edit_post("12345")
     assert resp.location in ("/login", "/account/login")
 
+
+#################### Recipe Deleting ########################
+
+def test_recipe_delete_get_loggedin_goodrecipeID(mocker):
+    """
+    GIVEN a logged-in user
+    THEN navigating to /recipe/delete/<recipe_id>
+    THEN assert no errors and goes to correct page
+    """
+    find = mocker.patch.object(AccountUC, "find_user_by_id")
+    find.return_value = "FOUND"
+    vm = mocker.patch.object(DeleteViewModel, "__call__")
+    rec = mocker.patch.object(RecipeUC, "find_recipe_by_id")
+    rec.return_value = "FOUND"
+    with flask_app.test_request_context(path="/recipe/delete/<recipe_id>", data=None):
+        resp: Response = recipe_views.recipe_delete_get("12345")
+    assert resp.location is None
+    #assert vm.error is None
+
+
+def test_recipe_delete_get_loggedin_badrecipeID(mocker):
+    """
+    GIVEN a logged-in user
+    THEN navigating to /recipe/delete/<recipe_id>
+    THEN assert no errors and goes to correct page
+    """
+    find = mocker.patch.object(AccountUC, "find_user_by_id")
+    find.return_value = "FOUND"
+    vm = mocker.patch.object(DeleteViewModel, "__call__")
+    rec = mocker.patch.object(RecipeUC, "find_recipe_by_id")
+    rec.return_value = None
+    with flask_app.test_request_context(path="/recipe/delete/<recipe_id>", data=None):
+        resp: Response = recipe_views.recipe_delete_get("12345")
+    assert resp.location is None
+    #assert vm.error == "Recipe Not Found"
+
+
+def test_recipe_delete_get_loggedout(mocker):
+    """
+    GIVEN a logged-out or unregistered user
+    WHEN attempting to navigate to /recipe/delete/<recipe_id>
+    THEN assert redirected to login page
+    """
+    find = mocker.patch.object(AccountUC, "find_user_by_id")
+    find.return_value = None
+    vm = mocker.patch.object(DeleteViewModel, "__call__")
+    rec = mocker.patch.object(RecipeUC, "find_recipe_by_id")
+    rec.return_value = None
+    with flask_app.test_request_context(path="/recipe/delete/<recipe_id>", data=None):
+        resp: Response = recipe_views.recipe_delete_get("12345")
+    assert resp.location in ("/account/login", "/login")
+
+
+def test_recipe_delete_post_loggedin(mocker):
+    """
+    GIVEN a logged-in user
+    WHEN navigating to to /recipe/delete/<recipe_id>
+    THEN assert redirected to index after deleting the recipe
+    """
+    find = mocker.patch.object(AccountUC, "find_user_by_id")
+    find.return_value = "FOUND"
+    vm = mocker.patch.object(DeleteViewModel, "__call__")
+    res = mocker.patch.object(RecipeUC, "delete_recipe")
+    rec = mocker.patch.object(RecipeUC, "get_all_recipes")
+    tags = mocker.patch.object(RecipeUC, "get_tags")
+    with flask_app.test_request_context(path="/recipe/delete/<recipe_id>", data=None):
+        resp: Response = recipe_views.recipe_delete_post("12345")
+    assert resp.location is None
+
+
+def test_recipe_delete_post_loggedout(mocker):
+    """
+    GIVEN a logged-out or unregistered user
+    WHEN attempting to navigate to /recipe/delete/<recipe_id>
+    THEN assert redirected to login page
+    """
+    find = mocker.patch.object(AccountUC, "find_user_by_id")
+    find.return_value = None
+    vm = mocker.patch.object(DeleteViewModel, "__call__")
+    rec = mocker.patch.object(RecipeUC, "delete_recipe")
+    rec.return_value = None
+    with flask_app.test_request_context(path="/recipe/delete/<recipe_id>", data=None):
+        resp: Response = recipe_views.recipe_delete_post("12345")
+    assert resp.location in ("/account/login", "/login")
 
 #################### Recipes with... ########################
 

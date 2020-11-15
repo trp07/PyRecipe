@@ -90,3 +90,8 @@ class RecipeUC:
             notes=notes,
         )
         return recipe
+
+
+    def delete_recipe(self, recipe_id:str) -> int:
+        """Marks the recipe as deleted."""
+        return self._driver.recipe_delete(recipe_id)

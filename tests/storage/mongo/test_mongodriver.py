@@ -330,7 +330,7 @@ def test_recipe_delete(recipes):
     """
     r = MongoDriver.recipe_find_by_id(str(recipes[0].id))
     assert r.deleted == False
-    result = MongoDriver.recipe_delete(r)
+    result = MongoDriver.recipe_delete(r.id)
     r = MongoDriver.recipe_find_by_id(str(recipes[0].id))
     assert result == 1
     assert r.deleted == True

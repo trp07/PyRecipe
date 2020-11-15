@@ -288,7 +288,7 @@ class MongoDriver(DBInitInt, RecipeDBInt, UserDBInt):
         return result
 
     @staticmethod
-    def recipe_delete(recipe: RecipeModel) -> int:
+    def recipe_delete(recipe_id:str) -> int:
         """
         Given a recipe instance, mark it as deleted
 
@@ -296,7 +296,7 @@ class MongoDriver(DBInitInt, RecipeDBInt, UserDBInt):
 
         :returns: (int) 1 for success, 0 for failure
         """
-        r = Recipe.objects().filter(id=recipe.id).first()
+        r = Recipe.objects().filter(id=recipe_id).first()
         result = r.update(deleted=True)
         r._update_last_mod_date()
         return result

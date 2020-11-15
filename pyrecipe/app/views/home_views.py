@@ -36,7 +36,7 @@ def index():
     vm.validate()
 
     uc = RecipeUC(current_app.config["DB_DRIVER"])
-    vm.recipes = uc.get_all_recipes()
+    vm.recipes = uc.get_all_recipes(deleted=False)
     vm.tags = uc.get_tags()
 
     return vm.to_dict()

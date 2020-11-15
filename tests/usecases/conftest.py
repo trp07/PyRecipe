@@ -74,6 +74,15 @@ class RecipeDriver:
             t.update(set(r.tags))
         return list(t)
 
+    def recipe_delete(self, recipe_id):
+        r = self.recipe_find_by_id(recipe_id)
+        if r:
+            r.deleted = True
+            return 1
+        else:
+            return 0
+
+
 
 @pytest.fixture(scope="function")
 def rec_driver():

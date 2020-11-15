@@ -1,0 +1,35 @@
+{% extends "shared/_base.html" %}
+
+<!-- ***************************************************** -->
+{% block main_content %}
+    <div class="form-container">
+
+        <h1>Delete Recipe</h1>
+
+        <form action="" method="POST" class="recipe-form">
+
+            <div class="recipe-section">
+                {% if recipe %}
+                    <h2>{{recipe.name}}</h2>
+                    Are you sure you want to delete this recipe?
+                </div>
+
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this item?');">Delete</button>
+                <div style="clear: both"></div>
+            {% endif %}
+
+            {% if error %}
+                <div class="error-msg">{{ error }}</div>
+            {% endif %}
+
+        </form>
+    </div>
+{% endblock %}
+
+<!-- ***************************************************** -->
+{% block additional_css %}
+    <link rel="stylesheet" href="/static/css/recipe.css">
+{% endblock %}
+
+{% block additional_js %}
+{% endblock %}

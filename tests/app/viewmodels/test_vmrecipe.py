@@ -7,6 +7,7 @@ from pyrecipe.usecases.recipe_uc import RecipeUC
 from pyrecipe.app.viewmodels.recipe import AddViewModel
 from pyrecipe.app.viewmodels.recipe import EditViewModel
 from pyrecipe.app.viewmodels.recipe import RecipeViewModel
+from pyrecipe.app.viewmodels.recipe import DeleteViewModel
 from pyrecipe.app import app as flask_app
 
 
@@ -91,3 +92,19 @@ def test_editvm(mocker, testrecipe):
     assert edit_form["notes"] == "sub igr3 for igr2\n"
     assert edit_form["tags"] == "t1\nt2\n"
     assert vm.error is None
+
+
+def test_deletevm(mocker):
+    """
+    GIVEN a request to /recipe/delete/<recipe_id>
+    WHEN a request is passed through the DeleteViewModel
+    THEN assert no errors are received
+    """
+    target = mocker.patch.object(AccountUC, "find_user_by_id")
+    target.return_value = None
+    with flask_app.test_request_context(path="/recipe/delete/<recipe_id>", data=None):
+        vm = DeleteViewModel()
+
+    vm.to_dict()
+    assert vm.error is None
+    assert vm.recipe is None

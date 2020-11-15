@@ -11,6 +11,7 @@ from pyrecipe.app.helpers import request_dict
 from pyrecipe.app.viewmodels.recipe import AddViewModel
 from pyrecipe.app.viewmodels.recipe import EditViewModel
 from pyrecipe.app.viewmodels.recipe import RecipeViewModel
+from pyrecipe.app.viewmodels.recipe import DeleteViewModel
 from pyrecipe.frontend import TEMPLATESDIR
 from pyrecipe.static import STATICDIR
 from pyrecipe.usecases.recipe_uc import RecipeUC
@@ -21,7 +22,7 @@ blueprint = flask.Blueprint(
 )
 
 
-#################### Recipe Viewing #########################
+#################### Recipe Viewing ##########################################
 
 
 @blueprint.route("/recipe/all", methods=["GET"])
@@ -54,7 +55,7 @@ def recipe_view(recipe_id: str):
     return vm.to_dict()
 
 
-#################### Recipe Adding ##########################
+#################### Recipe Adding ###########################################
 
 
 @blueprint.route("/recipe/add", methods=["GET"])
@@ -91,7 +92,7 @@ def recipe_add_post():
     return vm.to_dict()
 
 
-#################### Recipe Editing #########################
+#################### Recipe Editing ##########################################
 
 
 @blueprint.route("/recipe/edit/<recipe_id>", methods=["GET"])
@@ -133,8 +134,41 @@ def recipe_edit_post(recipe_id: str):
     return vm.to_dict()
 
 
+#################### Recipe Deleting #########################################
 
-#################### Recipes with... ########################
+
+@blueprint.route("/recipe/delete/<recipe_id>", methods=["GET"])
+@response(template_file="recipe/delete_recipe.html")
+def recipe_delete_get(recipe_id: str):
+    vm = DeleteViewModel()
+    if not vm.user:
+        return flask.redirect(flask.url_for("account.login_get"))
+
+    uc = RecipeUC(current_app.config["DB_DRIVER"])
+    vm.recipe = uc.find_recipe_by_id(recipe_id)
+
+    if not vm.recipe:
+        vm.error = "Recipe Not Found"
+
+    return vm.to_dict()
+
+
+@blueprint.route("/recipe/delete/<recipe_id>", methods=["POST"])
+@response(template_file="home/index.html")
+def recipe_delete_post(recipe_id: str):
+    vm = DeleteViewModel()
+    if not vm.user:
+        return flask.redirect(flask.url_for("account.login_get"))
+
+    uc = RecipeUC(current_app.config["DB_DRIVER"])
+    result = uc.delete_recipe(recipe_id)
+
+    vm.recipes = uc.get_all_recipes(deleted=False)
+    vm.tags = uc.get_tags()
+    return vm.to_dict()
+
+
+#################### Recipes with... #########################################
 
 
 @blueprint.route("/recipe/tag/<tags>", methods=["GET"])
