@@ -73,6 +73,11 @@ class Recipe(mongoengine.Document):
             "deleted",
             "ingredients",
             "when_made",
+            {
+                "fields": ["$name", "$ingredients", "$directions", "$tags"],
+                "default_language": "english",
+                "weights": {"name": 10, "tags": 5, "ingredients": 4, "directions": 2},
+            },
         ],
     }
 
