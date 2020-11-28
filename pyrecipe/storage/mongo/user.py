@@ -1,18 +1,14 @@
-"""
-ODM for MongoDB
-
-* User -- DB representation of User instance.
-"""
+"""ODM for MongoDB User Collection."""
 
 import datetime
-from typing import List, Optional
 
 import mongoengine
 
 from .recipe import Recipe
+from .shared import BaseDocument
 
 
-class User(mongoengine.Document):
+class User(BaseDocument):
     """
     ODM Class that maps to the Users collection in MongoDB.  Each user will have a
     reference to a recipe that is added.
@@ -63,44 +59,3 @@ class User(mongoengine.Document):
     def __repr__(self):
         """Repr of instance for quick debugging purposes."""
         return "<User: {}:{}>".format(self.username, self.email)
-
-    @staticmethod
-    def user_id_to_int(text: str) -> int:
-        """
-        Returns the User._id as an integer.
-
-        User.user_id_to_int(idnum)
-
-        :param text: (str) the text to convert.
-        :returns: int of the user id or 0 if unable.
-        """
-        try:
-            return int(str(text), 16)
-        except:
-            return 0
-
-    def _update_last_mod_date(self) -> int:
-        """
-        Updates the user's "last_updated_date" attribute in the DB.
-
-        user._update_last_mod_date()
-
-        :returns: (int) 1 for success, 0 if unsuccessful
-        """
-        result = self.update(last_modified_date=datetime.datetime.utcnow())
-        self.reload()
-        return result
-
-    def save(self) -> int:
-        """
-        Save the user's current state in the DB.  First refreshes the last
-        modified date if it's already a DB instance, before delegating to the
-        built-in/inherited save() method.
-
-        user.save()
-
-        :returns: (int) 1 for success, 0 if unsuccessful
-        """
-        if self.id:
-            self._update_last_mod_date()
-        return super().save()

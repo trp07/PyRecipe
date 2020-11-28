@@ -1,17 +1,13 @@
-"""
-ODM for MongoDB
-
-* Recipe -- DB representation of Recipe instance.
-"""
+"""ODM for MongoDB Recipe Collection."""
 
 import datetime
-from typing import List
-from typing import Optional
 
 import mongoengine
 
+from .shared import BaseDocument
 
-class Recipe(mongoengine.Document):
+
+class Recipe(BaseDocument):
     """
     ODM Class that maps to the Recipes collection in MongoDB.
 
@@ -84,29 +80,3 @@ class Recipe(mongoengine.Document):
     def __repr__(self):
         """Repr of instance for quick debugging purposes."""
         return "<Recipe: {}>".format(self.name)
-
-    def _update_last_mod_date(self) -> int:
-        """
-        Updates the recipe's "last_updated_date" attribute in the DB.
-
-        recipe._update_last_mod_date()
-
-        :returns: (int) 1 for success, 0 if unsuccessful
-        """
-        result = self.update(last_modified_date=datetime.datetime.utcnow())
-        self.reload()
-        return result
-
-    def save(self) -> int:
-        """
-        Save the recipe's current state in the DB.  First refreshes the last
-        modified date if it's already a DB record, before delegating to the
-        built-in/inherited save() method.
-
-        recipe.save()
-
-        :returns: (int) 1 for success, 0 if unsuccessful
-        """
-        if self.id:
-            self._update_last_mod_date()
-        return super().save()
