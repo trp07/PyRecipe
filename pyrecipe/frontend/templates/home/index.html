@@ -6,7 +6,10 @@
     <div class="hero-inner">
         <h1>Hello, {{ name }}!</h1>
 
-        <input type="text" placeholder="Search recipes, available: {{recipes|length}}" class="form-control">
+        <form class="form", action="/recipe/search/" method="post" onsubmit="onSearch(this)">
+            <input id="searchfield" name="search_text" type="search" placeholder="Search recipes, available: {{recipes|length}}" class="form-control">
+            <button class="btn btn-success" type="submit">Search</button>
+        </form>
 
         <a href="{{ url_for('recipe.recipes_favorite') }}">Favorites</a>
         <a href="{{ url_for('recipe.recipes_recently_added') }}">Most Recent</a>
@@ -45,7 +48,6 @@
                     {% for tag in recipe.tags %}
                         <div class="tag">{{tag}}</div>
                     {%endfor %}
-
                 </div>
             </div>
         </div>
@@ -53,4 +55,16 @@
     </div>
 </div>
 
+{% endblock %}
+
+<!-- ***************************************************** -->
+{% block additional_css %}
+{% endblock %}
+
+{% block additional_js %}
+<script type="text/javascript">
+function onSearch(form) {
+    form.action += form.querySelector('#searchfield').value.split(" ").join("+");
+}
+</script>
 {% endblock %}

@@ -12,6 +12,7 @@ from pyrecipe.app.viewmodels.recipe import AddViewModel
 from pyrecipe.app.viewmodels.recipe import EditViewModel
 from pyrecipe.app.viewmodels.recipe import RecipeViewModel
 from pyrecipe.app.viewmodels.recipe import DeleteViewModel
+from pyrecipe.app.viewmodels.recipe import SearchViewModel
 from pyrecipe.frontend import TEMPLATESDIR
 from pyrecipe.static import STATICDIR
 from pyrecipe.usecases.recipe_uc import RecipeUC
@@ -168,7 +169,26 @@ def recipe_delete_post(recipe_id: str):
     return vm.to_dict()
 
 
-#################### Recipes with... #########################################
+#################### Recipes Searching #######################################
+
+@blueprint.route("/recipe/search/<text>", methods=["GET", "POST"])
+@blueprint.route("/recipe/search/", methods=["GET", "POST"])
+@response(template_file="home/index.html")
+def recipes_search(text: str = None):
+    vm = SearchViewModel()
+    vm.validate()
+    if vm.text in (None, ""):
+        vm.text = text
+
+    uc = RecipeUC(current_app.config["DB_DRIVER"])
+
+    if vm.text is None:
+        vm.recipes = uc.get_all_recipes(deleted=False)
+    else:
+        vm.recipes = uc.recipes_search(vm.text)
+
+    vm.tags = uc.get_tags()
+    return vm.to_dict()
 
 
 @blueprint.route("/recipe/tag/<tags>", methods=["GET"])

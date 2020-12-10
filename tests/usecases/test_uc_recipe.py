@@ -126,3 +126,16 @@ def test_delete_recipe_badID(rec_driver):
     r = RecipeUC(rec_driver)
     result = r.delete_recipe(recipe_id=789)
     assert result == 0
+
+
+def test_recipes_search(rec_driver, mocker):
+    """
+    GIVEN a db with recipes
+    WHEN the user supplies a search string
+    THEN assert the recipes that match are returned
+    """
+    r = RecipeUC(rec_driver)
+    search_mock = mocker.patch.object(r, "recipes_search")
+    search_mock.return_value = ["r1", "r2"]
+    result = r.recipes_search("spam")
+    assert len(result)== 2

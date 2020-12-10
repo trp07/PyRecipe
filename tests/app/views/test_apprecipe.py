@@ -12,11 +12,12 @@ from pyrecipe.app.viewmodels.recipe import RecipeViewModel
 from pyrecipe.app.viewmodels.recipe import AddViewModel
 from pyrecipe.app.viewmodels.recipe import EditViewModel
 from pyrecipe.app.viewmodels.recipe import DeleteViewModel
+from pyrecipe.app.viewmodels.recipe import SearchViewModel
 from pyrecipe.app import app as flask_app
 from pyrecipe.app.views import recipe_views
 
 
-#################### Recipe Viewing #########################
+#################### Recipe Viewing ##########################################
 
 def test_recipes_all(mocker):
     """
@@ -71,7 +72,7 @@ def test_recipe_view_Notfound(mocker):
             resp: Response = recipe_views.recipe_view("1234")
 
 
-#################### Recipe Adding ##########################
+#################### Recipe Adding ###########################################
 
 def test_recipe_add_get_loggedin(mocker):
     """
@@ -179,7 +180,7 @@ def test_recipe_add_post_loggedin_Notcreated(mocker, testrecipe):
     assert resp.location is None
 
 
-#################### Recipe Editing #########################
+#################### Recipe Editing ##########################################
 
 def test_recipe_edit_get_loggedin(mocker):
     """
@@ -262,7 +263,7 @@ def test_recipe_edit_post_loggedout(mocker):
     assert resp.location in ("/login", "/account/login")
 
 
-#################### Recipe Deleting ########################
+#################### Recipe Deleting #########################################
 
 def test_recipe_delete_get_loggedin_goodrecipeID(mocker):
     """
@@ -346,7 +347,53 @@ def test_recipe_delete_post_loggedout(mocker):
         resp: Response = recipe_views.recipe_delete_post("12345")
     assert resp.location in ("/account/login", "/login")
 
-#################### Recipes with... ########################
+
+#################### Recipe Searching ########################################
+
+def test_recipe_search_empty(mocker):
+    """
+    GIVEN a user navigates to /recipe/search/<text>
+    WHEN the search text is empty
+    THEN assert the correct functions are called
+    """
+    find = mocker.patch.object(AccountUC, "find_user_by_id")
+    find.return_value = None
+    vm = mocker.patch.object(SearchViewModel, "__call__")
+    vm.text = None
+    rec_all = mocker.patch.object(RecipeUC, "get_all_recipes")
+    rec_search = mocker.patch.object(RecipeUC, "recipes_search")
+    rec_tags = mocker.patch.object(RecipeUC, "get_tags")
+
+    form_data = {"search_text": ""}
+    with flask_app.test_request_context(path="/recipe/search/<text>", data=form_data):
+        resp: Response = recipe_views.recipes_search()
+    assert rec_all.call_count == 1
+    assert rec_search.call_count == 0
+    assert rec_tags.call_count == 1
+
+def test_recipe_search_notempty(mocker):
+    """
+    GIVEN a user navigates to /recipe/search/<text>
+    WHEN the search text is not empty
+    THEN assert the correct functions are called
+    """
+    find = mocker.patch.object(AccountUC, "find_user_by_id")
+    find.return_value = None
+    vm = mocker.patch.object(SearchViewModel, "__call__")
+    vm.text = "oatmeal"
+    rec_all = mocker.patch.object(RecipeUC, "get_all_recipes")
+    rec_search = mocker.patch.object(RecipeUC, "recipes_search")
+    rec_tags = mocker.patch.object(RecipeUC, "get_tags")
+
+    form_data = {"search_text": "oatmeal"}
+    with flask_app.test_request_context(path="/recipe/search/<text>", data=form_data):
+        resp: Response = recipe_views.recipes_search()
+    assert rec_all.call_count == 0
+    assert rec_search.call_count == 1
+    assert rec_tags.call_count == 1
+
+
+#################### Recipes with... #########################################
 
 def test_recipes_with_tags(mocker, testrecipe):
     """

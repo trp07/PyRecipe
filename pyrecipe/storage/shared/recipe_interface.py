@@ -86,3 +86,8 @@ class RecipeDBInt(metaclass=ABCMeta):
     def recipe_delete(recipe: "RecipeModel") -> int:
         """Mark the given recipe as deleted."""
         pass
+
+    @abstractmethod
+    def recipes_search(text: str) -> Optional["RecipeModel"]:
+        """Return a list of recipes that match the search string."""
+        pass

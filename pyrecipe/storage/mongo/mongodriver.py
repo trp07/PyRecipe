@@ -301,6 +301,19 @@ class MongoDriver(DBInitInt, RecipeDBInt, UserDBInt):
         r._update_last_mod_date()
         return result
 
+    @staticmethod
+    def recipes_search(text: str) -> Optional["RecipeModel"]:
+        """
+        Given a search string, return all matches
+
+        MongoDriver.recipes_search(text)
+
+        :returns: A list of recipes that match (if any)
+        """
+        recipes = Recipe.objects.search_text(text).order_by("$text_score")
+        return [RecipeModel.from_dict(MongoDriver._recipe_to_dict(r)) for r in recipes]
+
+
     #### UserDBInt methods ###################################################
 
     @staticmethod

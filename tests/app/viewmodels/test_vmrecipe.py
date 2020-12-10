@@ -8,6 +8,7 @@ from pyrecipe.app.viewmodels.recipe import AddViewModel
 from pyrecipe.app.viewmodels.recipe import EditViewModel
 from pyrecipe.app.viewmodels.recipe import RecipeViewModel
 from pyrecipe.app.viewmodels.recipe import DeleteViewModel
+from pyrecipe.app.viewmodels.recipe import SearchViewModel
 from pyrecipe.app import app as flask_app
 
 
@@ -17,8 +18,8 @@ def test_recipevm(mocker):
     WHEN a request is passed through the RecipeViewModel
     THEN assert no errors are received
     """
-    target = mocker.patch.object(AccountUC, "find_user_by_id")
-    target.return_value = None
+    userid_mock = mocker.patch.object(AccountUC, "find_user_by_id")
+    userid_mock.return_value = None
     with flask_app.test_request_context(path="/recipe/view/<recipe_id>", data=None):
         vm = RecipeViewModel()
 
@@ -55,8 +56,8 @@ def test_addvm(mocker):
         ],
     }
 
-    target = mocker.patch.object(AccountUC, "find_user_by_id")
-    target.return_value = None
+    userid_mock = mocker.patch.object(AccountUC, "find_user_by_id")
+    userid_mock.return_value = None
     with flask_app.test_request_context(path="/recipe/add", data=form_data):
         vm = AddViewModel()
 
@@ -72,8 +73,8 @@ def test_editvm(mocker, testrecipe):
     WHEN data is passed through the viewmodel
     THEN assert there are no errors and the proper viewmodel is formed
     """
-    target = mocker.patch.object(AccountUC, "find_user_by_id")
-    target.return_value = None
+    userid_mock = mocker.patch.object(AccountUC, "find_user_by_id")
+    userid_mock.return_value = None
     with flask_app.test_request_context(path="/recipe/edit/<recipe_id>", data=None):
         vm = EditViewModel()
         vm.recipe = testrecipe(
@@ -100,11 +101,28 @@ def test_deletevm(mocker):
     WHEN a request is passed through the DeleteViewModel
     THEN assert no errors are received
     """
-    target = mocker.patch.object(AccountUC, "find_user_by_id")
-    target.return_value = None
+    userid_mock = mocker.patch.object(AccountUC, "find_user_by_id")
+    userid_mock.return_value = None
     with flask_app.test_request_context(path="/recipe/delete/<recipe_id>", data=None):
         vm = DeleteViewModel()
 
     vm.to_dict()
     assert vm.error is None
     assert vm.recipe is None
+
+
+def test_searchvm(mocker):
+    """
+    GIVEN a request to /recipe/search/<text>
+    WHEN a request is passed through the SearchViewModel
+    THEN assert no errors are received and the correct search text is received
+    """
+    userid_mock = mocker.patch.object(AccountUC, "find_user_by_id")
+    userid_mock.return_value = None
+    form_data = {"search_text": "oatmeal"}
+    with flask_app.test_request_context(path="/recipe/search/<text>", data=form_data):
+        vm = SearchViewModel()
+
+    vm.to_dict()
+    assert vm.error is None
+    assert vm.text == "oatmeal"
