@@ -2,6 +2,9 @@
 
 from typing import Optional
 from typing import List
+from pathlib import Path
+
+from pyrecipe.services import export
 
 
 class RecipeUC:
@@ -91,4 +94,12 @@ class RecipeUC:
 
     def recipes_search(self, text: str) -> Optional["RecipeModel"]:
         """Return a list of recipes that match the supplied search string."""
-        return self._driver.recipes_search(text)
+        name_search = self._driver.recipes_find_by_name(text)
+        text_search = self._driver.recipes_search(text)
+        return name_search + text_search
+
+    def export_recipe(self, recipe_id: str) -> Path:
+        """Export the given recipe to a pdf and return the filepath of the pdf."""
+        recipe = self.find_recipe_by_id(recipe_id)
+        result = export.export_to_pdf([recipe])
+        return result[1]
