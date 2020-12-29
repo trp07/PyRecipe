@@ -1,10 +1,12 @@
 """Use Cases for recipe-related logic."""
 
+import datetime
+import pathlib
 from typing import Optional
 from typing import List
-from pathlib import Path
 
 from pyrecipe.services import export
+from pyrecipe.files import FILESDIR
 
 
 class RecipeUC:
@@ -98,8 +100,25 @@ class RecipeUC:
         text_search = self._driver.recipes_search(text)
         return name_search + text_search
 
-    def export_recipe(self, recipe_id: str) -> Path:
-        """Export the given recipe to a pdf and return the filepath of the pdf."""
+    def export_recipe(self, recipe_id: str) -> pathlib.Path:
+        """
+        Export the given recipe to a pdf and return the filepath of the pdf.
+        If the file already exists because it was previously exported and it wasn't
+        modified since the last export, then return the file instead of recreating
+        it.
+        """
         recipe = self.find_recipe_by_id(recipe_id)
-        result = export.export_to_pdf([recipe])
-        return result[1]
+
+        filename = recipe_id
+        filename += "_"
+        filename += datetime.datetime.strftime(recipe.last_modified_date, "%Y-%m-%d_%H-%M-%Sutc")
+        filename += ".pdf"
+
+        filepath = FILESDIR.joinpath("exports/" + filename)
+
+        if filepath.is_file():
+            result = filepath
+        else:
+            result = export.export_to_pdf(recipe, filename)
+
+        return result

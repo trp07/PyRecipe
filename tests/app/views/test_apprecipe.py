@@ -452,3 +452,41 @@ def test_recipes_random(mocker):
     with flask_app.test_request_context(path="/recipe/random", data=None):
         resp: Response = recipe_views.recipes_random()
     assert resp.location is None
+
+
+#################### Recipes Exporting #######################################
+
+def test_recipe_export_loggedin(mocker):
+    """
+    GIVEN a recipe in the DB
+    WHEN a logged-in user requests to export the recipe
+    THEN assert the file is sent
+    """
+    vm = mocker.patch.object(RecipeViewModel, "__call__")
+    finduser_mock = mocker.patch.object(AccountUC, "find_user_by_id")
+    finduser_mock.return_value = "FOUND"
+    uc_mock = mocker.patch.object(RecipeUC, "export_recipe")
+    sendfile_mock = mocker.patch.object(flask, "send_file")
+    redirect_mock = mocker.patch.object(flask, "redirect")
+    with flask_app.test_request_context(path="/recipe/export/<recipe_id>", data=None):
+        resp: Response = recipe_views.recipe_export("12345")
+    assert redirect_mock.call_count == 0
+    assert sendfile_mock.call_count == 1
+
+
+def test_recipe_export_loggedout(mocker):
+    """
+    GIVEN a recipe in the DB
+    WHEN a logged-out user requests to export the recipe
+    THEN assert the user is redirected and file not sent
+    """
+    vm = mocker.patch.object(RecipeViewModel, "__call__")
+    finduser_mock = mocker.patch.object(AccountUC, "find_user_by_id")
+    finduser_mock.return_value = None
+    uc_mock = mocker.patch.object(RecipeUC, "export_recipe")
+    sendfile_mock = mocker.patch.object(flask, "send_file")
+    redirect_mock = mocker.patch.object(flask, "redirect")
+    with flask_app.test_request_context(path="/recipe/export/<recipe_id>", data=None):
+        resp: Response = recipe_views.recipe_export("12345")
+    assert redirect_mock.call_count == 1
+    assert sendfile_mock.call_count == 0

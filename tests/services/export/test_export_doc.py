@@ -37,8 +37,8 @@ def test_fw_init():
     WHEN instantiated
     THEN assert properly created
     """
-    fw = FileWriter()
-    assert "PyRecipe_" in fw.filename
+    fw = FileWriter("PyRecipe")
+    assert "PyRecipe" in fw.filename
     assert isinstance(fw.doc, SimpleDocTemplate)
     assert isinstance(fw.styles, getSampleStyleSheet().__class__)
 
@@ -56,23 +56,9 @@ def test_fw_create_doc(get_recipe, tmpdir):
 
     fw = FileWriter(filename=str(testfile))
 
-    result = fw.create_doc(recipes)
-    assert result == 2
+    result = fw.create_doc(recipes[0])
+    assert result == 1
     assert pathlib.Path(testfile).absolute().exists()
-
-
-def test_export_to_pdf_mocked(mocker):
-    """
-    GIVEN a call to export_to_pdf
-    WHEN supplied with the correct params
-    THEN assert FileWriter.create_doc() is called with no errors
-    * mock out the calls to other functions
-    """
-    recipes = ["r1", "r2"]
-    create_mock = mocker.patch.object(FileWriter, "create_doc")
-
-    result = export_to_pdf(recipes, verbose=False)
-    assert create_mock.call_count == 1
 
 
 def test_export_to_pdf(get_recipe, tmpdir):
@@ -86,5 +72,5 @@ def test_export_to_pdf(get_recipe, tmpdir):
     testdir = pathlib.Path(tmpdir).absolute()
     testfile = testdir.joinpath("pyrecipe_test1.pdf")
 
-    result = export_to_pdf(recipes, filename=str(testfile), verbose=True)
-    assert result == (2, str(testfile))
+    result = export_to_pdf(recipes[0], filename=str(testfile))
+    assert result == str(testfile)

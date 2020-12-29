@@ -1,5 +1,6 @@
 """View controllers associated with recipe features."""
 
+import datetime
 from collections.abc import MutableSequence
 from typing import List
 
@@ -219,28 +220,49 @@ def recipes_deleted():
     return "Not Implemented... yet"
 
 
-@blueprint.route("/recipes/recent", methods=["GET"])
-@blueprint.route("/recipes/recent/", methods=["GET"])
-@blueprint.route("/recipes/recent/<num_rec>", methods=["GET"])
+@blueprint.route("/recipe/recent", methods=["GET"])
+@blueprint.route("/recipe/recent/", methods=["GET"])
+@blueprint.route("/recipe/recent/<num_rec>", methods=["GET"])
 @response(template_file="recipe/recent_recipes.html")
 def recipes_recently_added(num_rec: int = 10):
     """Show the num_rec most recently added recipes."""
     return {"error": "Not yet implemented!"}
 
 
-@blueprint.route("/recipes/favorites", methods=["GET"])
-@blueprint.route("/recipes/favorites/", methods=["GET"])
-@blueprint.route("/recipes/favorites/<num_rec>", methods=["GET"])
+@blueprint.route("/recipe/favorites", methods=["GET"])
+@blueprint.route("/recipe/favorites/", methods=["GET"])
+@blueprint.route("/recipe/favorites/<num_rec>", methods=["GET"])
 @response(template_file="recipe/favorite_recipes.html")
 def recipes_favorite(num_rec: int = 10):
     """Show the num_rec favorite recipes."""
     return {"error": "Not yet implemented!"}
 
 
-@blueprint.route("/recipes/random", methods=["GET"])
-@blueprint.route("/recipes/random/", methods=["GET"])
-@blueprint.route("/recipes/random/<num_rec>", methods=["GET"])
+@blueprint.route("/recipe/random", methods=["GET"])
+@blueprint.route("/recipe/random/", methods=["GET"])
+@blueprint.route("/recipe/random/<num_rec>", methods=["GET"])
 @response(template_file="recipe/random_recipes.html")
 def recipes_random(num_rec: int = 10):
     """Show the num_rec random recipes."""
     return {"error": "Not yet implemented!"}
+
+
+#################### Recipes Exporting #######################################
+
+@blueprint.route("/recipe/export/<recipe_id>", methods=["GET"])
+def recipe_export(recipe_id: str):
+    """
+    Given a valid recipe id convert it to a pdf and send it to
+    the user.  Log-in required feature.
+
+    Reuses the RecipeViewModel to determine if the request is coming
+    from a logged-in user or not.  If not logged-in redirects to the
+    home page.
+    """
+    vm = RecipeViewModel()
+    if not vm.user:
+        flask.flash("You must be logged in to export")
+        return flask.redirect(flask.url_for("home.index"))
+    uc = RecipeUC(current_app.config["DB_DRIVER"])
+    recipe = uc.export_recipe(recipe_id)
+    return flask.send_file(filename_or_fp=recipe, as_attachment=True)

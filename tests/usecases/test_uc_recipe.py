@@ -1,8 +1,12 @@
 """Test for the usecases/recipe_uc.py module."""
 
+import datetime
+
 import pytest
 
+import pyrecipe.usecases.recipe_uc as ruc
 from pyrecipe.usecases.recipe_uc import RecipeUC
+from pyrecipe.services import export
 
 
 def test_recipeuc_instantiation(rec_driver):
@@ -139,3 +143,40 @@ def test_recipes_search(rec_driver, mocker):
     search_mock.return_value = ["r1", "r2"]
     result = r.recipes_search("spam")
     assert len(result)== 2
+
+
+def test_export_recipe_fileDoesNotExist(rec_driver, mocker):
+    """
+    GIVEN a recipe in the DB
+    WHEN the user requests to export the recipe for the first time
+    THEN assert the correct functions are called
+    """
+    r = RecipeUC(rec_driver)
+    find_mock = mocker.patch.object(r, "find_recipe_by_id")
+    date_mock = mocker.patch.object(datetime, "datetime")
+    date_mock.strftime.return_value = "filename"
+    export_mock = mocker.patch.object(export, "export_to_pdf")
+    export_mock.return_value = "/path/to/file"
+    result = r.export_recipe("12345")
+    assert result == "/path/to/file"
+    assert find_mock.call_count == 1
+    assert export_mock.call_count == 1
+
+
+def test_export_recipe_fileAlreadyExists(rec_driver, mocker):
+    """
+    GIVEN a recipe in the DB
+    WHEN the user requests to export the recipe for a already existing file
+    THEN assert the correct functions are called but no pdf is recreated
+    """
+    r = RecipeUC(rec_driver)
+    find_mock = mocker.patch.object(r, "find_recipe_by_id")
+    date_mock = mocker.patch.object(datetime, "datetime")
+    date_mock.strftime.return_value = "filename"
+    file_mock = mocker.patch.object(ruc, "FILESDIR")
+    file_mock.joinpath.return_value.is_file.return_value = True
+    export_mock = mocker.patch.object(export, "export_to_pdf")
+    export_mock.return_value = "/path/to/file"
+    result = r.export_recipe("12345")
+    assert find_mock.call_count == 1
+    assert export_mock.call_count == 0

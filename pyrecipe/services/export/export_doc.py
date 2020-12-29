@@ -28,6 +28,8 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
 
 from pyrecipe import __version__ as VERSION
+from pyrecipe.files import FILESDIR
+from pyrecipe.storage.shared.recipe_model import RecipeModel
 
 
 class FileWriter:
@@ -48,67 +50,55 @@ class FileWriter:
     * Add bookmarks
     """
 
+    EXPORT_DIR = FILESDIR.joinpath("exports/")
     PARENT_DIR = pathlib.Path(__file__).absolute().parent
-    EXPORT_DIR = PARENT_DIR.joinpath("exports/")
     PDF_LOGO_PATH = PARENT_DIR.joinpath("images/pyrecipe_pdf_logo.png")
 
     if not EXPORT_DIR.exists():
         EXPORT_DIR.mkdir()
 
     def __init__(self, filename=None):
-        self.filename = filename or (
-            str(
-                pathlib.Path(FileWriter.EXPORT_DIR).joinpath(
-                    "PyRecipe_"
-                    + datetime.datetime.strftime(
-                        datetime.datetime.utcnow(), "%Y-%m-%d_%H:%M:%Sutc"
-                    )
-                    + ".pdf"
-                )
-            )
-        )
-
+        self.filename = str(pathlib.Path(FileWriter.EXPORT_DIR).joinpath(filename))
         self.doc = SimpleDocTemplate(self.filename, pagesize=letter)
         self.styles = getSampleStyleSheet()
 
-    def create_doc(self, recipes: List["RecipeModel"]) -> int:
+    def create_doc(self, recipe: RecipeModel) -> int:
         """
         Create a PDF of all given recipes.
         Each recipe is separated by a pagebreak.
 
-        :param recipes: (List['Recipe']) a list of one or more pyrecipe.cookbook.Recipe instances.
+        :param recipe: (RecipeModel) a pyrecipe.storage.shared.recipe_model.RecipeModel instances.
         :returns: (int) the number of recipes successfully written to the file.
         """
         recipes_written = 0
         flowables = []
 
-        for recipe in recipes:
-            flowables.append(self._add_section(recipe.name, "Title"))
+        flowables.append(self._add_section(recipe.name, "Title"))
 
-            timing = "<para align=center>prep time: {:.0f} minutes  |  cook time: {:.0f} minutes</para>".format(
-                recipe.prep_time, recipe.cook_time
-            )
-            flowables.append(Paragraph(timing, style=self.styles["Normal"]))
+        timing = "<para align=center>prep time: {:.0f} minutes  |  cook time: {:.0f} minutes</para>".format(
+            recipe.prep_time, recipe.cook_time
+        )
+        flowables.append(Paragraph(timing, style=self.styles["Normal"]))
 
-            servings = "<para align=center>servings: {}</para>".format(recipe.servings)
-            flowables.append(Paragraph(servings, style=self.styles["Normal"]))
+        servings = "<para align=center>servings: {}</para>".format(recipe.servings)
+        flowables.append(Paragraph(servings, style=self.styles["Normal"]))
 
-            flowables.append(self._add_section("Ingredients", "Heading2"))
-            for ingredient in recipe.ingredients:
-                flowables.append(self._add_bullet(ingredient))
+        flowables.append(self._add_section("Ingredients", "Heading2"))
+        for ingredient in recipe.ingredients:
+            flowables.append(self._add_bullet(ingredient))
 
-            flowables.append(self._add_section("Directions", "Heading2"))
-            for direction in recipe.directions:
-                flowables.append(self._add_sequence(recipe.id, direction))
-                flowables.append(Spacer(0, 5))
+        flowables.append(self._add_section("Directions", "Heading2"))
+        for direction in recipe.directions:
+            flowables.append(self._add_sequence(recipe.id, direction))
+            flowables.append(Spacer(0, 5))
 
-            if recipe.notes:
-                flowables.append(self._add_section("Notes", "Heading2"))
-                for note in recipe.notes:
-                    flowables.append(self._add_bullet(note))
+        if recipe.notes:
+            flowables.append(self._add_section("Notes", "Heading2"))
+            for note in recipe.notes:
+                flowables.append(self._add_bullet(note))
 
-            recipes_written += 1
-            flowables.append(PageBreak())
+        recipes_written += 1
+        flowables.append(PageBreak())
 
         self.doc.build(
             flowables,
@@ -184,26 +174,16 @@ class FileWriter:
         return Paragraph(text, style=self.styles[style])
 
 
-def export_to_pdf(
-    recipes: List["RecipeModel"], filename: str = None, verbose: bool = False
-) -> tuple:
+def export_to_pdf(recipe:RecipeModel, filename:str=None) -> pathlib.Path:
     """
     Function that will delegate to the FileWriter class and build the
     pdf from the given recipes.
 
+    :param recipe: (RecipeModel) a pyrecipe.storage.shared.recipe_model.RecipeModel instances.
     :param filename: (str) filename of file to write.  Defaults to None, which will allow the
         FileWriter to automatically handle filename creation.
-    :param recipes: (List['Recipe']) a list of one or more pyrecipe.cookbook.Recipe instances.
-    :param verbose: (bool) print verbose output.
-    :returns: tuple(int, str) the number of recipes successfully written to the pdf
-              and the absolute file path of the file just written.
+    :returns: (pathlib.Path) the absolute file path of the file just written.
     """
     fw = FileWriter(filename)
-
-    num_written = fw.create_doc(recipes)
-    if verbose:
-        print("+ recipes written: {}".format(num_written))
-        print("+ file created: {}".format(fw.filename))
-        print("... writing metadata...")
-
-    return (num_written, fw.filename)
+    num_written = fw.create_doc(recipe)
+    return fw.filename

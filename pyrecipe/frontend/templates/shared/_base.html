@@ -22,6 +22,7 @@
         {% if recipe %}
         <a class="btn btn-warning" href="{{ url_for('recipe.recipe_edit_get', recipe_id=recipe.id) }}" role="button">Edit Recipe</a>
         <a class="btn btn-danger" href="{{ url_for('recipe.recipe_delete_get', recipe_id=recipe.id) }}" role="button">Delete Recipe</a>
+        <a class="btn btn-info" href="{{ url_for('recipe.recipe_export', recipe_id=recipe.id) }}" role="button">Export Recipe</a>
         {% endif%}
 
     {% else %}
@@ -29,6 +30,16 @@
     <a href="{{ url_for('account.register_get') }}">Register</a>
     {% endif %}
 </nav>
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-danger" role="alert">
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
 
 <div class="main_content">
     {% block main_content %}{% endblock %}
