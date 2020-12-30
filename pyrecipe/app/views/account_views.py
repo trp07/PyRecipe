@@ -18,7 +18,7 @@ blueprint = flask.Blueprint(
 )
 
 
-#################### Index ##########################
+#################### Index ###################################################
 
 
 @blueprint.route("/account", methods=["GET"])
@@ -27,13 +27,13 @@ blueprint = flask.Blueprint(
 def index():
     vm = IndexViewModel()
     if not vm.user:
+        flask.flash("You must be logged in", category="danger")
         return flask.redirect(flask.url_for("account.login_get"))
 
     return vm.to_dict()
 
 
-#################### Login ##########################
-
+#################### Login ###################################################
 
 @blueprint.route("/account/login", methods=["GET"])
 @blueprint.route("/login", methods=["GET"])
@@ -67,8 +67,7 @@ def login_post():
     return response
 
 
-#################### Logout #########################
-
+#################### Logout ##################################################
 
 @blueprint.route("/account/logout")
 @blueprint.route("/logout")
@@ -76,11 +75,11 @@ def login_post():
 def logout():
     response = flask.redirect(flask.url_for("home.index"))
     cookie_auth.logout(response, current_app.config["COOKIE_NAME"])
+    flask.flash("You are logged out", category="primary")
     return response
 
 
-#################### Register #######################
-
+#################### Register ################################################
 
 @blueprint.route("/account/register", methods=["GET"])
 @blueprint.route("/register", methods=["GET"])
@@ -104,9 +103,11 @@ def register_post():
     uc = AccountUC(current_app.config["DB_DRIVER"])
     user = uc.register_user(name=vm.name, email=vm.email, password=vm.password)
     if not user:
+        flask.flash("Registration error", category="danger")
         vm.error = "User with email address already exists."
         return vm.to_dict()
 
+    flask.flash("Registration successful", category="success")
     response = flask.redirect(flask.url_for("account.index"))
     cookie_auth.set_auth(response, user.id, current_app.config["COOKIE_NAME"],
         current_app.config["SECRET_KEY"])

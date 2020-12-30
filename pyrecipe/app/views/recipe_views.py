@@ -53,6 +53,7 @@ def recipe_view(recipe_id: str):
     uc = RecipeUC(current_app.config["DB_DRIVER"])
     vm.recipe = uc.find_recipe_by_id(recipe_id)
     if not vm.recipe:
+        flask.flash("Recipe not found", category="danger")
         flask.abort(404)
     return vm.to_dict()
 
@@ -65,6 +66,7 @@ def recipe_view(recipe_id: str):
 def recipe_add_get():
     vm = AddViewModel()
     if not vm.user:
+        flask.flash("You must be logged in to add a recipe", category="danger")
         return flask.redirect(flask.url_for("account.login_get"))
     return vm.to_dict()
 
@@ -74,6 +76,7 @@ def recipe_add_get():
 def recipe_add_post():
     vm = AddViewModel()
     if not vm.user:
+        flask.flash("You must be logged in to add a recipe", category="danger")
         return flask.redirect(flask.url_for("account.login_get"))
 
     uc = RecipeUC(current_app.config["DB_DRIVER"])
@@ -88,6 +91,7 @@ def recipe_add_post():
         notes=vm.notes,
     )
     if recipe:
+        flask.flash("Recipe successfully added", category="success")
         return flask.redirect(
             flask.url_for("recipe.recipe_view", recipe_id=str(recipe.id))
         )
@@ -102,6 +106,7 @@ def recipe_add_post():
 def recipe_edit_get(recipe_id: str):
     vm = EditViewModel()
     if not vm.user:
+        flask.flash("You must be logged in to edit a recipe", category="danger")
         return flask.redirect(flask.url_for("account.login_get"))
 
     uc = RecipeUC(current_app.config["DB_DRIVER"])
@@ -115,6 +120,7 @@ def recipe_edit_get(recipe_id: str):
 def recipe_edit_post(recipe_id: str):
     vm = AddViewModel()
     if not vm.user:
+        flask.flash("You must be logged in to edit a recipe", category="danger")
         return flask.redirect(flask.url_for("account.login_get"))
 
     uc = RecipeUC(current_app.config["DB_DRIVER"])
@@ -130,9 +136,11 @@ def recipe_edit_post(recipe_id: str):
         notes=vm.notes,
     )
     if recipe:
+        flask.flash("Recipe successfully edited", category="success")
         return flask.redirect(
             flask.url_for("recipe.recipe_view", recipe_id=str(recipe.id))
         )
+    flask.flash("Recipe unsuccessful edited", category="danger")
     return vm.to_dict()
 
 
@@ -144,12 +152,14 @@ def recipe_edit_post(recipe_id: str):
 def recipe_delete_get(recipe_id: str):
     vm = DeleteViewModel()
     if not vm.user:
+        flask.flash("You must be logged in to delete a recipe", category="danger")
         return flask.redirect(flask.url_for("account.login_get"))
 
     uc = RecipeUC(current_app.config["DB_DRIVER"])
     vm.recipe = uc.find_recipe_by_id(recipe_id)
 
     if not vm.recipe:
+        flask.flash("Recipe not found", category="warning")
         vm.error = "Recipe Not Found"
 
     return vm.to_dict()
@@ -160,10 +170,12 @@ def recipe_delete_get(recipe_id: str):
 def recipe_delete_post(recipe_id: str):
     vm = DeleteViewModel()
     if not vm.user:
+        flask.flash("You must be logged in to delete a recipe", category="danger")
         return flask.redirect(flask.url_for("account.login_get"))
 
     uc = RecipeUC(current_app.config["DB_DRIVER"])
     result = uc.delete_recipe(recipe_id)
+    flask.flash("Recipe deleted", category="success")
 
     vm.recipes = uc.get_all_recipes(deleted=False)
     vm.tags = uc.get_tags()
@@ -261,7 +273,7 @@ def recipe_export(recipe_id: str):
     """
     vm = RecipeViewModel()
     if not vm.user:
-        flask.flash("You must be logged in to export")
+        flask.flash("You must be logged in to export", category="danger")
         return flask.redirect(flask.url_for("home.index"))
     uc = RecipeUC(current_app.config["DB_DRIVER"])
     recipe = uc.export_recipe(recipe_id)

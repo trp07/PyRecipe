@@ -46,4 +46,5 @@ def index():
 @response(template_file="home/about.html")
 def about():
     vm = AboutViewModel()
+    flask.flash("This page is not yet developed", category="warning")
     return vm.to_dict()
