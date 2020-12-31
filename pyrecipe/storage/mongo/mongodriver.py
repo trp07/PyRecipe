@@ -173,7 +173,7 @@ class MongoDriver(DBInitInt, RecipeDBInt, UserDBInt):
 
         :returns: List["tags"] a list of all distinct tags in the collection.
         """
-        return list(Recipe.objects().distinct("tags"))
+        return list(Recipe.objects().filter(deleted=False).distinct("tags"))
 
     @staticmethod
     def recipes_all() -> List[RecipeModel]:
