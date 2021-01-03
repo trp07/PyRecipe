@@ -29,13 +29,13 @@ flask = "^1.0"
 reportlab = "^3.5"
 passlib = "^1.7"
 secure = "^0.2.1"
-mongomock = "^3.19"
-webtest = "^2.0"
 
 [tool.poetry.dev-dependencies]
 pytest-cov = "^2.6"
 pytest-mock = "^1.10"
 black = "=18.9b0"
+mongomock = "^3.22"
+webtest = "^2.0"
 
 [tool.poetry.scripts]
 pyrecipe = 'pyrecipe:main.main'
