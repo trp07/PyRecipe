@@ -87,7 +87,7 @@ def test_recipe_create(mongodb):
     Recipe.objects().filter(id=r.id).first().delete()
     assert isinstance(r, RecipeModel)
 
-@pytest.mark.xfail
+@pytest.mark.xfail(strict=False)
 def test_recipe_edit(recipes):
     """
     GIVEN an existing recipe
@@ -267,7 +267,7 @@ def test_recipe_copy(recipes):
     assert copy.images != r["images"]
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail(strict=False)
 def test_recipe_AddDelete_tag(recipes):
     """
     GIVEN a recipe to add/delete a tag
@@ -287,7 +287,7 @@ def test_recipe_AddDelete_tag(recipes):
     assert result == 1
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail(strict=False)
 def test_recipe_mark_made(recipes):
     """
     GIVEN a recipe in the DB
@@ -318,7 +318,7 @@ def test_recipe_mark_made(recipes):
     assert result == 0
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail(strict=False)
 def test_recipe_delete(recipes):
     """
     GIVEN a recipe in the DB the user wants to delete
@@ -335,7 +335,7 @@ def test_recipe_delete(recipes):
     assert result == 1
     assert r.deleted == True
 
-@pytest.mark.xfail
+@pytest.mark.xfail(strict=False)
 def test_recipes_search(recipes):
     """
     GIVEN recipes in the DB the user wants find by search
@@ -478,7 +478,7 @@ def test_users_list(users):
         assert isinstance(user, UserModel)
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail(strict=False)
 def test_user_add_recipe(recipes, users):
     """
     GIVEN a recipe to add to a user
@@ -496,7 +496,7 @@ def test_user_add_recipe(recipes, users):
     assert result == 1
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail(strict=False)
 def test_user_set_password(users, mocker):
     """
     GIVEN a user changing their password

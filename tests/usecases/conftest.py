@@ -12,12 +12,13 @@ class Ingredient:
 
 
 class Recipe:
-    def __init__(self, _id, name, ingredients, tags, deleted):
+    def __init__(self, _id, name, ingredients, tags, deleted, images):
         self.id = _id
         self.name = name
         self.ingredients = ingredients
         self.tags = [tag.lower() for tag in tags]
         self.deleted = deleted
+        self.images = images
 
 
 class RecipeDriver:
@@ -39,15 +40,15 @@ class RecipeDriver:
                 return r
 
     def recipe_create(
-        self, name, prep_time, cook_time, servings, ingredients, directions, tags, notes
+        self, name, prep_time, cook_time, servings, ingredients, directions, tags, notes, images,
     ):
         r = Recipe(
-            _id=789, name=name, ingredients=ingredients, tags=tags, deleted=False
+            _id=789, name=name, ingredients=ingredients, tags=tags, deleted=False, images=images,
         )
         return r
 
     def recipe_edit(
-        self, _id, name, prep_time, cook_time, servings, ingredients, directions, tags, notes
+        self, _id, name, prep_time, cook_time, servings, ingredients, directions, tags, notes,
     ):
         r = self.recipe_find_by_id(_id)
         r.name = name
@@ -92,6 +93,7 @@ def rec_driver():
         ingredients=Ingredient("garlic"),
         tags=["quick", "spicy"],
         deleted=False,
+        images = ["testimg.jpg"],
     )
     r2 = Recipe(
         _id=456,
@@ -99,6 +101,7 @@ def rec_driver():
         ingredients=Ingredient("onion"),
         tags=["slow", "spicy"],
         deleted=True,
+        images = [],
     )
 
     d = RecipeDriver([r1, r2])

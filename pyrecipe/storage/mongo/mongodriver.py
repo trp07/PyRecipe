@@ -64,6 +64,7 @@ class MongoDriver(DBInitInt, RecipeDBInt, UserDBInt):
         directions: List["directions"],
         tags: List["tags"] = [],
         notes: List["notes"] = [],
+        images: List["filepath"] = [],
     ) -> RecipeModel:
         """
         Given the correct parameters, create a recipe.
@@ -82,6 +83,7 @@ class MongoDriver(DBInitInt, RecipeDBInt, UserDBInt):
         r.directions = directions
         r.tags = tags
         r.notes = notes
+        r.images = images
         r.save()
         return RecipeModel.from_dict(MongoDriver._recipe_to_dict(r))
 

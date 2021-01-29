@@ -40,14 +40,16 @@ def test_find_recipe_by_id(rec_driver):
     r = RecipeUC(rec_driver)
     recipe = r.find_recipe_by_id("123")
     assert recipe.name == "recipe1"
+    assert recipe.images == ["../../static/img/recipe_images/testimg.jpg"]
 
 
-def test_create_recipe(rec_driver):
+def test_create_recipe(rec_driver, mocker):
     """
     GIVEN a recipe to create
     WHEN creating it
     THEN assert it is returned
     """
+    proc_img_mock = mocker.patch.object(ruc, "process_image")
     r = RecipeUC(rec_driver)
     result = r.create_recipe(
         name="test",
@@ -58,7 +60,9 @@ def test_create_recipe(rec_driver):
         directions=["make food"],
         tags=["quick", "spicy"],
         notes=["notes"],
+        images=["imagefile1.jpg", "imagefile2.jpg"],
     )
+    assert proc_img_mock.call_count == 2
     assert result.name == "test"
 
 
@@ -173,7 +177,7 @@ def test_export_recipe_fileAlreadyExists(rec_driver, mocker):
     find_mock = mocker.patch.object(r, "find_recipe_by_id")
     date_mock = mocker.patch.object(datetime, "datetime")
     date_mock.strftime.return_value = "filename"
-    file_mock = mocker.patch.object(ruc, "FILESDIR")
+    file_mock = mocker.patch.object(ruc, "EXPORTDIR")
     file_mock.joinpath.return_value.is_file.return_value = True
     export_mock = mocker.patch.object(export, "export_to_pdf")
     export_mock.return_value = "/path/to/file"

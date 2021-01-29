@@ -3,6 +3,8 @@ The main Flask app controller.  This will register
 all the views as blueprints in the views/ directory.
 """
 
+import pathlib
+
 import flask
 import secure
 
@@ -16,8 +18,13 @@ from pyrecipe.app.views import rest_views
 
 ####### Create the app instance ##############################################
 
+rootpath = str(pathlib.Path(__file__).absolute().parents[1])
+
 app = flask.Flask(
-    __name__, template_folder=str(TEMPLATESDIR), static_folder=str(STATICDIR)
+    __name__,
+    template_folder=str(TEMPLATESDIR),
+    static_folder=str(STATICDIR),
+    root_path=rootpath,
 )
 
 

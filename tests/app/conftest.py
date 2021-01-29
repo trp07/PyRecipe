@@ -24,6 +24,7 @@ class TestRecipe:
         self.directions = directions
         self.notes = notes
         self.tags = tags
+        self.images = []
         self.id = "12345"
         self._id = self.id
 

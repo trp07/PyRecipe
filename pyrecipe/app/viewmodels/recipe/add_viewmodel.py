@@ -1,4 +1,5 @@
 from typing import List
+from typing import Optional
 
 from pyrecipe.app.viewmodels.shared import ViewModelBase
 
@@ -10,6 +11,8 @@ class AddViewModel(ViewModelBase):
         super().__init__()
         self.method = self.request.method
         self.path = self.request.path
+        self._files = None
+        self.images = []
 
     @property
     def ingredients(self) -> List["ingredient"]:
@@ -72,3 +75,10 @@ class AddViewModel(ViewModelBase):
     @property
     def name(self) -> str:
         return self.request_dict.name
+
+    @property
+    def files(self) -> Optional[str]:
+        files = self.request.files.getlist("files[]")
+        if files:
+            self._files = files
+        return self._files

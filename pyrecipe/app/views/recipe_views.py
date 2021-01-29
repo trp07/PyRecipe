@@ -6,6 +6,7 @@ from typing import List
 
 import flask
 from flask import current_app
+from werkzeug.utils import secure_filename
 
 from pyrecipe.app.helpers.view_modifiers import response
 from pyrecipe.app.helpers import request_dict
@@ -55,6 +56,8 @@ def recipe_view(recipe_id: str):
     if not vm.recipe:
         flask.flash("Recipe not found", category="danger")
         flask.abort(404)
+    if vm.recipe.images:
+        print(vm.recipe.images)
     return vm.to_dict()
 
 
@@ -79,6 +82,18 @@ def recipe_add_post():
         flask.flash("You must be logged in to add a recipe", category="danger")
         return flask.redirect(flask.url_for("account.login_get"))
 
+    if vm.files:
+        for file in vm.files:
+            if file.filename.rsplit(".", 1)[-1].lower() in current_app.config["ALLOWED_IMAGES"]:
+                filename = secure_filename(file.filename)
+                file.save(current_app.config["IMAGEDIR"].joinpath(filename))
+                vm.images.append(filename)
+            elif not file.filename:
+                pass
+            else:
+                flask.flash("Cannot import {}".format(file.filename), category="danger")
+                flask.flash("App only accepts file types: {}".format(current_app.config["ALLOWED_IMAGES"]), category="warning")
+
     uc = RecipeUC(current_app.config["DB_DRIVER"])
     recipe = uc.create_recipe(
         name=vm.name,
@@ -89,6 +104,7 @@ def recipe_add_post():
         directions=vm.directions,
         tags=vm.tags,
         notes=vm.notes,
+        images=vm.images,
     )
     if recipe:
         flask.flash("Recipe successfully added", category="success")

@@ -3,7 +3,9 @@
 import os
 import uuid
 
+from pyrecipe.static import IMAGEDIR
 from pyrecipe.storage.mongo import MongoDriver
+
 
 
 class ProdConfig:
@@ -16,6 +18,8 @@ class ProdConfig:
     DEBUG = False
     TESTING = False
     COOKIE_NAME = "pyrecipe_prod"
+    ALLOWED_IMAGES = ["jpg", "jpeg", "png", "gif"]
+    IMAGEDIR = IMAGEDIR
 
 
 class DevConfig:
@@ -28,3 +32,5 @@ class DevConfig:
     DEBUG = True
     TESTING = True
     COOKIE_NAME = "pyrecipe_dev"
+    ALLOWED_IMAGES = ["jpg", "jpeg", "png", "gif"]
+    IMAGEDIR = IMAGEDIR

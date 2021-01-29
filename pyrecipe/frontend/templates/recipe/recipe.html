@@ -35,4 +35,10 @@
 {% endfor %}
 </ul>
 
+{% if recipe.images %}
+    {% for image in recipe.images %}
+        <img src="{{ image }}" class="img-thumbnail">
+    {% endfor %}
+{% endif %}
+
 {% endblock %}

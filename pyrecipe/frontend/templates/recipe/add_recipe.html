@@ -10,7 +10,7 @@
             <h1>Create a Recipe</h1>
         {% endif %}
 
-        <form action="" method="POST" class="recipe-form">
+        <form action="" method="POST" class="recipe-form" enctype="multipart/form-data">
 
             <div class="recipe-section">
                 {% include "recipe/shared/recipe_general.html" %}
@@ -30,6 +30,10 @@
 
             <div class="recipe-section">
                 {% include "recipe/shared/recipe_notes.html" %}
+            </div>
+
+            <div class="recipe-section">
+                {% include "recipe/shared/recipe_images.html" %}
             </div>
 
             <button type="submit" class="btn btn-success">Save</button>

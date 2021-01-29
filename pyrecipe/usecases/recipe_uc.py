@@ -5,8 +5,10 @@ import pathlib
 from typing import Optional
 from typing import List
 
+from pyrecipe.files import EXPORTDIR
 from pyrecipe.services import export
-from pyrecipe.files import FILESDIR
+from pyrecipe.static import IMAGEDIR
+from pyrecipe.services.images import process_image
 
 
 class RecipeUC:
@@ -28,6 +30,8 @@ class RecipeUC:
     def find_recipe_by_id(self, recipe_id: str) -> Optional["RecipeModel"]:
         """Get specific recipe by id in database."""
         recipe = self._driver.recipe_find_by_id(recipe_id)
+        if hasattr(recipe, "images") and recipe.images:
+            recipe.images = ["../../static/img/recipe_images/" + image for image in recipe.images]
         return recipe
 
     def create_recipe(
@@ -40,8 +44,12 @@ class RecipeUC:
         directions: List["directions"],
         tags: List["tags"] = [],
         notes: List["notes"] = [],
+        images: List["filenames"] = [],
     ) -> "RecipeModel":
         """Create a recipe in the database and return it."""
+        if images:
+            images = [process_image(IMAGEDIR.joinpath(image)) for image in images]
+
         recipe = self._driver.recipe_create(
             name=name,
             prep_time=prep_time,
@@ -51,6 +59,7 @@ class RecipeUC:
             directions=directions,
             tags=tags,
             notes=notes,
+            images=images,
         )
         return recipe
 
@@ -75,6 +84,7 @@ class RecipeUC:
         directions: List["directions"],
         tags: List["tags"] = [],
         notes: List["notes"] = [],
+        #images: List["filenames"] = [],
     ) -> "RecipeModel":
         """Create a recipe in the database and return it."""
         recipe = self._driver.recipe_edit(
@@ -86,7 +96,8 @@ class RecipeUC:
             ingredients=ingredients,
             directions=directions,
             tags=tags,
-            notes=notes,
+            notes=notes
+            #images=images, #not implemented on edit yet
         )
         return recipe
 
@@ -114,7 +125,7 @@ class RecipeUC:
         filename += datetime.datetime.strftime(recipe.last_modified_date, "%Y-%m-%d_%H-%M-%Sutc")
         filename += ".pdf"
 
-        filepath = FILESDIR.joinpath("exports/" + filename)
+        filepath = EXPORTDIR.joinpath(filename)
 
         if filepath.is_file():
             result = filepath
