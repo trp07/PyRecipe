@@ -24,20 +24,14 @@ def _hash_text(text: str, salt: str) -> str:
     return hashlib.sha512(salted.encode("utf-8")).hexdigest()
 
 
-def get_user_id_via_auth_cookie(request: "Request", cookiename: str, salt: str) -> Optional[int]:
+def get_user_id_from_cookie(cookie: str, salt: str) -> Optional[int]:
     """
-    Verifies a cookie is set and the cookie is valid.
+    Returns the user_id if a valid cookie is given.
 
-    :response: (Response) http response object from webframework
-    :cookiename: (str) the name the cookie will get set to in the browser, likely
-        the app's name
+    :cookie: (str) the given cookie
     :salt: (str) a random string to salt the resultant cookie's hash
     """
-    if cookiename not in request.cookies:
-        return None
-
-    val = request.cookies[cookiename]
-    parts = val.split(":")
+    parts = cookie.split(":")
     if len(parts) != 2:
         return None
 
@@ -48,8 +42,3 @@ def get_user_id_via_auth_cookie(request: "Request", cookiename: str, salt: str) 
         return None
 
     return user_id
-
-
-def logout(response: "Response", cookiename: str) -> None:
-    """Removes the user cookie, logging out the user."""
-    response.delete_cookie(cookiename)

@@ -22,11 +22,21 @@ class ViewModelBase:
 
     def __init__(self):
         self.request: Request = flask.request
-        self.request_dict = request_dict.create(default_val="")
+        self.request_dict: dict = request_dict.create(default_val="")
         self.error: Optional[str] = None
-        self.user_id: Optional[int] = cookie_auth.get_user_id_via_auth_cookie(
-            self.request, current_app.config["COOKIE_NAME"], current_app.config["SECRET_KEY"]
-        )
+
+
+        if current_app.config["COOKIE_NAME"] not in self.request.cookies:
+            self.user_id: Optional[str] = None
+        else:
+            self.user_id: Optional[int] = cookie_auth.get_user_id_from_cookie(
+                self.request.cookies[current_app.config["COOKIE_NAME"]],
+                current_app.config["SECRET_KEY"]
+            )
+
+        #self.user_id: Optional[int] = cookie_auth.get_user_id_via_auth_cookie(
+        #    self.request, current_app.config["COOKIE_NAME"], current_app.config["SECRET_KEY"]
+        #)
         self.user = AccountUC(current_app.config["DB_DRIVER"]).find_user_by_id(self.user_id)
 
     def to_dict(self) -> dict:

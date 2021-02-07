@@ -78,7 +78,7 @@ def login_post():
 @response(template_file="account/logout.html")
 def logout():
     response = flask.redirect(flask.url_for("home.index"))
-    cookie_auth.logout(response, current_app.config["COOKIE_NAME"])
+    response.delete_cookie(current_app.config["COOKIE_NAME"])
     flask.flash("You are logged out", category="primary")
     return response
 
