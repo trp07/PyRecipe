@@ -19,6 +19,7 @@ class BaseConfig:
     COOKIE_NAME = "pyrecipe_prod"
     ALLOWED_IMAGES = ["jpg", "jpeg", "png", "gif"]
     IMAGEDIR = IMAGEDIR
+    DOMAIN = "127.0.0.1"
 
 
 class ProdConfig(BaseConfig):
@@ -29,5 +30,6 @@ class DevConfig(BaseConfig):
     """A class to store configuration data for Development Deployment."""
 
     SECRET_KEY = "SecretDevKey"
+    DB_URI = os.environ.get("MONGODB_URI") or "pyrecipe_dev"
     DEBUG = True
     TESTING = True

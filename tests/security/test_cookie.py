@@ -2,25 +2,21 @@ import hashlib
 from unittest.mock import MagicMock
 
 import pytest
-import flask
 
 from pyrecipe.security import cookie_auth
 
 
-def test_set_auth(mocker):
+def test_get_auth_cookie(mocker):
     """
     GIVEN an http request
     WHEN setting the cookie
     THEN assert it is set in the proper format
     """
-    flaskmock = mocker.patch.object(cookie_auth.Framework, "FLASK")
-    flaskmock.return_value = None
-    response = MagicMock()
     hash_mock = mocker.patch.object(cookie_auth, "_hash_text")
     hash_mock.return_value = "test"
 
-    cookie_auth.set_auth(response, "12345", "pyrecipe_dev", "salt")
-    flaskmock.assert_called_with(response, name="pyrecipe_dev", value="12345:test")
+    result = cookie_auth.get_auth_cookie(user_id="12345", salt="salt")
+    assert result == "12345:test"
 
 
 def test_hash_text():

@@ -61,8 +61,12 @@ def login_post():
         return vm.to_dict()
 
     response = flask.redirect(flask.url_for("account.index"))
-    cookie_auth.set_auth(response, user.id, current_app.config["COOKIE_NAME"],
-        current_app.config["SECRET_KEY"])
+    cookie = cookie_auth.get_auth_cookie(user.id, current_app.config["SECRET_KEY"])
+    response.set_cookie(
+        key=current_app.config["COOKIE_NAME"],
+        value=cookie,
+        domain=current_app.config["DOMAIN"],
+    )
 
     return response
 
@@ -109,7 +113,11 @@ def register_post():
 
     flask.flash("Registration successful", category="success")
     response = flask.redirect(flask.url_for("account.index"))
-    cookie_auth.set_auth(response, user.id, current_app.config["COOKIE_NAME"],
-        current_app.config["SECRET_KEY"])
+    cookie = cookie_auth.get_auth_cookie(user.id, current_app.config["SECRET_KEY"])
+    response.set_cookie(
+        key=current_app.config["COOKIE_NAME"],
+        value=cookie,
+        domain=current_app.config["DOMAIN"],
+    )
 
     return response
