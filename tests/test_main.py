@@ -18,7 +18,7 @@ def test_main_prod(mocker):
     app_run_mock = mocker.patch.object(app, "run")
     main.main(app, prod=True)
 
-    assert app_cfg_mock.call_count == 2
+    assert app_cfg_mock.call_count == 3
     assert app_run_mock.call_count == 1
 
 
@@ -32,5 +32,5 @@ def test_main_dev(mocker):
     app_run_mock = mocker.patch.object(app, "run")
     main.main(app, prod=False)
 
-    assert app_cfg_mock.call_count == 2
+    assert app_cfg_mock.call_count == 3
     assert app_run_mock.call_count == 1

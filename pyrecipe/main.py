@@ -31,7 +31,7 @@ def main(app: "flask.Flask", prod: bool=False) -> None:
 
     print(BANNER, flush=True)
     app.config.get("DB_DRIVER").db_initialize(db_name=app.config.get("DB_URI"), verbose=True)
-    app.run()
+    app.run(host=app.config.get("DOMAIN"))
 
 
 if __name__ == "__main__":
