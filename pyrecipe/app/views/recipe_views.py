@@ -78,34 +78,41 @@ def recipe_add_get():
 @response(template_file="recipe/add_recipe.html")
 def recipe_add_post():
     vm = AddViewModel()
+    uc = RecipeUC(current_app.config["DB_DRIVER"])
+
     if not vm.user:
         flask.flash("You must be logged in to add a recipe", category="danger")
         return flask.redirect(flask.url_for("account.login_get"))
 
-    if vm.files:
-        for file in vm.files:
-            if file.filename.rsplit(".", 1)[-1].lower() in current_app.config["ALLOWED_IMAGES"]:
-                filename = secure_filename(file.filename)
-                file.save(current_app.config["IMAGEDIR"].joinpath(filename))
-                vm.images.append(filename)
-            elif not file.filename:
-                pass
-            else:
-                flask.flash("Cannot import {}".format(file.filename), category="danger")
-                flask.flash("App only accepts file types: {}".format(current_app.config["ALLOWED_IMAGES"]), category="warning")
+    if vm.recipe_url:
+        recipe = uc.import_recipe_from_url(vm.recipe_url)
 
-    uc = RecipeUC(current_app.config["DB_DRIVER"])
-    recipe = uc.create_recipe(
-        name=vm.name,
-        prep_time=vm.prep_time,
-        cook_time=vm.cook_time,
-        servings=vm.servings,
-        ingredients=vm.ingredients,
-        directions=vm.directions,
-        tags=vm.tags,
-        notes=vm.notes,
-        images=vm.images,
-    )
+    else:
+        if vm.files:
+            for file in vm.files:
+                if file.filename.rsplit(".", 1)[-1].lower() in current_app.config["ALLOWED_IMAGES"]:
+                    filename = secure_filename(file.filename)
+                    file.save(current_app.config["IMAGEDIR"].joinpath(filename))
+                    vm.images.append(filename)
+                elif not file.filename:
+                    pass
+                else:
+                    flask.flash("Cannot import {}".format(file.filename), category="danger")
+                    flask.flash("App only accepts file types: {}".format(current_app.config["ALLOWED_IMAGES"]), category="warning")
+
+
+        recipe = uc.create_recipe(
+            name=vm.name,
+            prep_time=vm.prep_time,
+            cook_time=vm.cook_time,
+            servings=vm.servings,
+            ingredients=vm.ingredients,
+            directions=vm.directions,
+            tags=vm.tags,
+            notes=vm.notes,
+            images=vm.images,
+        )
+
     if recipe:
         flask.flash("Recipe successfully added", category="success")
         return flask.redirect(

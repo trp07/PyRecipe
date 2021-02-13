@@ -66,11 +66,11 @@ class ImageImporter:
                     break
             e = self._image.getexif()
             if e is not None:
-                if e[orientation] == 3:
+                if e.get(orientation) == 3:
                     self._image = self._image.transpose(Image.ROTATE_180)
-                if e[orientation] == 6:
+                if e.get(orientation) == 6:
                     self._image = self._image.transpose(Image.ROTATE_270)
-                if e[orientation] == 8:
+                if e.get(orientation) == 8:
                     self._image = self._image.transpose(Image.ROTATE_90)
 
         self._image.thumbnail(self.MAX_SIZE, Image.ANTIALIAS)

@@ -2,13 +2,17 @@
 
 import datetime
 import pathlib
+import uuid
 from typing import Optional
 from typing import List
+
+import requests
 
 from pyrecipe.files import EXPORTDIR
 from pyrecipe.services import export
 from pyrecipe.static import IMAGEDIR
 from pyrecipe.services.images import process_image
+from pyrecipe.services.importer import import_from_url
 
 
 class RecipeUC:
@@ -133,3 +137,22 @@ class RecipeUC:
             result = export.export_to_pdf(recipe, filename)
 
         return result
+
+    def import_recipe_from_url(self, url: str) -> "RecipeModel":
+        imported = import_from_url(url)
+
+        if imported["images"]:
+            imported["images"] = [self._save_image(imported["images"])]
+
+        return self.create_recipe(**imported)
+
+    def _save_image(self, url: str) -> str:
+        """
+        Internal function used to temporarily download and save an image url
+        from a recipe that is imported via url
+        """
+        img = requests.get(url)
+        filename = str(uuid.uuid4()) + ".jpg"
+        with open(str(IMAGEDIR.joinpath(filename)), "wb") as fin:
+            fin.write(img.content)
+        return filename

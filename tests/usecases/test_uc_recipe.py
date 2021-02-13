@@ -1,8 +1,12 @@
 """Test for the usecases/recipe_uc.py module."""
 
+import builtins
 import datetime
+import uuid
 
 import pytest
+
+import requests
 
 import pyrecipe.usecases.recipe_uc as ruc
 from pyrecipe.usecases.recipe_uc import RecipeUC
@@ -184,3 +188,42 @@ def test_export_recipe_fileAlreadyExists(rec_driver, mocker):
     result = r.export_recipe("12345")
     assert find_mock.call_count == 1
     assert export_mock.call_count == 0
+
+
+def test_import_recipe_from_url(mocker, rec_driver):
+    """
+    GIVEN a recipe to import via url
+    WHEN the url imported
+    THEN assert it is sent to the database
+    """
+    r = RecipeUC(rec_driver)
+    import_mock = mocker.patch.object(ruc, "import_from_url")
+    import_mock.return_value = {
+        "images": "path_to_an_image"
+    }
+    save_image_mock = mocker.patch.object(r, "_save_image")
+    save_image_mock.return_value = "filename"
+    create_mock = mocker.patch.object(r, "create_recipe")
+
+    result = r.import_recipe_from_url("url")
+    assert import_mock.call_count == 1
+    assert save_image_mock.call_count == 1
+    assert create_mock.call_count == 1
+
+
+def test_save_image(mocker, rec_driver):
+    """
+    GIVEN a url-imported recipe with an image url in the data dict
+    WHEN importing
+    THEN assert the file is also downloaded and saved
+    """
+    r = RecipeUC(rec_driver)
+    req_mock = mocker.patch.object(requests, "get")
+    req_mock.return_value.content.return_value = "imagedata"
+    uuid_mock = mocker.patch.object(uuid, "uuid4")
+    uuid_mock.return_value = "12345"
+    file_mock = mocker.patch.object(builtins, "open")
+
+    result = r._save_image("url")
+    assert result == "12345.jpg"
+

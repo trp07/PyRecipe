@@ -65,6 +65,7 @@ def test_addvm(mocker):
     assert vm.servings == 4
     assert vm.cook_time == 30
     assert vm.prep_time == 2
+    assert vm.recipe_url == ""
 
 
 def test_editvm(mocker, testrecipe):

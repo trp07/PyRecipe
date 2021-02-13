@@ -1,55 +1,118 @@
 {% extends "shared/_base.html" %}
+{% block main_content %}
 
 <!-- ***************************************************** -->
-{% block main_content %}
-    <div class="form-container">
+<!-- tab headings -->
 
-        {% if recipe %}
-            <h1>Edit Recipe</h1>
-        {% else %}
-            <h1>Create a Recipe</h1>
-        {% endif %}
+<ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item">
+        <a id="manual-tab" class="nav-link active" data-toggle="tab" role="tab" href="#manual">Manual Entry</a>
+    </li>
 
-        <form action="" method="POST" class="recipe-form" enctype="multipart/form-data">
+    {% if not recipe %}
+    <li class="nav-item">
+        <a id="url-tab" class="nav-link" data-toggle="tab" role="tab" href="#url">URL Import</a>
+    </li>
+    {% endif %}
 
-            <div class="recipe-section">
-                {% include "recipe/shared/recipe_general.html" %}
-            </div>
 
-            <div class="recipe-section">
-                {% include "recipe/shared/recipe_ingredients.html" %}
-            </div>
+<!-- ***************************************************** -->
+<!-- Tab Content -->
+<div class="tab-content" style="padding: 20px;">
 
-            <div class="recipe-section">
-                {% include "recipe/shared/recipe_directions.html" %}
-            </div>
 
-            <div class="recipe-section">
-                {% include "recipe/shared/recipe_tags.html" %}
-            </div>
+<!-- Manual Recipe Entry Tab -->
+    <div id="manual" aria-labelledby="manual-tab" class="tab-pane fade show active" role="tabpanel" aria-controls="manual" aria-selected="true">
 
-            <div class="recipe-section">
-                {% include "recipe/shared/recipe_notes.html" %}
-            </div>
+        <div class="form-container">
 
-            <div class="recipe-section">
-                {% include "recipe/shared/recipe_images.html" %}
-            </div>
-
-            <button type="submit" class="btn btn-success">Save</button>
-            <div style="clear: both"></div>
-            {% if error %}
-                <div class="error-msg">{{ error }}</div>
+            {% if recipe %}
+                <h1>Edit Recipe</h1>
+            {% else %}
+                <h1>Create a Recipe</h1>
             {% endif %}
 
-        </form>
+            <form action="" method="POST" class="recipe-form" enctype="multipart/form-data">
+
+                <div class="recipe-section">
+                    {% include "recipe/shared/recipe_general.html" %}
+                </div>
+
+                <div class="recipe-section">
+                    {% include "recipe/shared/recipe_ingredients.html" %}
+                </div>
+
+                <div class="recipe-section">
+                    {% include "recipe/shared/recipe_directions.html" %}
+                </div>
+
+                <div class="recipe-section">
+                    {% include "recipe/shared/recipe_tags.html" %}
+                </div>
+
+                <div class="recipe-section">
+                    {% include "recipe/shared/recipe_notes.html" %}
+                </div>
+
+                <div class="recipe-section">
+                    {% include "recipe/shared/recipe_images.html" %}
+                </div>
+
+                <button type="submit" class="btn btn-success">Save</button>
+                <div style="clear: both"></div>
+                {% if error %}
+                    <div class="error-msg">{{ error }}</div>
+                {% endif %}
+
+            </form>
+        </div>
     </div>
+
+
+{% if not recipe %}
+<!-- URL Recipe Import Tab -->
+    <div id="url" aria-labelledby="url-tab" class="tab-pane fade" role="tabpanel" aria-controls="url" aria-selected="false">
+
+        <div class="form-container">
+            <h1>Add Recipe from URL</h1>
+            <form action="" method="POST" class="recipe-form" enctype="multipart/form-data">
+
+                <input type="url" id="url" name="recipe_url">
+
+                <button id="importBtn" type="submit" class="btn btn-success">Import</button>
+
+                <div style="clear: both"></div>
+                {% if error %}
+                    <div class="error-msg">{{ error }}</div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+{% endif %}
+
+
+<!-- End of Tab Content -->
+</div>
 {% endblock %}
 
 <!-- ***************************************************** -->
 {% block additional_css %}
-    <link rel="stylesheet" href="/static/css/recipe.css">
+<link rel="stylesheet" href="/static/css/recipe.css">
 {% endblock %}
 
 {% block additional_js %}
+<script>
+$(document).ready(function() {
+  $("#importBtn").click(function() {
+
+    //disable button
+    $(this).prop("disabled", true);
+
+    //add spinner to button
+    $(this).html(
+      '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>'
+      );
+  });
+});
+</script>
 {% endblock %}

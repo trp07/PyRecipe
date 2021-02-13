@@ -29,6 +29,7 @@ flask = "^1.0"
 reportlab = "^3.5"
 passlib = "^1.7"
 secure = "^0.2.1"
+recipe-scrapers = "^12.1"
 
 [tool.poetry.dev-dependencies]
 pytest-cov = "^2.6"

@@ -84,7 +84,6 @@ class RecipeDriver:
             return 0
 
 
-
 @pytest.fixture(scope="function")
 def rec_driver():
     r1 = Recipe(

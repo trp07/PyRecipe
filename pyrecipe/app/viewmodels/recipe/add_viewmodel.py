@@ -82,3 +82,8 @@ class AddViewModel(ViewModelBase):
         if files:
             self._files = files
         return self._files
+
+    @property
+    def recipe_url(self) -> Optional[str]:
+        return self.request_dict.recipe_url
+

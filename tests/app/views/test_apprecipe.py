@@ -180,6 +180,36 @@ def test_recipe_add_post_loggedin_Notcreated(mocker, testrecipe):
     assert resp.location is None
 
 
+def test_recipe_add_post_urlimport(mocker, testrecipe):
+    """
+    GIVEN a logged-in user
+    WHEN importing a recipe via the url form
+    THEN no errors and user stays on recipe/add page
+    """
+    rec_data = {
+        "recipe_url": "urltorecipe.com"
+    }
+
+    other_data = {
+        "name": "test recipe",
+        "prep_time": "5",
+        "cook_time": "5",
+        "servings": "1",
+        "ingredients": ["garlic", "onion"],
+        "directions": ["cook"],
+        "notes": ["this is a test"],
+        "tags": ["test"],
+    }
+    find = mocker.patch.object(AccountUC, "find_user_by_id")
+    find.return_value = "FOUND"
+    vm = mocker.patch.object(AddViewModel, "__call__")
+    import_mock = mocker.patch.object(RecipeUC, "import_recipe_from_url")
+    import_mock.return_value = testrecipe(**other_data)
+    with flask_app.test_request_context(path="/recipe/add", data=rec_data):
+        resp: Response = recipe_views.recipe_add_post()
+    assert resp.location in "/recipe/view/12345"
+
+
 #################### Recipe Editing ##########################################
 
 def test_recipe_edit_get_loggedin(mocker):
