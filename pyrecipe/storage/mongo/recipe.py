@@ -22,7 +22,7 @@ class Recipe(BaseDocument):
     NOT-REQUIRED params:
     :param prep_time: (float) time to prep recipe in minutes.
     :param cook_time: (float) time to cook recipe in minutes.
-    :param servings: (int) number of servings in the recipe.
+    :param servings: (str) number of servings in the recipe.
     :param tags: (list) descriptive tags for a recipe.
         i.e. ['bbq', 'vegetarian']
     :param images: (list filepath for an uploaded image.
@@ -43,7 +43,7 @@ class Recipe(BaseDocument):
 
     prep_time = mongoengine.FloatField(default=0, min_val=0.0)
     cook_time = mongoengine.FloatField(default=0, min_val=0.0)
-    servings = mongoengine.IntField(default=0, min_val=1)
+    servings = mongoengine.StringField(required=False)
     tags = mongoengine.ListField(required=False)
     images = mongoengine.ListField(field=mongoengine.StringField(), required=False)
     notes = mongoengine.ListField(field=mongoengine.StringField(), required=False)

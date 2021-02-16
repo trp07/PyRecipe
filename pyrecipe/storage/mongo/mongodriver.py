@@ -59,7 +59,7 @@ class MongoDriver(DBInitInt, RecipeDBInt, UserDBInt):
         name: str,
         prep_time: int,
         cook_time: int,
-        servings: int,
+        servings: str,
         ingredients: List["ingredients"],
         directions: List["directions"],
         tags: List["tags"] = [],
@@ -77,7 +77,7 @@ class MongoDriver(DBInitInt, RecipeDBInt, UserDBInt):
         r.name = name
         r.prep_time = float(prep_time)
         r.cook_time = float(cook_time)
-        r.servings = int(servings)
+        r.servings = servings
         r.ingredients = ingredients
         r.num_ingredients = len(ingredients)
         r.directions = directions
@@ -93,7 +93,7 @@ class MongoDriver(DBInitInt, RecipeDBInt, UserDBInt):
         name: str,
         prep_time: int,
         cook_time: int,
-        servings: int,
+        servings: str,
         ingredients: List["ingredients"],
         directions: List["directions"],
         tags: List["tags"] = [],

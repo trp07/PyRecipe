@@ -43,7 +43,7 @@ class RecipeUC:
         name: str,
         prep_time: int,
         cook_time: int,
-        servings: int,
+        servings: str,
         ingredients: List["ingredients"],
         directions: List["directions"],
         tags: List["tags"] = [],
@@ -83,7 +83,7 @@ class RecipeUC:
         name: str,
         prep_time: int,
         cook_time: int,
-        servings: int,
+        servings: str,
         ingredients: List["ingredients"],
         directions: List["directions"],
         tags: List["tags"] = [],
@@ -144,6 +144,7 @@ class RecipeUC:
         if imported["images"]:
             imported["images"] = [self._save_image(imported["images"])]
 
+        print(imported)
         return self.create_recipe(**imported)
 
     def _save_image(self, url: str) -> str:

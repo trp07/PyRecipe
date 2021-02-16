@@ -18,7 +18,7 @@ class RecipeModel:
     directions: list
     prep_time: float
     cook_time: float
-    servings: int
+    servings: str
     tags: list
     notes: list
     rating: float

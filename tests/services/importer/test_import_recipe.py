@@ -28,7 +28,7 @@ def test_import_from_url(mocker):
 
     result = imp.import_from_url("testurl")
     assert result["name"] == "test_name"
-    assert result["prep_time"] == 1
+    assert result["prep_time"] == 0
     assert result["cook_time"] == "10"
     assert result["servings"] == "5"
     assert result["ingredients"] == ["a", "b"]
@@ -48,7 +48,7 @@ def test_import_from_url_websiteError(mocker):
 
     result = imp.import_from_url("testurl")
     assert result["name"] == "test_name"
-    assert result["prep_time"] == 1
+    assert result["prep_time"] == 0
     assert result["cook_time"] == "10"
     assert result["servings"] == "5"
     assert result["ingredients"] == ["a", "b"]

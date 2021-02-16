@@ -19,11 +19,12 @@ def import_from_url(url: str) -> dict:
     notes = ["Imported from: " + url]
     nutrients = [k + ": " + v for k,v in scraper.nutrients().items()]
 
+    print("SCRAPER: ", scraper.yields())
     return {
         "name": scraper.title(),
-        "prep_time": 1,
-        "cook_time": scraper.total_time(),
-        "servings": scraper.yields().split(" ")[0],
+        "prep_time": 0,
+        "cook_time": scraper.total_time() or 999,
+        "servings": scraper.yields() or "",
         "ingredients": scraper.ingredients(),
         "directions": scraper.instructions().split("\n"),
         "tags": ["imported", scraper.host().split(".")[0]],

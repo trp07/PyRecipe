@@ -34,7 +34,7 @@ def recipes(mongodb):
     recipe_1.directions = ["fry eggs", "add spam", "eat"]
     recipe_1.prep_time = 10
     recipe_1.cook_time = 5
-    recipe_1.servings = 1
+    recipe_1.servings = "1"
     recipe_1.tags = ["breakfast", "fast"]
     recipe_1.images = ["/path/to/image"]
     recipe_1.save()

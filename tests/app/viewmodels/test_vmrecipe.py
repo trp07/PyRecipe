@@ -62,7 +62,7 @@ def test_addvm(mocker):
         vm = AddViewModel()
 
     assert vm.name == "oatmeal"
-    assert vm.servings == 4
+    assert vm.servings == "4"
     assert vm.cook_time == 30
     assert vm.prep_time == 2
     assert vm.recipe_url == ""

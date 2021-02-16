@@ -65,12 +65,12 @@ class AddViewModel(ViewModelBase):
             return int(cook_time)
 
     @property
-    def servings(self) -> int:
+    def servings(self) -> str:
         servings = self.request_dict.servings
         if servings == "":
-            return 0
+            return "0"
         else:
-            return int(servings)
+            return servings
 
     @property
     def name(self) -> str:

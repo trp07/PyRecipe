@@ -33,9 +33,9 @@ class EditViewModel(ViewModelBase):
             return int(self.recipe.cook_time)
 
     @property
-    def servings(self) -> int:
+    def servings(self) -> str:
         if self.method=="GET" and self.recipe:
-            return int(self.recipe.servings)
+            return self.recipe.servings
 
     @property
     def ingredients(self) -> List[str]:

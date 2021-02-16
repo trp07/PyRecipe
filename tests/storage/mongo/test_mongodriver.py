@@ -63,7 +63,7 @@ def test_recipe_to_dict(recipes):
     assert r["directions"] == ["fry eggs", "add spam", "eat"]
     assert r["prep_time"] == 10
     assert r["cook_time"] == 5
-    assert r["servings"] == 1
+    assert r["servings"] == "1"
     assert r["tags"] == ["breakfast", "fast"]
     assert r["images"] == ["/path/to/image"]
 
@@ -78,7 +78,7 @@ def test_recipe_create(mongodb):
         name="Tester",
         prep_time=5,
         cook_time=10,
-        servings=1,
+        servings="1",
         ingredients=["garlic, 1 clove minced"],
         directions=["cook", "eat"],
         tags=["breakfast", "easy"],
