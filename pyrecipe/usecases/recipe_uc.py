@@ -141,7 +141,7 @@ class RecipeUC:
     def import_recipe_from_url(self, url: str) -> "RecipeModel":
         imported = import_from_url(url)
 
-        if imported["images"]:
+        if imported.get("images"):
             imported["images"] = [self._save_image(imported["images"])]
 
         print(imported)
