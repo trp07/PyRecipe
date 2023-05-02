@@ -25,7 +25,7 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.7"
 mongoengine = "=0.20.0"
-flask = "^1.0"
+flask = "^2.2"
 reportlab = "^3.5"
 passlib = "^1.7"
 secure = "^0.2.1"
